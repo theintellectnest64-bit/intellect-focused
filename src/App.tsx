@@ -14,6 +14,10 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Courses from "./pages/Courses";
 import Pricing from "./pages/Pricing";
+import Blog from "./pages/Blog";
+import BlogArticle from "./pages/BlogArticle";
+import FAQ from "./pages/FAQ";
+import Gallery from "./pages/Gallery";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,10 +48,10 @@ const App = () => {
                 <Route path="/about" element={<About />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/pricing" element={<Pricing />} />
-                <Route path="/blog" element={<ComingSoon title="Blog" />} />
-                <Route path="/blog/:slug" element={<ComingSoon title="Blog Article" />} />
-                <Route path="/gallery" element={<ComingSoon title="Gallery" />} />
-                <Route path="/faq" element={<ComingSoon title="FAQ" />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogArticle />} />
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/faq" element={<FAQ />} />
                 <Route path="/book-demo" element={<ComingSoon title="Book a Free Demo" />} />
                 <Route path="/contact" element={<ComingSoon title="Contact" />} />
                 <Route path="/admin" element={<ComingSoon title="Admin" />} />
