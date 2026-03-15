@@ -38,8 +38,8 @@ const AnimatedCounter = ({ target, suffix = "", label, icon }: AnimatedCounterPr
       viewport={{ once: true }}
       className="text-center"
     >
-      <div className="text-primary mb-2 flex justify-center">{icon}</div>
-      <div className="font-display text-3xl md:text-4xl font-bold text-foreground">
+      <div className="text-sky mb-2 flex justify-center">{icon}</div>
+      <div className="font-display text-3xl md:text-4xl font-bold text-gold">
         {count}{suffix}
       </div>
       <div className="font-body text-sm text-muted-foreground mt-1">{label}</div>

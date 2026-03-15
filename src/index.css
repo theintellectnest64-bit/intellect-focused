@@ -4,52 +4,55 @@
 
 @layer base {
   :root {
-    --background: 216 45% 10%;
-    --foreground: 0 0% 100%;
+    --background: 0 0% 100%;
+    --foreground: 214 62% 15%;
 
-    --card: 220 50% 14%;
-    --card-foreground: 0 0% 100%;
-    --card-lighter: 222 43% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 214 62% 15%;
+    --card-lighter: 214 100% 97%;
 
-    --popover: 220 50% 14%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 214 62% 15%;
 
-    --primary: 42 53% 53%;
-    --primary-foreground: 216 45% 10%;
+    --primary: 210 65% 49%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 213 20% 77%;
-    --secondary-foreground: 216 45% 10%;
+    --secondary: 215 16% 47%;
+    --secondary-foreground: 214 62% 15%;
 
-    --muted: 210 15% 20%;
-    --muted-foreground: 210 18% 60%;
+    --muted: 214 100% 97%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 42 53% 53%;
-    --accent-foreground: 216 45% 10%;
+    --accent: 210 65% 49%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 42 53% 53% / 0.25;
-    --input: 42 53% 53% / 0.25;
-    --ring: 42 53% 53%;
+    --border: 213 94% 90%;
+    --input: 213 94% 90%;
+    --ring: 210 65% 49%;
 
     --radius: 0.5rem;
 
-    --gold: 42 53% 53%;
-    --gold-hover: 42 65% 66%;
-    --gold-fill: 42 53% 53% / 0.15;
-    --gold-border: 42 53% 53% / 0.25;
-    --text-secondary: 213 20% 77%;
-    --text-muted: 210 18% 60%;
+    --sky: 210 65% 49%;
+    --sky-light: 210 65% 49% / 0.08;
+    --sky-border: 213 94% 90%;
+    --gold: 49 91% 53%;
+    --gold-hover: 49 85% 45%;
+    --navy: 214 62% 15%;
+    --section-alt: 214 100% 97%;
+    --text-secondary: 215 16% 47%;
+    --text-muted: 220 9% 46%;
 
-    --sidebar-background: 216 45% 10%;
+    --sidebar-background: 214 62% 15%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 42 53% 53%;
-    --sidebar-primary-foreground: 216 45% 10%;
-    --sidebar-accent: 220 50% 14%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 42 53% 53% / 0.25;
-    --sidebar-ring: 42 53% 53%;
+    --sidebar-primary: 210 65% 49%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 100% 97%;
+    --sidebar-accent-foreground: 214 62% 15%;
+    --sidebar-border: 213 94% 90%;
+    --sidebar-ring: 210 65% 49%;
   }
 }
 
@@ -58,47 +61,122 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
+    @apply font-display text-navy;
   }
 }
 
 @layer components {
   .eyebrow {
-    @apply font-body uppercase tracking-[0.15em] text-xs text-primary font-semibold;
+    @apply font-body uppercase tracking-[0.2em] text-[11px] text-sky font-semibold flex items-center justify-center gap-3;
+  }
+  .eyebrow::before,
+  .eyebrow::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: hsl(var(--sky-border));
+  }
+  .eyebrow-left {
+    @apply font-body uppercase tracking-[0.2em] text-[11px] text-sky font-semibold flex items-center gap-3;
+  }
+  .eyebrow-left::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: hsl(var(--sky-border));
   }
 
-  .gold-glow {
-    box-shadow: 0 8px 32px rgba(201, 168, 76, 0.2);
+  .section-alt {
+    background: hsl(var(--section-alt));
+  }
+
+  .card-hover {
+    @apply transition-all duration-300;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(43,125,212,0.12);
+    border-color: hsl(var(--sky));
   }
 
   .card-shadow {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   }
 
-  .gold-left-border {
-    border-left: 3px solid hsl(42, 53%, 53%);
+  .sky-left-border {
+    border-left: 3px solid hsl(var(--sky));
   }
 
   .chess-grid-bg {
     background-image:
-      linear-gradient(rgba(201, 168, 76, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(201, 168, 76, 0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
+      linear-gradient(rgba(13,30,59,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(13,30,59,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
 
   .chess-texture {
     background-image:
-      repeating-conic-gradient(rgba(201, 168, 76, 0.03) 0% 25%, transparent 0% 50%) 0 0 / 40px 40px;
+      repeating-conic-gradient(rgba(13,30,59,0.03) 0% 25%, transparent 0% 50%) 0 0 / 40px 40px;
+  }
+
+  .cta-gold {
+    @apply inline-flex items-center justify-center px-7 py-3.5 font-body font-bold rounded-lg uppercase tracking-[0.08em] text-sm transition-all duration-200;
+    background: hsl(var(--gold));
+    color: hsl(var(--navy));
+  }
+  .cta-gold:hover {
+    background: hsl(var(--gold-hover));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245,197,24,0.4);
+  }
+
+  .cta-secondary {
+    @apply inline-flex items-center justify-center px-7 py-3.5 font-body font-semibold rounded-lg text-sm transition-all duration-200;
+    border: 1.5px solid hsl(var(--sky));
+    color: hsl(var(--sky));
+    background: transparent;
+  }
+  .cta-secondary:hover {
+    background: hsl(var(--section-alt));
+  }
+
+  .top-gradient-bar {
+    height: 3px;
+    background: linear-gradient(to right, hsl(var(--navy)), hsl(var(--sky)));
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .text-navy {
+    color: hsl(var(--navy));
+  }
+  .text-sky {
+    color: hsl(var(--sky));
+  }
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+  .bg-navy {
+    background-color: hsl(var(--navy));
+  }
+  .bg-sky-light {
+    background-color: hsl(var(--sky-light));
+  }
+  .border-sky-border {
+    border-color: hsl(var(--sky-border));
   }
 }
