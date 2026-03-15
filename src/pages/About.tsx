@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, Trophy, Star, Clock, Target, Brain, Shield, Heart, Sparkles, GraduationCap, Check } from "lucide-react";
+import { Users, Trophy, Star, Clock, Target, Brain, Shield, Heart, Sparkles, Globe, Check } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import AnimatedCounter from "@/components/AnimatedCounter";
 
@@ -17,11 +17,11 @@ const About = () => {
   return (
     <div>
       {/* Hero */}
-      <section className="relative min-h-[60vh] flex items-center pt-[72px]">
+      <section className="relative min-h-[60vh] flex items-center pt-[75px]">
         <div className="container mx-auto px-4 lg:px-8 py-20">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl">
-            <span className="eyebrow mb-4 block">Our Story</span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-[64px] font-bold text-foreground leading-[1.1] mb-6">
+            <span className="eyebrow-left mb-4 block">Our Story</span>
+            <h1 className="font-display text-[34px] md:text-5xl lg:text-[64px] font-black text-navy leading-[1.15] mb-6" style={{ letterSpacing: "0.01em" }}>
               More Than an Academy. A Brain Gym for Kids.
             </h1>
             <p className="font-body text-lg text-secondary leading-relaxed">
@@ -32,18 +32,18 @@ const About = () => {
       </section>
 
       {/* Brand Story */}
-      <SectionWrapper>
+      <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-              <p className="font-body text-lg text-secondary leading-[1.75] mb-6">
-                The Intellect Nest is more than a chess academy. We are a brain gym for kids — we transform unproductive screen time into focused learning through chess and Rubik's Cube training. Our mission is simple: nurture focus, critical thinking, resilience, and genuine joy in learning.
+              <p className="font-body text-lg text-secondary leading-[1.8] mb-6">
+                The Intellect Nest is more than a chess academy. We are a brain gym for kids — we transform unproductive screen time into focused learning through chess and Rubik's Cube training.
               </p>
-              <p className="font-body text-lg text-secondary leading-[1.75] mb-6">
-                Founded by chess trainers and educators who believe that small habits create champions, we combine world-class coaching with purpose-built technology to keep every child engaged, improving, and proud of their growth. From a child's very first piece movement to their first tournament medal — we are there for every move.
+              <p className="font-body text-lg text-secondary leading-[1.8] mb-6">
+                Founded by chess trainers and educators who believe that small habits create champions, we combine world-class coaching with purpose-built technology to keep every child engaged, improving, and proud of their growth.
               </p>
-              <p className="font-body text-lg text-secondary leading-[1.75]">
-                We built The Intellect Nest because we saw too many children spending hours on screens that gave nothing back. We knew chess and the Rubik's Cube could change that. They are not just games — they are tools for building the kind of mind that succeeds in school, in relationships, and in life. That belief is at the heart of everything we do.
+              <p className="font-body text-lg text-secondary leading-[1.8]">
+                We built The Intellect Nest because we saw too many children spending hours on screens that gave nothing back. Chess and the Rubik's Cube are not just games — they are tools for building the kind of mind that succeeds in school, in relationships, and in life.
               </p>
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-xl overflow-hidden card-shadow">
@@ -54,21 +54,21 @@ const About = () => {
       </SectionWrapper>
 
       {/* Mission & Vision */}
-      <SectionWrapper className="bg-card/50">
+      <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 lg:p-10 rounded-xl card-shadow border border-gold-border">
-              <span className="eyebrow mb-3 block">Our Mission</span>
-              <h3 className="font-display text-2xl font-bold text-foreground mb-4">Mission</h3>
+            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 lg:p-10 rounded-xl card-shadow card-hover border border-sky-border">
+              <span className="eyebrow-left mb-3 block">Our Mission</span>
+              <h3 className="font-display text-2xl font-bold text-navy mb-4">Mission</h3>
               <p className="font-body text-secondary leading-relaxed">
-                Replace wasted screen time with joyful, skill-building classes that develop sharp minds and happy hearts. Every child who joins The Intellect Nest should leave every class smarter, happier, and more confident than when they arrived.
+                Replace wasted screen time with joyful, skill-building classes that develop sharp minds and happy hearts. Every child who joins should leave every class smarter, happier, and more confident.
               </p>
             </motion.div>
-            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 lg:p-10 rounded-xl card-shadow border border-gold-border">
-              <span className="eyebrow mb-3 block">Our Vision</span>
-              <h3 className="font-display text-2xl font-bold text-foreground mb-4">Vision</h3>
+            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 lg:p-10 rounded-xl card-shadow card-hover border border-sky-border">
+              <span className="eyebrow-left mb-3 block">Our Vision</span>
+              <h3 className="font-display text-2xl font-bold text-navy mb-4">Vision</h3>
               <p className="font-body text-secondary leading-relaxed">
-                A world where children open a chessboard instead of a random app — learning, laughing, and building futures one move at a time. We believe that given the right environment and the right coach, every child has a sharp mind waiting to be unlocked.
+                A world where children open a chessboard instead of a random app — learning, laughing, and building futures one move at a time.
               </p>
             </motion.div>
           </div>
@@ -76,22 +76,24 @@ const About = () => {
       </SectionWrapper>
 
       {/* Values */}
-      <SectionWrapper>
+      <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
             <span className="eyebrow mb-3 block">What We Stand For</span>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-[48px] font-bold text-foreground">Our Values</h2>
+            <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy">Our Values</h2>
           </div>
           <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: <Heart size={28} />, title: "Fun", body: "Kids learn best when they love the process. Every class at The Intellect Nest is designed to be engaging first and educational second. We use stories, games, challenges, and celebrations to make learning feel like play." },
-              { icon: <Target size={28} />, title: "Focus", body: "Discipline and patience are built through small consistent habits, not lectures or pressure. We help children build the practice habits that create long-term skill without burning out their enthusiasm." },
-              { icon: <Sparkles size={28} />, title: "Growth", body: "From basics to brilliance — every child's journey is unique and we honour that completely. We never compare students to each other. We compare each student only to their own previous best." },
-              { icon: <Shield size={28} />, title: "Safety", body: "A secure online environment, fully moderated sessions, a strict code of conduct, and child-first policies at every step. Parents trust us with their most precious people — we take that responsibility seriously." },
+              { icon: <Heart size={28} />, title: "Fun", body: "Kids learn best when they love the process. Every class is designed to be engaging first and educational second." },
+              { icon: <Target size={28} />, title: "Focus", body: "Discipline and patience are built through small consistent habits, not lectures or pressure." },
+              { icon: <Sparkles size={28} />, title: "Growth", body: "From basics to brilliance — every child's journey is unique. We compare each student only to their own previous best." },
+              { icon: <Shield size={28} />, title: "Safety", body: "A secure online environment, fully moderated sessions, a strict code of conduct, and child-first policies at every step." },
             ].map((val, i) => (
-              <motion.div key={i} variants={fadeUp} className="bg-card p-6 rounded-xl card-shadow hover:-translate-y-1.5 hover:gold-glow transition-all duration-300">
-                <div className="text-primary mb-4">{val.icon}</div>
-                <h3 className="font-display text-xl font-semibold text-foreground mb-3">{val.title}</h3>
+              <motion.div key={i} variants={fadeUp} className="bg-card p-6 rounded-xl card-shadow card-hover border border-sky-border">
+                <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-4">
+                  <span style={{ color: "#2B7DD4" }}>{val.icon}</span>
+                </div>
+                <h3 className="font-display text-xl font-semibold text-navy mb-3">{val.title}</h3>
                 <p className="font-body text-sm text-secondary leading-relaxed">{val.body}</p>
               </motion.div>
             ))}
@@ -100,20 +102,20 @@ const About = () => {
       </SectionWrapper>
 
       {/* Approach */}
-      <SectionWrapper className="bg-card/50">
+      <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
             <span className="eyebrow mb-3 block">How We Teach</span>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-[48px] font-bold text-foreground">Our Approach</h2>
+            <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy">Our Approach</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: "Child-First Pedagogy", body: "Playful, story-driven lessons for young kids. Structured rigor for advanced learners. Always age-appropriate, always adjusted to the individual student's pace and personality. We never use a one-size-fits-all approach." },
-              { title: "Small Groups of 6 to 10", body: "Personal attention without isolation. Peer competition without undue pressure. Students learn from each other, challenge each other, and celebrate each other's wins." },
-              { title: "Measurement-Driven Progress", body: "Monthly progress reports, milestone achievement badges, visible improvement metrics, and real trackable results that parents can see and celebrate." },
+              { title: "Child-First Pedagogy", body: "Playful, story-driven lessons for young kids. Structured rigor for advanced learners. Always age-appropriate." },
+              { title: "Small Groups of 6 to 10", body: "Personal attention without isolation. Peer competition without undue pressure. Students learn from each other." },
+              { title: "Measurement-Driven Progress", body: "Monthly progress reports, milestone badges, visible improvement metrics, and real trackable results." },
             ].map((item, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="bg-card p-6 rounded-xl card-shadow gold-left-border">
-                <h3 className="font-display text-xl font-semibold text-foreground mb-3">{item.title}</h3>
+              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="bg-card p-6 rounded-xl card-shadow card-hover sky-left-border border border-sky-border" style={{ borderLeftColor: "#2B7DD4" }}>
+                <h3 className="font-display text-xl font-semibold text-navy mb-3">{item.title}</h3>
                 <p className="font-body text-sm text-secondary leading-relaxed">{item.body}</p>
               </motion.div>
             ))}
@@ -122,20 +124,20 @@ const About = () => {
       </SectionWrapper>
 
       {/* What Makes Us Different */}
-      <SectionWrapper>
+      <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
             <span className="eyebrow mb-3 block">The Difference</span>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-[48px] font-bold text-foreground">What Makes Us Different</h2>
+            <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy">What Makes Us Different</h2>
           </div>
           <div className="max-w-3xl mx-auto space-y-4">
             {[
-              "Small batches of 6 to 10 students maximum vs crowded classrooms of 20 or more at competitor academies.",
-              "Real monthly progress reports with puzzle stats, game analysis, and coach notes vs vague verbal feedback with no documentation.",
-              "Classes in both Hindi and English vs English-only instruction that creates a barrier for many Indian families.",
-              "Weekly internal tournaments built into every plan at no extra cost vs tournament participation as an optional paid extra.",
-              "Rubik's Cube as a cognitive add-on program vs chess-only offerings with no complementary skill development.",
-              "Personal coach match based on learning style, language, and personality vs random batch assignment with no consideration of fit.",
+              "Small batches of 6 to 10 students maximum vs crowded classrooms of 20 or more.",
+              "Real monthly progress reports with puzzle stats, game analysis, and coach notes.",
+              "Classes in both Hindi and English vs English-only instruction.",
+              "Weekly internal tournaments built into every plan at no extra cost.",
+              "Rubik's Cube as a cognitive add-on program vs chess-only offerings.",
+              "Personal coach match based on learning style, language, and personality.",
             ].map((point, i) => (
               <motion.div
                 key={i}
@@ -143,9 +145,9 @@ const About = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="flex gap-4 items-start bg-card p-5 rounded-xl border border-gold-border"
+                className="flex gap-4 items-start bg-card p-5 rounded-xl border border-sky-border card-hover"
               >
-                <Check size={20} className="text-primary shrink-0 mt-0.5" />
+                <Check size={20} className="text-sky shrink-0 mt-0.5" style={{ color: "#2B7DD4" }} />
                 <p className="font-body text-sm text-secondary leading-relaxed">{point}</p>
               </motion.div>
             ))}
@@ -154,11 +156,11 @@ const About = () => {
       </SectionWrapper>
 
       {/* Trust Stats */}
-      <SectionWrapper className="bg-card">
+      <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-gold-border">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-sky-border">
             <AnimatedCounter target={500} suffix="+" label="Students Trained" icon={<Users size={24} />} />
-            <AnimatedCounter target={3} suffix="+" label="Years of Excellence" icon={<Clock size={24} />} />
+            <AnimatedCounter target={3} suffix="+" label="Years of Excellence" icon={<Globe size={24} />} />
             <AnimatedCounter target={20} suffix="+" label="Tournament Winners" icon={<Trophy size={24} />} />
             <AnimatedCounter target={4.9} suffix="" label="Parent Rating" icon={<Star size={24} />} />
           </div>
@@ -166,15 +168,12 @@ const About = () => {
       </SectionWrapper>
 
       {/* Bottom CTA */}
-      <SectionWrapper>
+      <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-6">
+          <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy mb-6">
             Ready to experience the difference?
           </h2>
-          <Link
-            to="/book-demo"
-            className="inline-flex items-center px-8 py-4 bg-primary text-primary-foreground font-body font-bold rounded-lg hover:bg-gold-hover transition-all hover:scale-[1.02] text-lg"
-          >
+          <Link to="/book-demo" className="cta-gold text-lg px-8 py-4">
             Book Free Demo
           </Link>
         </div>

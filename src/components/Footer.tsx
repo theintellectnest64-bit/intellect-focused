@@ -3,27 +3,22 @@ import { Instagram, Youtube, Facebook, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="relative bg-background border-t border-gold-border chess-texture">
+    <footer className="bg-navy text-white chess-texture">
       <div className="container mx-auto px-4 lg:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
               <img src="/images/logo.png" alt="The Intellect Nest" className="h-10 w-10 object-contain" />
-              <span className="font-display text-lg font-bold text-primary">The Intellect Nest</span>
+              <span className="font-display text-lg font-bold text-white">The Intellect Nest</span>
             </div>
-            <p className="font-body text-sm text-secondary italic mb-4">where knowledge takes flight</p>
-            <p className="font-body text-sm text-muted-foreground leading-relaxed mb-6">
+            <p className="font-body text-sm italic mb-4" style={{ color: "#93C5FD" }}>where knowledge takes flight</p>
+            <p className="font-body text-sm leading-relaxed mb-6" style={{ color: "#93C5FD" }}>
               India's premier online chess and Rubik's Cube academy for kids aged 5–15. Building sharp minds and confident hearts.
             </p>
             <div className="flex gap-4">
-              {[
-                { icon: Instagram, href: "#" },
-                { icon: Youtube, href: "#" },
-                { icon: Facebook, href: "#" },
-                { icon: Linkedin, href: "#" },
-              ].map(({ icon: Icon, href }, i) => (
-                <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+              {[Instagram, Youtube, Facebook, Linkedin].map((Icon, i) => (
+                <a key={i} href="#" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white" style={{ color: "#93C5FD" }}>
                   <Icon size={20} />
                 </a>
               ))}
@@ -32,11 +27,11 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display text-sm font-semibold text-foreground mb-4">Quick Links</h4>
+            <h4 className="font-display text-sm font-semibold text-white mb-4">Quick Links</h4>
             <ul className="space-y-2.5">
               {["Home", "About", "Courses", "Pricing", "Blog", "Gallery", "FAQ", "Contact"].map((label) => (
                 <li key={label}>
-                  <Link to={`/${label === "Home" ? "" : label.toLowerCase()}`} className="font-body text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Link to={`/${label === "Home" ? "" : label.toLowerCase()}`} className="font-body text-sm transition-colors hover:text-white" style={{ color: "#93C5FD" }}>
                     {label}
                   </Link>
                 </li>
@@ -46,11 +41,11 @@ const Footer = () => {
 
           {/* Courses */}
           <div>
-            <h4 className="font-display text-sm font-semibold text-foreground mb-4">Courses</h4>
+            <h4 className="font-display text-sm font-semibold text-white mb-4">Courses</h4>
             <ul className="space-y-2.5">
               {["Beginner Nest", "Rising Pawns", "Strategic Knights", "Tactical Bishops", "Master Rooks & Queens", "Cube Basics", "Speedcubing"].map((c) => (
                 <li key={c}>
-                  <Link to="/courses" className="font-body text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Link to="/courses" className="font-body text-sm transition-colors hover:text-white" style={{ color: "#93C5FD" }}>
                     {c}
                   </Link>
                 </li>
@@ -60,7 +55,7 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <h4 className="font-display text-sm font-semibold text-foreground mb-4">Resources</h4>
+            <h4 className="font-display text-sm font-semibold text-white mb-4">Resources</h4>
             <ul className="space-y-2.5">
               {[
                 { label: "Blog", path: "/blog" },
@@ -70,7 +65,7 @@ const Footer = () => {
                 { label: "Contact", path: "/contact" },
               ].map((item) => (
                 <li key={item.label}>
-                  <Link to={item.path} className="font-body text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Link to={item.path} className="font-body text-sm transition-colors hover:text-white" style={{ color: "#93C5FD" }}>
                     {item.label}
                   </Link>
                 </li>
@@ -80,15 +75,15 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="font-display text-sm font-semibold text-foreground mb-4">Contact</h4>
+            <h4 className="font-display text-sm font-semibold text-white mb-4">Contact</h4>
             <ul className="space-y-3">
               <li>
-                <a href="tel:+919893189566" className="font-body text-sm text-primary hover:text-gold-hover transition-colors font-medium">
+                <a href="tel:+919893189566" className="font-body text-sm font-medium text-white hover:underline">
                   +91 9893189566
                 </a>
               </li>
               <li>
-                <a href="mailto:theintellectnest64@gmail.com" className="font-body text-sm text-muted-foreground hover:text-primary transition-colors break-all">
+                <a href="mailto:theintellectnest64@gmail.com" className="font-body text-sm transition-colors hover:text-white break-all" style={{ color: "#93C5FD" }}>
                   theintellectnest64@gmail.com
                 </a>
               </li>
@@ -97,35 +92,32 @@ const Footer = () => {
                   href="https://wa.me/919893189566?text=Hi%2C%20I%20want%20to%20book%20a%20free%20demo%20for%20my%20child%20at%20The%20Intellect%20Nest"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-body text-sm text-primary hover:text-gold-hover transition-colors"
+                  className="font-body text-sm text-white hover:underline"
                 >
                   WhatsApp Chat
                 </a>
               </li>
-              <li className="font-body text-sm text-muted-foreground">Mon–Sat 9AM–7PM IST</li>
+              <li className="font-body text-sm" style={{ color: "#93C5FD" }}>Mon–Sat 9AM–7PM IST</li>
             </ul>
           </div>
         </div>
 
         {/* CTA */}
         <div className="flex justify-center mt-12 mb-8">
-          <Link
-            to="/book-demo"
-            className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground font-body font-semibold rounded-lg hover:bg-gold-hover transition-all hover:scale-[1.02]"
-          >
+          <Link to="/book-demo" className="cta-gold px-8 py-3">
             Book a Free Demo
           </Link>
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-gold-border pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-body text-xs text-muted-foreground">
+        <div className="border-t pt-6 flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderColor: "rgba(147,197,253,0.2)" }}>
+          <p className="font-body text-xs" style={{ color: "#93C5FD" }}>
             © 2025 The Intellect Nest. All rights reserved.
           </p>
           <div className="flex gap-4">
-            <span className="font-body text-xs text-muted-foreground hover:text-primary cursor-pointer transition-colors">Privacy Policy</span>
-            <span className="font-body text-xs text-muted-foreground hover:text-primary cursor-pointer transition-colors">Terms</span>
-            <a href="https://tinchess.com" className="font-body text-xs text-primary hover:text-gold-hover transition-colors">tinchess.com</a>
+            <span className="font-body text-xs cursor-pointer transition-colors hover:text-white" style={{ color: "#93C5FD" }}>Privacy Policy</span>
+            <span className="font-body text-xs cursor-pointer transition-colors hover:text-white" style={{ color: "#93C5FD" }}>Terms</span>
+            <a href="https://tinchess.com" className="font-body text-xs text-white hover:underline">tinchess.com</a>
           </div>
         </div>
       </div>

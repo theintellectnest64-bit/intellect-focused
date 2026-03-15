@@ -31,18 +31,23 @@ const Header = () => {
 
   return (
     <>
+      <div className="top-gradient-bar fixed top-0 left-0 right-0 z-[60]" />
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-[3px] left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-background/95 backdrop-blur-md border-b border-gold-border shadow-lg"
-            : "bg-transparent backdrop-blur-sm"
+            ? "bg-navy border-b shadow-lg"
+            : "bg-transparent backdrop-blur-[12px]"
         }`}
-        style={{ height: "72px" }}
+        style={{
+          height: "72px",
+          borderBottomColor: scrolled ? "rgba(43,125,212,0.2)" : "transparent",
+          boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.2)" : "none",
+        }}
       >
         <div className="container mx-auto flex items-center justify-between h-full px-4 lg:px-8">
           <Link to="/" className="flex items-center gap-3">
             <img src="/images/logo.png" alt="The Intellect Nest" className="h-10 w-10 object-contain" />
-            <span className="font-display text-lg font-bold text-primary hidden sm:block">
+            <span className={`font-display text-lg font-bold hidden sm:block ${scrolled ? "text-white" : "text-navy"}`}>
               The Intellect Nest
             </span>
           </Link>
@@ -52,11 +57,12 @@ const Header = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`font-body text-sm font-medium transition-colors hover:text-primary ${
+                className={`font-body text-sm font-medium transition-colors hover:text-sky ${
                   location.pathname === link.path
-                    ? "text-primary border-b-2 border-primary pb-1"
-                    : "text-secondary"
+                    ? `text-sky border-b-2 pb-1`
+                    : scrolled ? "text-white/80" : "text-secondary"
                 }`}
+                style={{ borderColor: location.pathname === link.path ? "hsl(210,65%,49%)" : "transparent" }}
               >
                 {link.label}
               </Link>
@@ -64,15 +70,12 @@ const Header = () => {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Link
-              to="/book-demo"
-              className="hidden lg:inline-flex items-center px-5 py-2.5 bg-primary text-primary-foreground font-body text-sm font-semibold rounded-lg hover:bg-gold-hover transition-all duration-200 hover:scale-[1.02]"
-            >
+            <Link to="/book-demo" className="cta-gold text-xs px-4 py-2">
               Book Free Demo
             </Link>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden text-foreground p-2"
+              className={`lg:hidden p-2 ${scrolled ? "text-white" : "text-foreground"}`}
               aria-label="Toggle menu"
             >
               {menuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -88,7 +91,7 @@ const Header = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 bg-background flex flex-col items-center justify-center gap-6"
-            style={{ paddingTop: "72px" }}
+            style={{ paddingTop: "75px" }}
           >
             {navLinks.map((link, i) => (
               <motion.div
@@ -100,7 +103,7 @@ const Header = () => {
                 <Link
                   to={link.path}
                   className={`font-display text-2xl font-semibold transition-colors ${
-                    location.pathname === link.path ? "text-primary" : "text-foreground hover:text-primary"
+                    location.pathname === link.path ? "text-sky" : "text-foreground hover:text-sky"
                   }`}
                 >
                   {link.label}
@@ -112,10 +115,7 @@ const Header = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: navLinks.length * 0.05 }}
             >
-              <Link
-                to="/book-demo"
-                className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground font-body font-semibold rounded-lg mt-4"
-              >
+              <Link to="/book-demo" className="cta-gold px-8 py-3 mt-4">
                 Book Free Demo
               </Link>
             </motion.div>

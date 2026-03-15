@@ -10,9 +10,12 @@ const WhatsAppButton = () => {
       aria-label="Chat with us on WhatsApp"
       title="Chat with us on WhatsApp"
     >
-      <span className="absolute inset-0 rounded-full bg-primary animate-pulse-ring" />
-      <span className="relative flex items-center justify-center w-14 h-14 bg-primary rounded-full shadow-lg hover:bg-gold-hover transition-colors">
-        <MessageCircle size={26} className="text-primary-foreground" />
+      <span className="absolute inset-0 rounded-full animate-pulse-ring" style={{ background: "hsl(49,91%,53%)" }} />
+      <span
+        className="relative flex items-center justify-center w-14 h-14 rounded-full transition-colors"
+        style={{ background: "#F5C518", boxShadow: "0 4px 16px rgba(245,197,24,0.4)" }}
+      >
+        <MessageCircle size={26} style={{ color: "#0D1E3B" }} />
       </span>
     </a>
   );

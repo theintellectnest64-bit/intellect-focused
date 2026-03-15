@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
 import IntroAnimation from "@/components/IntroAnimation";
+import LogoPopup from "@/components/LogoPopup";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Courses from "./pages/Courses";
@@ -43,7 +44,6 @@ const App = () => {
                 <Route path="/about" element={<About />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/pricing" element={<Pricing />} />
-                {/* Phase 2 & 3 pages - placeholders */}
                 <Route path="/blog" element={<ComingSoon title="Blog" />} />
                 <Route path="/blog/:slug" element={<ComingSoon title="Blog Article" />} />
                 <Route path="/gallery" element={<ComingSoon title="Gallery" />} />
@@ -57,6 +57,7 @@ const App = () => {
             <Footer />
             <WhatsAppButton />
             <BackToTop />
+            <LogoPopup />
           </BrowserRouter>
         )}
       </TooltipProvider>
@@ -65,9 +66,9 @@ const App = () => {
 };
 
 const ComingSoon = ({ title }: { title: string }) => (
-  <div className="min-h-screen flex items-center justify-center pt-[72px]">
+  <div className="min-h-screen flex items-center justify-center pt-[75px]">
     <div className="text-center">
-      <h1 className="font-display text-4xl font-bold text-foreground mb-4">{title}</h1>
+      <h1 className="font-display text-4xl font-bold text-navy mb-4">{title}</h1>
       <p className="font-body text-secondary">Coming in Phase 2</p>
     </div>
   </div>
