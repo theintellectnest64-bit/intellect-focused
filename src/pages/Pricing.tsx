@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Check, ChevronDown, Star, Crown } from "lucide-react";
+import { Check, ChevronDown, Crown } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 
 const fadeUp = {
@@ -32,14 +32,14 @@ const privateFeaturesIndia = [
 ];
 
 const pricingFaq = [
-  { q: "Do you offer refunds or cancellation?", a: "Yes — pro-rated refunds are available. Contact us within 7 days of the billing cycle start date to request a refund." },
-  { q: "Is there a sibling discount?", a: "Yes — sibling discounts are available for families enrolling more than one child. Contact us for bundle pricing." },
+  { q: "Do you offer refunds or cancellation?", a: "Yes — pro-rated refunds are available. Contact us within 7 days of the billing cycle start date." },
+  { q: "Is there a sibling discount?", a: "Yes — sibling discounts are available for families enrolling more than one child." },
   { q: "What payment methods do you accept?", a: "UPI, debit and credit cards, and netbanking for India. Cards, PayPal, and bank transfer for international families." },
-  { q: "Is there a trial or demo class?", a: "Yes — we offer a completely free demo class so families can experience a live session and meet a coach before making any commitment." },
-  { q: "What are your fees?", a: "India: Rs 2,999 per month for group classes and Rs 4,999 per month for 1-on-1 sessions. International: $49 per month for group and $99 per month for 1-on-1." },
-  { q: "Can I pause my enrollment without losing my spot?", a: "Yes — one pause per quarter is allowed. Contact us at least 7 days before the next billing cycle to arrange a pause without penalty." },
-  { q: "Are group classes suitable for advanced kids?", a: "Advanced learners benefit from group play for competitive practice, but typically need occasional private sessions for deeper preparation. We recommend a mixed approach." },
-  { q: "Do you collaborate with schools or run corporate programs?", a: "Yes — The Intellect Nest runs school partnership programs, curriculum integration, and corporate CSR chess workshops. Contact us for custom proposals." },
+  { q: "Is there a trial or demo class?", a: "Yes — we offer a completely free demo class so families can experience a live session before committing." },
+  { q: "What are your fees?", a: "India: Rs 2,999/month for group, Rs 4,999/month for 1-on-1. International: $49/month group, $99/month 1-on-1." },
+  { q: "Can I pause my enrollment?", a: "Yes — one pause per quarter is allowed. Contact us at least 7 days before the next billing cycle." },
+  { q: "Are group classes suitable for advanced kids?", a: "Advanced learners benefit from group play but typically need occasional private sessions for deeper preparation." },
+  { q: "Do you collaborate with schools?", a: "Yes — we run school partnership programs, curriculum integration, and corporate CSR chess workshops." },
 ];
 
 const Pricing = () => {
@@ -49,10 +49,10 @@ const Pricing = () => {
   return (
     <div>
       {/* Hero */}
-      <section className="relative pt-[72px]">
+      <section className="relative pt-[75px]">
         <div className="container mx-auto px-4 lg:px-8 py-20">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-3xl mx-auto">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-[64px] font-bold text-foreground leading-[1.1] mb-6">
+            <h1 className="font-display text-[34px] md:text-5xl lg:text-[64px] font-black text-navy leading-[1.15] mb-6" style={{ letterSpacing: "0.01em" }}>
               Transparent Pricing. No Hidden Costs.
             </h1>
             <p className="font-body text-lg text-secondary leading-relaxed">
@@ -62,24 +62,26 @@ const Pricing = () => {
         </div>
       </section>
 
-      {/* Toggle */}
-      <SectionWrapper>
+      {/* Toggle + Cards */}
+      <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-center mb-12">
-            <div className="bg-card rounded-lg p-1 border border-gold-border inline-flex">
+            <div className="bg-card rounded-lg p-1 border border-sky-border inline-flex">
               <button
                 onClick={() => setCurrency("inr")}
                 className={`px-5 py-2 rounded-md font-body text-sm font-medium transition-all ${
-                  currency === "inr" ? "bg-primary text-primary-foreground" : "text-secondary hover:text-foreground"
+                  currency === "inr" ? "text-white" : "text-secondary hover:text-foreground"
                 }`}
+                style={currency === "inr" ? { background: "#2B7DD4" } : {}}
               >
                 India (₹)
               </button>
               <button
                 onClick={() => setCurrency("usd")}
                 className={`px-5 py-2 rounded-md font-body text-sm font-medium transition-all ${
-                  currency === "usd" ? "bg-primary text-primary-foreground" : "text-secondary hover:text-foreground"
+                  currency === "usd" ? "text-white" : "text-secondary hover:text-foreground"
                 }`}
+                style={currency === "usd" ? { background: "#2B7DD4" } : {}}
               >
                 International ($)
               </button>
@@ -88,15 +90,15 @@ const Pricing = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {/* Group */}
-            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow border border-gold-border relative">
+            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border relative">
               <div className="absolute -top-3 left-6">
-                <span className="bg-primary text-primary-foreground font-body text-xs font-semibold px-3 py-1 rounded-md flex items-center gap-1">
+                <span className="font-body text-xs font-bold px-3 py-1 rounded-md flex items-center gap-1 uppercase tracking-wider" style={{ background: "#F5C518", color: "#0D1E3B" }}>
                   <Crown size={12} /> Most Popular
                 </span>
               </div>
-              <h3 className="font-display text-xl font-bold text-foreground mt-2 mb-1">Group Classes</h3>
+              <h3 className="font-display text-xl font-bold text-navy mt-2 mb-1">Group Classes</h3>
               <div className="mb-6">
-                <span className="font-display text-4xl font-bold text-primary">
+                <span className="font-display text-4xl font-bold text-sky">
                   {currency === "inr" ? "₹2,999" : "$49"}
                 </span>
                 <span className="font-body text-sm text-muted-foreground"> /month</span>
@@ -104,24 +106,21 @@ const Pricing = () => {
               <ul className="space-y-3 mb-8">
                 {groupFeaturesIndia.map((f, i) => (
                   <li key={i} className="flex gap-2 items-start">
-                    <Check size={16} className="text-primary shrink-0 mt-0.5" />
+                    <Check size={16} className="shrink-0 mt-0.5" style={{ color: "#2B7DD4" }} />
                     <span className="font-body text-sm text-secondary">{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/book-demo"
-                className="w-full inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground font-body font-semibold rounded-lg hover:bg-gold-hover transition-all"
-              >
+              <Link to="/book-demo" className="cta-gold w-full justify-center">
                 Book Free Demo
               </Link>
             </motion.div>
 
             {/* Private */}
-            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow border border-gold-border">
-              <h3 className="font-display text-xl font-bold text-foreground mb-1">Private 1-on-1</h3>
+            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border">
+              <h3 className="font-display text-xl font-bold text-navy mb-1">Private 1-on-1</h3>
               <div className="mb-6">
-                <span className="font-display text-4xl font-bold text-primary">
+                <span className="font-display text-4xl font-bold text-sky">
                   {currency === "inr" ? "₹4,999" : "$99"}
                 </span>
                 <span className="font-body text-sm text-muted-foreground"> /month</span>
@@ -129,61 +128,55 @@ const Pricing = () => {
               <ul className="space-y-3 mb-8">
                 {privateFeaturesIndia.map((f, i) => (
                   <li key={i} className="flex gap-2 items-start">
-                    <Check size={16} className="text-primary shrink-0 mt-0.5" />
+                    <Check size={16} className="shrink-0 mt-0.5" style={{ color: "#2B7DD4" }} />
                     <span className="font-body text-sm text-secondary">{f}</span>
                   </li>
                 ))}
               </ul>
-              <Link
-                to="/book-demo"
-                className="w-full inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground font-body font-semibold rounded-lg hover:bg-gold-hover transition-all"
-              >
+              <Link to="/book-demo" className="cta-gold w-full justify-center">
                 Book Free Demo
               </Link>
             </motion.div>
 
             {/* Custom */}
-            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow border border-gold-border flex flex-col">
-              <h3 className="font-display text-xl font-bold text-foreground mb-1">School & Custom</h3>
+            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border flex flex-col">
+              <h3 className="font-display text-xl font-bold text-navy mb-1">School & Custom</h3>
               <div className="mb-6">
-                <span className="font-display text-4xl font-bold text-primary">Let's Talk</span>
+                <span className="font-display text-4xl font-bold text-sky">Let's Talk</span>
               </div>
               <p className="font-body text-sm text-secondary leading-relaxed mb-8 flex-1">
-                For schools, corporate CSR programs, and families enrolling 3 or more children. Features include custom batch sizes, dedicated coach assignment, school branding integration, and progress dashboards.
+                For schools, corporate CSR programs, and families enrolling 3 or more children. Custom batch sizes, dedicated coach, school branding, and progress dashboards.
               </p>
-              <Link
-                to="/contact"
-                className="w-full inline-flex items-center justify-center px-6 py-3 border border-gold-border text-primary font-body font-semibold rounded-lg hover:bg-gold-fill transition-all"
-              >
+              <Link to="/contact" className="cta-secondary w-full justify-center">
                 Contact Us
               </Link>
             </motion.div>
           </div>
 
-          {/* Notes */}
           <div className="max-w-2xl mx-auto mt-10 text-center space-y-2">
             <p className="font-body text-sm text-muted-foreground">Quarterly prepay receives a 5% discount automatically applied.</p>
             <p className="font-body text-sm text-muted-foreground">Sibling discount available for families enrolling more than one child.</p>
             <p className="font-body text-sm text-muted-foreground">All prices subject to applicable GST where relevant.</p>
             <p className="font-body text-sm text-muted-foreground">Payment methods: UPI, debit/credit cards, netbanking, PayPal (international).</p>
-            <p className="font-body text-sm text-primary font-medium mt-4">Free demo class is completely free — zero commitment, zero payment required.</p>
+            <p className="font-body text-sm font-medium mt-4" style={{ color: "#2B7DD4" }}>Free demo class is completely free — zero commitment, zero payment required.</p>
           </div>
         </div>
       </SectionWrapper>
 
       {/* Group vs Private */}
-      <SectionWrapper className="bg-card/50">
+      <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Group vs Private</h2>
+            <span className="eyebrow mb-3 block">Compare Plans</span>
+            <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy">Group vs Private</h2>
           </div>
           <div className="overflow-x-auto max-w-3xl mx-auto">
             <table className="w-full font-body text-sm">
               <thead>
-                <tr className="border-b border-gold-border">
-                  <th className="text-left py-3 px-4 text-primary font-semibold">Feature</th>
-                  <th className="text-center py-3 px-4 text-primary font-semibold">Group</th>
-                  <th className="text-center py-3 px-4 text-primary font-semibold">Private 1-on-1</th>
+                <tr className="border-b border-sky-border">
+                  <th className="text-left py-3 px-4 font-semibold" style={{ color: "#2B7DD4" }}>Feature</th>
+                  <th className="text-center py-3 px-4 font-semibold" style={{ color: "#2B7DD4" }}>Group</th>
+                  <th className="text-center py-3 px-4 font-semibold" style={{ color: "#2B7DD4" }}>Private 1-on-1</th>
                 </tr>
               </thead>
               <tbody className="text-secondary">
@@ -197,8 +190,8 @@ const Pricing = () => {
                   ["Tournaments", "Weekly", "On request"],
                   ["Price (India)", "₹2,999/mo", "₹4,999/mo"],
                 ].map((row, i) => (
-                  <tr key={i} className="border-b border-muted/30">
-                    <td className="py-3 px-4 font-medium text-foreground">{row[0]}</td>
+                  <tr key={i} className="border-b border-sky-border/30">
+                    <td className="py-3 px-4 font-medium text-navy">{row[0]}</td>
                     <td className="text-center py-3 px-4">{row[1]}</td>
                     <td className="text-center py-3 px-4">{row[2]}</td>
                   </tr>
@@ -210,20 +203,21 @@ const Pricing = () => {
       </SectionWrapper>
 
       {/* Pricing FAQ */}
-      <SectionWrapper>
+      <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">Pricing Questions</h2>
+            <span className="eyebrow mb-3 block">Common Questions</span>
+            <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy">Pricing Questions</h2>
           </div>
           <div className="max-w-3xl mx-auto space-y-3">
             {pricingFaq.map((item, i) => (
-              <div key={i} className="border border-gold-border rounded-xl overflow-hidden">
+              <div key={i} className="border border-sky-border rounded-xl overflow-hidden bg-card">
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-5 text-left hover:bg-gold-fill/50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
                 >
-                  <span className="font-body text-sm font-medium text-foreground pr-4">{item.q}</span>
-                  <ChevronDown size={18} className={`text-primary shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+                  <span className="font-body text-sm font-medium text-navy pr-4">{item.q}</span>
+                  <ChevronDown size={18} className={`shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} style={{ color: "#2B7DD4" }} />
                 </button>
                 {openFaq === i && (
                   <div className="px-5 pb-5">
