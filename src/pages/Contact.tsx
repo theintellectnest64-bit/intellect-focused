@@ -75,6 +75,7 @@ const Contact = () => {
         // best-effort
       }
 
+      fireConfetti();
       setSubmitted(true);
       toast.success("Message sent successfully!");
 
