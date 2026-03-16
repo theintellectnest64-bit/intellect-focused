@@ -24,7 +24,7 @@ const LocationsStrip = () => {
           </span>
         </motion.div>
         <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex items-center justify-center gap-6 md:gap-8 min-w-max mx-auto">
+          <div className="flex items-center justify-center gap-6 md:gap-8 min-w-max mx-auto text-sky-50">
             {locations.map((loc, i) =>
             <motion.div
               key={i}
