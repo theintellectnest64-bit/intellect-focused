@@ -221,7 +221,7 @@ const Index = () => {
                 Why Chess Changes Everything for Your Child
               </h2>
               <p className="font-body text-lg max-w-2xl mx-auto" style={{ color: "#93C5FD" }}>
-                Chess trains mental skills the way sport trains the body.
+                Chess is the ultimate brain sport. Backed by decades of research, regular chess practice develops the cognitive skills that matter most — focus, logic, resilience, and confidence.
               </p>
             </div>
           </div>
