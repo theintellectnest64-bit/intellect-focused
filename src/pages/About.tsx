@@ -46,8 +46,8 @@ const About = () => {
                 We built The Intellect Nest because we saw too many children spending hours on screens that gave nothing back. Chess and the Rubik's Cube are not just games — they are tools for building the kind of mind that succeeds in school, in relationships, and in life.
               </p>
             </motion.div>
-            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-xl overflow-hidden card-shadow">
-              <img src="/images/coach.jpg" alt="Chess coaching at The Intellect Nest" className="w-full h-auto object-cover" loading="lazy" />
+            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-xl overflow-hidden card-shadow group">
+              <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80" alt="Chess coaching at The Intellect Nest" className="w-full h-auto object-cover transition-transform duration-[400ms] group-hover:scale-[1.04]" loading="lazy" />
             </motion.div>
           </div>
         </div>

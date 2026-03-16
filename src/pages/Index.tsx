@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Users, Trophy, Star, Clock, Brain, Heart, Lightbulb, Puzzle, BookOpen, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Quote, Globe } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import SectionDivider from "@/components/SectionDivider";
 import AnimatedCounter from "@/components/AnimatedCounter";
-import { useState, useEffect, useCallback } from "react";
+import TypewriterEyebrow from "@/components/TypewriterEyebrow";
+import FloatingChessPieces from "@/components/FloatingChessPieces";
+import { useState, useEffect } from "react";
 
 const stagger = {
   hidden: {},
@@ -74,7 +77,6 @@ const ChessBoard = () => (
         />
       ))
     )}
-    {/* Knight piece with float animation */}
     <text x="160" y="175" textAnchor="middle" fontSize="64" fill="#2B7DD4" fontFamily="serif" className="animate-float">♞</text>
   </svg>
 );
@@ -129,6 +131,16 @@ const Index = () => {
       {/* HERO */}
       <section className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
         <Particles />
+        {/* Background image with overlay */}
+        <div className="absolute inset-0 pointer-events-none">
+          <img
+            src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=800&q=80"
+            alt=""
+            className="w-full h-full object-cover ken-burns"
+            loading="lazy"
+            style={{ opacity: 0.15 }}
+          />
+        </div>
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -136,7 +148,9 @@ const Index = () => {
               initial="hidden"
               animate="show"
             >
-              <motion.span variants={heroItem} className="eyebrow-left mb-4 block">20+ Future Grandmasters Started Right Here</motion.span>
+              <motion.div variants={heroItem} className="mb-4">
+                <TypewriterEyebrow />
+              </motion.div>
               <motion.h1 variants={heroItem} className="font-display text-[34px] md:text-5xl lg:text-[64px] font-black text-navy leading-[1.15] mb-6 text-balance" style={{ letterSpacing: "0.01em", textShadow: "0 2px 20px rgba(13,30,59,0.08)" }}>
                 Online Chess and Rubik's Cube Classes for Kids
               </motion.h1>
@@ -165,8 +179,9 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="hidden lg:flex justify-center"
+              className="hidden lg:flex justify-center relative"
             >
+              <FloatingChessPieces />
               <ChessBoard />
             </motion.div>
           </div>
@@ -185,17 +200,29 @@ const Index = () => {
         </div>
       </section>
 
+      <SectionDivider />
+
       {/* WHY CHESS */}
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="text-center mb-12 lg:mb-16">
-            <span className="eyebrow mb-3 block">Why It Works</span>
-            <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy mb-4">
-              Why Chess Changes Everything for Your Child
-            </h2>
-            <p className="font-body text-lg text-secondary max-w-2xl mx-auto">
-              Chess trains mental skills the way sport trains the body.
-            </p>
+          {/* Atmospheric image strip */}
+          <div className="relative h-[200px] rounded-xl overflow-hidden mb-12 lg:mb-16">
+            <img
+              src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1200&q=80"
+              alt="Chess atmosphere"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0" style={{ background: "rgba(13,30,59,0.7)" }} />
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+              <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3">Why It Works</span>
+              <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-white mb-2">
+                Why Chess Changes Everything for Your Child
+              </h2>
+              <p className="font-body text-lg max-w-2xl mx-auto" style={{ color: "#93C5FD" }}>
+                Chess trains mental skills the way sport trains the body.
+              </p>
+            </div>
           </div>
           <motion.div
             variants={stagger}
@@ -221,6 +248,8 @@ const Index = () => {
           </motion.div>
         </div>
       </SectionWrapper>
+
+      <SectionDivider />
 
       {/* LEARNING PATHS */}
       <SectionWrapper className="section-alt">
@@ -273,6 +302,8 @@ const Index = () => {
         </div>
       </SectionWrapper>
 
+      <SectionDivider />
+
       {/* HOW IT WORKS — slide in from left */}
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
@@ -312,6 +343,8 @@ const Index = () => {
         </div>
       </SectionWrapper>
 
+      <SectionDivider />
+
       {/* TOOLS */}
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
@@ -340,12 +373,24 @@ const Index = () => {
         </div>
       </SectionWrapper>
 
-      {/* TESTIMONIALS — auto-scroll carousel */}
-      <SectionWrapper>
-        <div className="container mx-auto px-4 lg:px-8">
+      <SectionDivider />
+
+      {/* TESTIMONIALS — auto-scroll carousel with bg image */}
+      <section
+        className="relative py-16 md:py-[100px]"
+        style={{ background: "#0D1E3B" }}
+      >
+        <img
+          src="https://images.unsplash.com/photo-1560264280-88b68371db39?w=1200&q=80"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          style={{ opacity: 0.05 }}
+        />
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="text-center mb-12">
-            <span className="eyebrow mb-3 block">Parent Stories</span>
-            <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy">
+            <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Parent Stories</span>
+            <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-white">
               What Parents Are Saying
             </h2>
           </div>
@@ -381,14 +426,16 @@ const Index = () => {
                 <button
                   key={i}
                   onClick={() => setActiveTestimonial(i)}
-                  className={`w-3 h-3 rounded-full transition-colors ${i === activeTestimonial ? "bg-sky" : "bg-muted"}`}
-                  style={i === activeTestimonial ? { background: "#2B7DD4" } : {}}
+                  className={`w-3 h-3 rounded-full transition-colors ${i === activeTestimonial ? "" : ""}`}
+                  style={{ background: i === activeTestimonial ? "#2B7DD4" : "rgba(255,255,255,0.3)" }}
                 />
               ))}
             </div>
           </div>
         </div>
-      </SectionWrapper>
+      </section>
+
+      <SectionDivider />
 
       {/* DEMO BANNER — dark navy */}
       <section className="bg-navy py-16 md:py-24">
@@ -404,6 +451,8 @@ const Index = () => {
           </Link>
         </div>
       </section>
+
+      <SectionDivider />
 
       {/* FAQ PREVIEW */}
       <SectionWrapper>
@@ -451,6 +500,8 @@ const Index = () => {
         </div>
       </SectionWrapper>
 
+      <SectionDivider />
+
       {/* BLOG PREVIEW */}
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
@@ -474,8 +525,8 @@ const Index = () => {
                 transition={{ delay: i * 0.1 }}
               >
                 <Link to={`/blog/${blog.slug}`} className="block bg-card rounded-xl card-shadow card-hover border border-sky-border h-full overflow-hidden">
-                  <div className="h-32 flex items-center justify-center" style={{ background: "#0D1E3B" }}>
-                    <span className="text-5xl" style={{ color: "#2B7DD4" }}>{blog.piece}</span>
+                  <div className="h-32 flex items-center justify-center overflow-hidden" style={{ background: "#0D1E3B" }}>
+                    <span className="text-5xl transition-transform duration-400 hover:scale-[1.04]" style={{ color: "#2B7DD4" }}>{blog.piece}</span>
                   </div>
                   <div className="p-6">
                     <span className="eyebrow-left text-[10px] mb-2 block">{blog.cat}</span>

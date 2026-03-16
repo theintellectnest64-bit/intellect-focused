@@ -12,42 +12,49 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-const chessPieces = ["♟", "♞", "♝", "♜", "♛", "♚"];
+const galleryImages = [
+  "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&q=80",
+  "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&q=80",
+  "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=80",
+  "https://images.unsplash.com/photo-1560264280-88b68371db39?w=600&q=80",
+  "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=600&q=80",
+  "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=600&q=80",
+];
 
 const galleryItems = [
-  { caption: "Live class in action — interactive demo board on Zoom", piece: "♞" },
-  { caption: "Student celebrating first tournament win", piece: "♛" },
-  { caption: "Coach explaining opening principles with visuals", piece: "♝" },
-  { caption: "Weekly internal tournament bracket", piece: "♜" },
-  { caption: "Rubik's Cube speedcubing challenge session", piece: "♟" },
-  { caption: "Monthly progress report sample", piece: "♚" },
-  { caption: "Young student solving tactical puzzles on Lichess", piece: "♞" },
-  { caption: "Group class — small batch learning together", piece: "♝" },
-  { caption: "Parent orientation session highlights", piece: "♜" },
-  { caption: "Achievement badge ceremony — milestone celebrations", piece: "♛" },
-  { caption: "Coach and student reviewing a game analysis", piece: "♟" },
-  { caption: "Chess board setup for a rated tournament", piece: "♚" },
-  { caption: "Students collaborating in team chess event", piece: "♞" },
-  { caption: "Interactive puzzle-solving during live class", piece: "♝" },
-  { caption: "ChessBase analysis session with advanced student", piece: "♜" },
-  { caption: "End-of-month celebration and awards", piece: "♛" },
+  { caption: "Live class in action — interactive demo board on Zoom" },
+  { caption: "Student celebrating first tournament win" },
+  { caption: "Coach explaining opening principles with visuals" },
+  { caption: "Weekly internal tournament bracket" },
+  { caption: "Rubik's Cube speedcubing challenge session" },
+  { caption: "Monthly progress report sample" },
+  { caption: "Young student solving tactical puzzles on Lichess" },
+  { caption: "Group class — small batch learning together" },
+  { caption: "Parent orientation session highlights" },
+  { caption: "Achievement badge ceremony — milestone celebrations" },
+  { caption: "Coach and student reviewing a game analysis" },
+  { caption: "Chess board setup for a rated tournament" },
+  { caption: "Students collaborating in team chess event" },
+  { caption: "Interactive puzzle-solving during live class" },
+  { caption: "ChessBase analysis session with advanced student" },
+  { caption: "End-of-month celebration and awards" },
 ];
 
 const Gallery = () => {
   return (
     <div className="pt-[75px]">
       {/* Hero */}
-      <SectionWrapper className="section-alt">
+      <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <span className="eyebrow mb-3 block">Gallery</span>
-          <h1 className="font-display text-[34px] md:text-5xl lg:text-[56px] font-black text-navy leading-[1.15] mb-4">
+          <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Gallery</span>
+          <h1 className="font-display text-[34px] md:text-5xl lg:text-[56px] font-black text-white leading-[1.15] mb-4">
             Moments from The Nest
           </h1>
-          <p className="font-body text-lg text-secondary max-w-2xl mx-auto">
-            Snapshots of learning, growth, and celebration. Real images coming soon — placeholder previews below.
+          <p className="font-body text-lg max-w-2xl mx-auto" style={{ color: "#93C5FD" }}>
+            Snapshots of learning, growth, and celebration.
           </p>
         </div>
-      </SectionWrapper>
+      </section>
 
       {/* Gallery Grid */}
       <SectionWrapper>
@@ -63,19 +70,24 @@ const Gallery = () => {
               <motion.div
                 key={i}
                 variants={fadeUp}
-                className="bg-muted rounded-xl border border-sky-border overflow-hidden card-hover group"
+                className="rounded-xl border border-sky-border overflow-hidden card-hover group"
               >
-                <div className="h-48 flex flex-col items-center justify-center relative">
-                  <Camera
-                    size={20}
-                    className="absolute top-3 right-3 text-muted-foreground opacity-50"
-                  />
-                  <span
-                    className="text-5xl select-none mb-2"
-                    style={{ color: "hsl(var(--sky))" }}
-                  >
-                    {item.piece}
-                  </span>
+                <div className="h-48 overflow-hidden relative">
+                  {i < galleryImages.length ? (
+                    <img
+                      src={galleryImages[i]}
+                      alt={item.caption}
+                      className="w-full h-full object-cover transition-transform duration-[400ms] group-hover:scale-[1.04]"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="h-full bg-muted flex flex-col items-center justify-center">
+                      <Camera size={20} className="text-muted-foreground opacity-50 mb-2" />
+                      <span className="text-5xl select-none" style={{ color: "hsl(var(--sky))" }}>
+                        {["♟", "♞", "♝", "♜", "♛", "♚"][(i - galleryImages.length) % 6]}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-4 bg-card">
                   <p className="font-body text-[13px] text-secondary text-center leading-relaxed">

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { fireConfetti } from "@/lib/confetti";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -79,6 +80,7 @@ const BookDemo = () => {
         // Email notification is best-effort
       }
 
+      fireConfetti();
       setSubmitted(true);
       toast.success("Demo booked successfully!");
 
