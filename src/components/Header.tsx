@@ -48,7 +48,8 @@ const Header = () => {
           <Link to="/" className="flex items-center gap-3">
             <img
               src="/images/logo.svg"
-              alt="The Intellect Nest"
+              alt="The Intellect Nest logo"
+              loading="lazy"
               className="object-contain transition-all duration-300"
               style={{
                 height: '44px',

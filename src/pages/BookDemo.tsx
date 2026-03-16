@@ -80,7 +80,7 @@ const BookDemo = () => {
         // Email notification is best-effort
       }
 
-      fireConfetti();
+      await fireConfetti();
       setSubmitted(true);
       toast.success("Demo booked successfully!");
 
