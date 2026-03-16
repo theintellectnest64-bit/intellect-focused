@@ -172,7 +172,7 @@ const Index = () => {
                 <span>✓ Multiple languages</span>
               </motion.div>
               <motion.p variants={heroItem} className="font-body text-xs text-muted-foreground mt-4">
-                Serving 500+ students across India and 30+ countries
+                Trusted by 500+ students across 30+ countries worldwide
               </motion.p>
             </motion.div>
 
