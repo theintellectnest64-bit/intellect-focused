@@ -1,5 +1,13 @@
 import { Link } from "react-router-dom";
-import { Instagram, Youtube, Facebook, Linkedin } from "lucide-react";
+import { Instagram, Youtube, Facebook, Linkedin, Twitter } from "lucide-react";
+
+const socialLinks = [
+  { icon: Instagram, url: "https://www.instagram.com/the_intellectnest/" },
+  { icon: Youtube, url: "https://www.youtube.com/@TheIntellectNest64" },
+  { icon: Facebook, url: "https://bit.ly/fb_theintellectnest" },
+  { icon: Linkedin, url: "https://www.linkedin.com/company/theintellectnest/" },
+  { icon: Twitter, url: "https://www.x.com/IntellectT43247" },
+];
 
 const Footer = () => {
   return (
@@ -17,8 +25,8 @@ const Footer = () => {
               India's premier online chess and Rubik's Cube academy for kids aged 5–15. Building sharp minds and confident hearts.
             </p>
             <div className="flex gap-4">
-              {[Instagram, Youtube, Facebook, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white" style={{ color: "#93C5FD" }}>
+              {socialLinks.map(({ icon: Icon, url }, i) => (
+                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white" style={{ color: "#93C5FD" }}>
                   <Icon size={20} />
                 </a>
               ))}
@@ -79,12 +87,17 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <a href="tel:+919893189566" className="font-body text-sm font-medium text-white hover:underline">
-                  +91 9893189566
+                  +91 989 318 9566
                 </a>
               </li>
               <li>
-                <a href="mailto:theintellectnest64@gmail.com" className="font-body text-sm transition-colors hover:text-white break-all" style={{ color: "#93C5FD" }}>
-                  theintellectnest64@gmail.com
+                <a href="mailto:info@tinchess.com" className="font-body text-sm transition-colors hover:text-white break-all" style={{ color: "#93C5FD" }}>
+                  info@tinchess.com
+                </a>
+              </li>
+              <li>
+                <a href="mailto:feedback@tinchess.com" className="font-body text-sm transition-colors hover:text-white break-all" style={{ color: "#93C5FD" }}>
+                  feedback@tinchess.com
                 </a>
               </li>
               <li>
@@ -99,6 +112,10 @@ const Footer = () => {
               </li>
               <li className="font-body text-sm" style={{ color: "#93C5FD" }}>Mon–Sat 9AM–7PM IST</li>
             </ul>
+            {/* Locations */}
+            <p className="font-body text-xs mt-4 leading-relaxed" style={{ color: "#93C5FD" }}>
+              Indore · Delhi · Pune · Bhubaneswar · Brampton · Waterloo · Auckland · Hamilton · Reading · London
+            </p>
           </div>
         </div>
 
@@ -112,12 +129,12 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="border-t pt-6 flex flex-col md:flex-row items-center justify-between gap-4" style={{ borderColor: "rgba(147,197,253,0.2)" }}>
           <p className="font-body text-xs" style={{ color: "#93C5FD" }}>
-            © 2025 The Intellect Nest. All rights reserved.
+            © 2025 The Intellect Nest. All rights reserved. | info@tinchess.com | www.tinchess.com
           </p>
           <div className="flex gap-4">
             <span className="font-body text-xs cursor-pointer transition-colors hover:text-white" style={{ color: "#93C5FD" }}>Privacy Policy</span>
             <span className="font-body text-xs cursor-pointer transition-colors hover:text-white" style={{ color: "#93C5FD" }}>Terms</span>
-            <a href="https://tinchess.com" className="font-body text-xs text-white hover:underline">tinchess.com</a>
+            <a href="https://tinchess.com" className="font-body text-xs text-white hover:underline">www.tinchess.com</a>
           </div>
         </div>
       </div>

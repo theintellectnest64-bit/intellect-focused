@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, CheckCircle, Globe, Instagram, Youtube, Facebook, Linkedin, Twitter } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,21 @@ const contactSchema = z.object({
 });
 
 type ContactForm = z.infer<typeof contactSchema>;
+
+const socialLinks = [
+  { icon: Instagram, url: "https://www.instagram.com/the_intellectnest/", label: "Instagram" },
+  { icon: Youtube, url: "https://www.youtube.com/@TheIntellectNest64", label: "YouTube" },
+  { icon: Facebook, url: "https://bit.ly/fb_theintellectnest", label: "Facebook" },
+  { icon: Linkedin, url: "https://www.linkedin.com/company/theintellectnest/", label: "LinkedIn" },
+  { icon: Twitter, url: "https://www.x.com/IntellectT43247", label: "X (Twitter)" },
+];
+
+const locations = [
+  { flag: "🇮🇳", country: "India", cities: "Indore, Delhi, Pune, Bhubaneswar" },
+  { flag: "🇨🇦", country: "Canada", cities: "Brampton, Waterloo" },
+  { flag: "🇳🇿", country: "New Zealand", cities: "Auckland, Hamilton" },
+  { flag: "🇬🇧", country: "UK", cities: "Reading, London" },
+];
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -66,7 +81,7 @@ const Contact = () => {
         const whatsappMsg = encodeURIComponent(
           `Hi! I'm ${data.name}. I just sent a message via your website about: ${data.subject}. Looking forward to hearing from you!`
         );
-        window.open(`https://wa.me/917898985084?text=${whatsappMsg}`, "_blank");
+        window.open(`https://wa.me/919893189566?text=${whatsappMsg}`, "_blank");
       }, 2000);
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -94,34 +109,92 @@ const Contact = () => {
 
   return (
     <div className="pt-[75px]">
+      {/* Hero */}
+      <section className="bg-navy py-16 md:py-20">
+        <div className="container mx-auto px-4 lg:px-8 text-center">
+          <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Get in Touch</span>
+          <h1 className="font-display text-[34px] md:text-5xl lg:text-[56px] font-black text-white leading-[1.15] mb-4">
+            Contact Us
+          </h1>
+          <p className="font-body text-lg max-w-2xl mx-auto" style={{ color: "#93C5FD" }}>
+            Have questions about our programs? Want to discuss your child's chess journey? We're here to help.
+          </p>
+        </div>
+      </section>
+
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-              <span className="eyebrow-left mb-3 block">Get in Touch</span>
-              <h1 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy mb-6 leading-tight">
-                Contact Us
-              </h1>
-              <p className="font-body text-lg text-secondary leading-relaxed mb-8">
-                Have questions about our programs? Want to discuss your child's chess journey? We're here to help.
-              </p>
-
               <div className="space-y-6">
-                {[
-                  { icon: <Mail size={20} />, title: "Email", desc: "theintellectnest64@gmail.com" },
-                  { icon: <Phone size={20} />, title: "WhatsApp", desc: "+91 78989 85084" },
-                  { icon: <MapPin size={20} />, title: "Location", desc: "Online — serving students across India and 30+ countries" },
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
-                      <span className="text-sky">{item.icon}</span>
-                    </div>
-                    <div>
-                      <h3 className="font-display text-base font-semibold text-navy">{item.title}</h3>
-                      <p className="font-body text-sm text-secondary">{item.desc}</p>
-                    </div>
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <Phone size={20} className="text-sky" />
                   </div>
-                ))}
+                  <div>
+                    <h3 className="font-display text-base font-semibold text-navy">Phone</h3>
+                    <a href="tel:+919893189566" className="font-body text-sm text-sky hover:underline">+91 989 318 9566</a>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <Mail size={20} className="text-sky" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-base font-semibold text-navy">Email</h3>
+                    <a href="mailto:info@tinchess.com" className="font-body text-sm text-sky hover:underline block">info@tinchess.com</a>
+                    <a href="mailto:feedback@tinchess.com" className="font-body text-sm text-secondary hover:underline block mt-1">feedback@tinchess.com</a>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <span className="text-sky text-lg">💬</span>
+                  </div>
+                  <div>
+                    <h3 className="font-display text-base font-semibold text-navy">WhatsApp</h3>
+                    <a href="https://wa.me/919893189566" target="_blank" rel="noopener noreferrer" className="font-body text-sm text-sky hover:underline">Chat with us on WhatsApp</a>
+                  </div>
+                </div>
+              </div>
+
+              {/* Locations */}
+              <div className="mt-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <Globe size={24} className="text-sky" />
+                  <h3 className="font-display text-lg font-semibold text-navy">Our Global Presence</h3>
+                </div>
+                <div className="space-y-3">
+                  {locations.map((loc, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="text-xl">{loc.flag}</span>
+                      <div>
+                        <span className="font-body text-sm font-semibold text-navy">{loc.country}: </span>
+                        <span className="font-body text-sm text-secondary">{loc.cities}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Social Links */}
+              <div className="mt-10">
+                <h3 className="font-display text-base font-semibold text-navy mb-4">Follow Us</h3>
+                <div className="flex gap-4">
+                  {socialLinks.map(({ icon: Icon, url, label }, i) => (
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer" title={label} className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-sky hover:bg-sky hover:text-white transition-colors">
+                      <Icon size={18} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Website */}
+              <div className="mt-6">
+                <a href="https://www.tinchess.com" target="_blank" rel="noopener noreferrer" className="font-body text-sm text-sky hover:underline">
+                  www.tinchess.com
+                </a>
               </div>
             </motion.div>
 
@@ -153,7 +226,7 @@ const Contact = () => {
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-body text-sm text-navy">Phone (Optional)</FormLabel>
-                      <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl>
+                      <FormControl><Input placeholder="+91 989 318 9566" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />

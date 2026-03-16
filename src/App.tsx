@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import LocationsStrip from "@/components/LocationsStrip";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
 import IntroAnimation from "@/components/IntroAnimation";
@@ -61,6 +62,7 @@ const App = () => {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
+            <LocationsStrip />
             <Footer />
             <WhatsAppButton />
             <BackToTop />
@@ -71,14 +73,5 @@ const App = () => {
     </QueryClientProvider>
   );
 };
-
-const ComingSoon = ({ title }: { title: string }) => (
-  <div className="min-h-screen flex items-center justify-center pt-[75px]">
-    <div className="text-center">
-      <h1 className="font-display text-4xl font-bold text-navy mb-4">{title}</h1>
-      <p className="font-body text-secondary">Coming in Phase 2</p>
-    </div>
-  </div>
-);
 
 export default App;

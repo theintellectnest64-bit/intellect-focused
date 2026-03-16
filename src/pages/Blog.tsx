@@ -22,18 +22,18 @@ const Blog = () => {
 
   return (
     <div className="pt-[75px]">
-      {/* Hero */}
-      <SectionWrapper className="section-alt">
+      {/* Hero — dark navy */}
+      <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <span className="eyebrow mb-3 block">Our Blog</span>
-          <h1 className="font-display text-[34px] md:text-5xl lg:text-[56px] font-black text-navy leading-[1.15] mb-4">
+          <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Our Blog</span>
+          <h1 className="font-display text-[34px] md:text-5xl lg:text-[56px] font-black text-white leading-[1.15] mb-4">
             Insights for Parents and Young Thinkers
           </h1>
-          <p className="font-body text-lg text-secondary max-w-2xl mx-auto">
+          <p className="font-body text-lg max-w-2xl mx-auto" style={{ color: "#93C5FD" }}>
             Practical advice, chess education insights, and parenting strategies — all backed by experience coaching 500+ students.
           </p>
         </div>
-      </SectionWrapper>
+      </section>
 
       {/* Category Filter */}
       <SectionWrapper>
@@ -43,10 +43,10 @@ const Blog = () => {
               onClick={() => setActiveCategory(null)}
               className={`font-body text-sm px-4 py-2 rounded-lg border transition-all ${
                 !activeCategory
-                  ? "bg-sky text-white border-sky"
+                  ? "text-white border-sky"
                   : "border-sky-border text-secondary hover:border-sky"
               }`}
-              style={!activeCategory ? { backgroundColor: "hsl(var(--sky))" } : {}}
+              style={!activeCategory ? { backgroundColor: "#2B7DD4", borderColor: "#2B7DD4" } : {}}
             >
               All Articles
             </button>
@@ -56,10 +56,10 @@ const Blog = () => {
                 onClick={() => setActiveCategory(cat)}
                 className={`font-body text-sm px-4 py-2 rounded-lg border transition-all ${
                   activeCategory === cat
-                    ? "bg-sky text-white border-sky"
+                    ? "text-white border-sky"
                     : "border-sky-border text-secondary hover:border-sky"
                 }`}
-                style={activeCategory === cat ? { backgroundColor: "hsl(var(--sky))" } : {}}
+                style={activeCategory === cat ? { backgroundColor: "#2B7DD4", borderColor: "#2B7DD4" } : {}}
               >
                 {cat}
               </button>
@@ -80,15 +80,15 @@ const Blog = () => {
                   to={`/blog/${article.slug}`}
                   className="block bg-card rounded-xl border border-sky-border card-shadow card-hover overflow-hidden group"
                 >
-                  {/* Placeholder image with chess piece */}
-                  <div className="h-44 bg-muted flex items-center justify-center relative">
-                    <span className="text-6xl text-sky select-none" style={{ color: "hsl(var(--sky))" }}>
+                  {/* Dark navy placeholder with chess piece */}
+                  <div className="h-44 flex items-center justify-center relative" style={{ background: "#0D1E3B" }}>
+                    <span className="text-6xl select-none" style={{ color: "#2B7DD4" }}>
                       {chessPieces[i % chessPieces.length]}
                     </span>
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-3 mb-3">
-                      <span className="font-body text-xs text-sky font-semibold uppercase tracking-wider" style={{ color: "hsl(var(--sky))" }}>
+                      <span className="font-body text-xs font-semibold uppercase tracking-wider" style={{ color: "#2B7DD4" }}>
                         {article.category}
                       </span>
                       <span className="flex items-center gap-1 font-body text-xs text-muted-foreground">
@@ -101,7 +101,7 @@ const Blog = () => {
                     <p className="font-body text-sm text-secondary line-clamp-2 leading-relaxed">
                       {article.sections[0].body}
                     </p>
-                    <span className="inline-flex items-center gap-1 font-body text-sm text-sky font-medium mt-4" style={{ color: "hsl(var(--sky))" }}>
+                    <span className="inline-flex items-center gap-1 font-body text-sm font-medium mt-4 group-hover:underline" style={{ color: "#2B7DD4" }}>
                       Read Article <ChevronRight size={14} />
                     </span>
                   </div>

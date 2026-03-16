@@ -87,7 +87,7 @@ const BookDemo = () => {
         const whatsappMsg = encodeURIComponent(
           `Hi! I'm ${data.parent_name}. I just booked a free demo for my child ${data.child_name} (Age: ${data.child_age}, Level: ${data.current_level}). Looking forward to connecting!`
         );
-        window.open(`https://wa.me/917898985084?text=${whatsappMsg}`, "_blank");
+        window.open(`https://wa.me/919893189566?text=${whatsappMsg}`, "_blank");
       }, 2000);
     } catch {
       toast.error("Something went wrong. Please try again.");
