@@ -5,6 +5,15 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function escapeHtml(str: string): string {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -23,34 +32,44 @@ serve(async (req) => {
     const body = await req.json();
     const { type, name, email, phone, child_name, child_age, current_level, preferred_language, subject, message } = body;
 
+    const eName = escapeHtml(name);
+    const eEmail = escapeHtml(email);
+    const ePhone = escapeHtml(phone);
+    const eChildName = escapeHtml(child_name);
+    const eChildAge = escapeHtml(child_age);
+    const eCurrentLevel = escapeHtml(current_level);
+    const ePreferredLanguage = escapeHtml(preferred_language);
+    const eSubject = escapeHtml(subject);
+    const eMessage = escapeHtml(message);
+
     let emailSubject: string;
     let emailHtml: string;
 
     if (type === "lead") {
-      emailSubject = `New Lead — ${name}`;
+      emailSubject = `New Lead — ${eName}`;
       emailHtml = `
         <h2>New Demo Booking</h2>
         <table style="border-collapse:collapse;width:100%">
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Parent Name</td><td style="padding:8px;border-bottom:1px solid #eee">${name}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Email</td><td style="padding:8px;border-bottom:1px solid #eee">${email}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Phone</td><td style="padding:8px;border-bottom:1px solid #eee">${phone}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Child's Name</td><td style="padding:8px;border-bottom:1px solid #eee">${child_name}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Child's Age</td><td style="padding:8px;border-bottom:1px solid #eee">${child_age}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Current Level</td><td style="padding:8px;border-bottom:1px solid #eee">${current_level}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Language</td><td style="padding:8px;border-bottom:1px solid #eee">${preferred_language}</td></tr>
-          ${message ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Message</td><td style="padding:8px;border-bottom:1px solid #eee">${message}</td></tr>` : ""}
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Parent Name</td><td style="padding:8px;border-bottom:1px solid #eee">${eName}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Email</td><td style="padding:8px;border-bottom:1px solid #eee">${eEmail}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Phone</td><td style="padding:8px;border-bottom:1px solid #eee">${ePhone}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Child's Name</td><td style="padding:8px;border-bottom:1px solid #eee">${eChildName}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Child's Age</td><td style="padding:8px;border-bottom:1px solid #eee">${eChildAge}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Current Level</td><td style="padding:8px;border-bottom:1px solid #eee">${eCurrentLevel}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Language</td><td style="padding:8px;border-bottom:1px solid #eee">${ePreferredLanguage}</td></tr>
+          ${eMessage ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Message</td><td style="padding:8px;border-bottom:1px solid #eee">${eMessage}</td></tr>` : ""}
         </table>
       `;
     } else {
-      emailSubject = `New Contact — ${name}`;
+      emailSubject = `New Contact — ${eName}`;
       emailHtml = `
         <h2>New Contact Form Submission</h2>
         <table style="border-collapse:collapse;width:100%">
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Name</td><td style="padding:8px;border-bottom:1px solid #eee">${name}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Email</td><td style="padding:8px;border-bottom:1px solid #eee">${email}</td></tr>
-          ${phone ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Phone</td><td style="padding:8px;border-bottom:1px solid #eee">${phone}</td></tr>` : ""}
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Subject</td><td style="padding:8px;border-bottom:1px solid #eee">${subject}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Message</td><td style="padding:8px;border-bottom:1px solid #eee">${message}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Name</td><td style="padding:8px;border-bottom:1px solid #eee">${eName}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Email</td><td style="padding:8px;border-bottom:1px solid #eee">${eEmail}</td></tr>
+          ${ePhone ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Phone</td><td style="padding:8px;border-bottom:1px solid #eee">${ePhone}</td></tr>` : ""}
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Subject</td><td style="padding:8px;border-bottom:1px solid #eee">${eSubject}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Message</td><td style="padding:8px;border-bottom:1px solid #eee">${eMessage}</td></tr>
         </table>
       `;
     }

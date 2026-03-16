@@ -11,8 +11,6 @@ import type { Tables } from "@/integrations/supabase/types";
 type Lead = Tables<"leads">;
 type Contact = Tables<"contacts">;
 
-const ADMIN_EMAIL = "theintellectnest64@gmail.com";
-
 const Admin = () => {
   const [user, setUser] = useState<{ email?: string } | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -27,18 +25,30 @@ const Admin = () => {
   const [loginLoading, setLoginLoading] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const checkAdminStatus = async (userId: string) => {
+    const { data } = await supabase.rpc("is_admin", { _user_id: userId });
+    setIsAdmin(data === true);
+  };
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const u = session?.user ?? null;
       setUser(u ? { email: u.email } : null);
-      setIsAdmin(u?.email === ADMIN_EMAIL);
+      if (u) {
+        checkAdminStatus(u.id);
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       const u = session?.user ?? null;
       setUser(u ? { email: u.email } : null);
-      setIsAdmin(u?.email === ADMIN_EMAIL);
-      setLoading(false);
+      if (u) {
+        checkAdminStatus(u.id).then(() => setLoading(false));
+      } else {
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
