@@ -55,9 +55,9 @@ const App = () => {
                 <Route path="/blog/:slug" element={<BlogArticle />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/faq" element={<FAQ />} />
-                <Route path="/book-demo" element={<ComingSoon title="Book a Free Demo" />} />
-                <Route path="/contact" element={<ComingSoon title="Contact" />} />
-                <Route path="/admin" element={<ComingSoon title="Admin" />} />
+                <Route path="/book-demo" element={<BookDemo />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/admin" element={<Admin />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
