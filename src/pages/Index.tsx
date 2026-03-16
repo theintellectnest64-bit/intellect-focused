@@ -127,6 +127,16 @@ const Index = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Online Chess Classes for Kids | The Intellect Nest</title>
+        <meta name="description" content="Expert-led live chess coaching for ages 5–15. Small groups of 4–6 students. Trusted by families in 30+ countries." />
+        <meta property="og:title" content="Online Chess Classes for Kids | The Intellect Nest" />
+        <meta property="og:description" content="Expert-led live chess coaching for ages 5–15. Small groups. Real results." />
+        <meta property="og:image" content="/images/logo.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@IntellectT43247" />
+      </Helmet>
       {/* HERO */}
       <section className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
         <Particles />
