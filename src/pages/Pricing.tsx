@@ -21,7 +21,7 @@ const groupFeaturesIndia = [
 ];
 
 const privateFeaturesIndia = [
-  "4 private 60-minute sessions per month",
+  "8 private 60-minute sessions per month",
   "100% personalized curriculum built around your child's goals",
   "Custom game analysis and targeted feedback after every session",
   "Flexible scheduling around school and activity timetable",
