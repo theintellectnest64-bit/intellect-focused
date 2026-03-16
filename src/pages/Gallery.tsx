@@ -72,22 +72,12 @@ const Gallery = () => {
                 variants={fadeUp}
                 className="rounded-xl border border-sky-border overflow-hidden card-hover group"
               >
-                <div className="h-48 overflow-hidden relative">
-                  {i < galleryImages.length ? (
-                    <img
-                      src={galleryImages[i]}
-                      alt={item.caption}
-                      className="w-full h-full object-cover transition-transform duration-[400ms] group-hover:scale-[1.04]"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="h-full bg-muted flex flex-col items-center justify-center">
-                      <Camera size={20} className="text-muted-foreground opacity-50 mb-2" />
-                      <span className="text-5xl select-none" style={{ color: "hsl(var(--sky))" }}>
-                        {["♟", "♞", "♝", "♜", "♛", "♚"][(i - galleryImages.length) % 6]}
-                      </span>
-                    </div>
-                  )}
+                <div className="relative h-48 overflow-hidden">
+                  <RevealImage
+                    src={galleryImages[i % galleryImages.length]}
+                    alt={item.caption}
+                    imageClassName="h-full ken-burns"
+                  />
                 </div>
                 <div className="p-4 bg-card">
                   <p className="font-body text-[13px] text-secondary text-center leading-relaxed">

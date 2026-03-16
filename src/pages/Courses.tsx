@@ -117,20 +117,19 @@ const Courses = () => {
                     </div>
                   </div>
                   <div className={`hidden lg:flex items-center justify-center ${i % 2 === 1 ? "lg:order-1" : ""}`}>
-                    <div className="w-48 h-48 rounded-xl overflow-hidden border border-sky-border group">
+                    <div className="w-48 h-48 rounded-xl overflow-hidden border border-sky-border">
                       {i < 3 ? (
-                        <img
+                        <RevealImage
                           src={[
-                            "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=400&q=80",
-                            "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&q=80",
-                            "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=400&q=80",
+                            "/images/course-beginner.jpg",
+                            "/images/course-intermediate.jpg",
+                            "/images/course-advanced.jpg",
                           ][i]}
-                          alt={level.name}
-                          className="w-full h-full object-cover transition-transform duration-[400ms] group-hover:scale-[1.04]"
-                          loading="lazy"
+                          alt={`${level.name} chess course thumbnail`}
+                          imageClassName="h-full"
                         />
                       ) : (
-                        <div className="w-full h-full rounded-full bg-muted flex items-center justify-center">
+                        <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
                           <span className="text-7xl" style={{ color: chessPieceColors[i] }}>{chessPieces[i]}</span>
                         </div>
                       )}
