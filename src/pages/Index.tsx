@@ -224,28 +224,7 @@ const Index = () => {
               </p>
             </div>
           </div>
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {whyChessCards.map((card, i) =>
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              className="bg-card p-6 lg:p-8 rounded-xl sky-left-border card-shadow card-hover border border-sky-border"
-              style={{ borderLeftColor: "hsl(210,65%,49%)" }}>
-              
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${i === 5 ? "" : "bg-muted"}`} style={i === 5 ? { background: "#FFF9E6" } : {}}>
-                  <span style={{ color: i === 5 ? "#F5C518" : "#2B7DD4" }}>{card.icon}</span>
-                </div>
-                <h3 className="font-display text-xl lg:text-2xl font-semibold text-navy mb-3">{card.title}</h3>
-                <p className="font-body text-sm text-secondary leading-relaxed">{card.body}</p>
-              </motion.div>
-            )}
-          </motion.div>
+          <BenefitFlipCards />
         </div>
       </SectionWrapper>
 
