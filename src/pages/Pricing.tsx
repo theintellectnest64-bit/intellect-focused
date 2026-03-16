@@ -99,7 +99,7 @@ const Pricing = () => {
               <h3 className="font-display text-xl font-bold text-navy mt-2 mb-1">Group Classes</h3>
               <div className="mb-6">
                 <span className="font-display text-4xl font-bold text-sky">
-                  {currency === "inr" ? "₹2,999" : "$49"}
+                  {currency === "inr" ? "₹2,999" : "$59"}
                 </span>
                 <span className="font-body text-sm text-muted-foreground"> /month</span>
               </div>
