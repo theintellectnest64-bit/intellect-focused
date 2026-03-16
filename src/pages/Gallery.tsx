@@ -13,12 +13,12 @@ const fadeUp = {
 };
 
 const galleryImages = [
-  "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&q=80",
-  "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&q=80",
-  "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=80",
-  "https://images.unsplash.com/photo-1560264280-88b68371db39?w=600&q=80",
-  "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=600&q=80",
-  "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=600&q=80",
+  "/images/gallery-1.jpg",
+  "/images/gallery-2.jpg",
+  "/images/gallery-3.jpg",
+  "/images/gallery-4.jpg",
+  "/images/gallery-5.jpg",
+  "/images/gallery-6.jpg",
 ];
 
 const galleryItems = [
