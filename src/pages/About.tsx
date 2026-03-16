@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Users, Trophy, Star, Clock, Target, Brain, Shield, Heart, Sparkles, Globe, Check } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import RevealImage from "@/components/RevealImage";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Camera } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import { Link } from "react-router-dom";
+import RevealImage from "@/components/RevealImage";
 
 const stagger = {
   hidden: {},
