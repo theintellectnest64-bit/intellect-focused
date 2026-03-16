@@ -6,6 +6,7 @@ import SectionDivider from "@/components/SectionDivider";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import TypewriterEyebrow from "@/components/TypewriterEyebrow";
 import FloatingChessPieces from "@/components/FloatingChessPieces";
+import RevealImage from "@/components/RevealImage";
 import { useState, useEffect } from "react";
 
 const stagger = {
@@ -129,18 +130,8 @@ const Index = () => {
   return (
     <div>
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
+      <section data-hero-section="true" className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
         <Particles />
-        {/* Background image with overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          <img
-            src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=800&q=80"
-            alt=""
-            className="w-full h-full object-cover ken-burns"
-            loading="lazy"
-            style={{ opacity: 0.15 }}
-          />
-        </div>
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -179,8 +170,16 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="hidden lg:flex justify-center relative"
+              className="relative hidden justify-center lg:flex"
             >
+              <div className="absolute inset-0 -m-10 rounded-[32px] pointer-events-none">
+                <RevealImage
+                  src="/images/hero-chess-bg.jpg"
+                  alt="Chess pieces on a board used as the hero background"
+                  wrapperClassName="h-full w-full rounded-[32px]"
+                  imageClassName="ken-burns opacity-15"
+                />
+              </div>
               <FloatingChessPieces />
               <ChessBoard />
             </motion.div>
@@ -207,13 +206,13 @@ const Index = () => {
         <div className="container mx-auto px-4 lg:px-8">
           {/* Atmospheric image strip */}
           <div className="relative h-[200px] rounded-xl overflow-hidden mb-12 lg:mb-16">
-            <img
-              src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1200&q=80"
-              alt="Chess atmosphere"
-              className="w-full h-full object-cover"
-              loading="lazy"
+            <RevealImage
+              src="/images/why-chess-strip.jpg"
+              alt="Atmospheric chess scene illustrating focus and strategy"
+              wrapperClassName="absolute inset-0"
+              imageClassName="ken-burns"
             />
-            <div className="absolute inset-0" style={{ background: "rgba(13,30,59,0.7)" }} />
+            <div className="absolute inset-0" style={{ backgroundColor: "hsl(var(--navy) / 0.7)" }} />
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
               <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3">Why It Works</span>
               <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-white mb-2">
@@ -377,16 +376,15 @@ const Index = () => {
 
       {/* TESTIMONIALS — auto-scroll carousel with bg image */}
       <section
-        className="relative py-16 md:py-[100px]"
-        style={{ background: "#0D1E3B" }}
+        className="relative py-16 md:py-[100px] bg-navy"
       >
-        <img
-          src="https://images.unsplash.com/photo-1560264280-88b68371db39?w=1200&q=80"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="lazy"
-          style={{ opacity: 0.05 }}
+        <RevealImage
+          src="/images/testimonials-bg.jpg"
+          alt="Subtle background of children learning together"
+          wrapperClassName="absolute inset-0 pointer-events-none"
+          imageClassName="ken-burns"
         />
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: "hsl(var(--navy) / 0.95)" }} />
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Parent Stories</span>
