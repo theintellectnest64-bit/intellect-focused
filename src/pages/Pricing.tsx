@@ -15,7 +15,7 @@ const groupFeaturesIndia = [
   "Daily Lichess puzzle assignments with tracking",
   "Monthly progress report PDF sent to parents",
   "Recorded class replays for all sessions",
-  "6 to 10 students per batch for personal attention",
+  "4 to 6 students per batch for personal attention",
   "Milestone achievement badges",
   "WhatsApp parent update",
 ];
