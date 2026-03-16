@@ -152,7 +152,7 @@ const Index = () => {
                 <TypewriterEyebrow />
               </motion.div>
               <motion.h1 variants={heroItem} className="font-display text-[34px] md:text-5xl lg:text-[64px] font-black text-navy leading-[1.15] mb-6 text-balance" style={{ letterSpacing: "0.01em", textShadow: "0 2px 20px rgba(13,30,59,0.08)" }}>
-                Online Chess and Rubik's Cube Classes for Kids
+                Online Chess Classes for Kids
               </motion.h1>
               <motion.p variants={heroItem} className="font-body text-lg md:text-xl text-secondary leading-relaxed mb-8 max-w-lg">
                 Turn screen time into brain time. Live coach-led sessions, weekly tournaments, and progress reports for ages 5 to 15.
