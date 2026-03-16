@@ -15,7 +15,8 @@ const BackToTop = () => {
   return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-6 left-6 z-[998] w-10 h-10 rounded-lg bg-background border border-sky-border flex items-center justify-center text-sky hover:bg-muted transition-colors"
+      className="fixed bottom-6 left-6 z-[998] w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80"
+      style={{ background: "#0D1E3B", color: "#2B7DD4" }}
       aria-label="Back to top"
     >
       <ChevronUp size={20} />

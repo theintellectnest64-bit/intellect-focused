@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, HelpCircle } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 
@@ -88,18 +88,18 @@ const FAQ = () => {
 
   return (
     <div className="pt-[75px]">
-      {/* Hero */}
-      <SectionWrapper className="section-alt">
+      {/* Hero — dark navy */}
+      <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <span className="eyebrow mb-3 block">FAQ</span>
-          <h1 className="font-display text-[34px] md:text-5xl lg:text-[56px] font-black text-navy leading-[1.15] mb-4">
+          <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">FAQ</span>
+          <h1 className="font-display text-[34px] md:text-5xl lg:text-[56px] font-black text-white leading-[1.15] mb-4">
             Frequently Asked Questions
           </h1>
-          <p className="font-body text-lg text-secondary max-w-2xl mx-auto">
+          <p className="font-body text-lg max-w-2xl mx-auto" style={{ color: "#93C5FD" }}>
             Everything parents ask before enrolling. 50 answers — no sales pitch.
           </p>
         </div>
-      </SectionWrapper>
+      </section>
 
       {/* FAQ Accordion */}
       <SectionWrapper>
@@ -112,14 +112,20 @@ const FAQ = () => {
                 onClick={() => { setOpenGroup(i); setOpenQ(null); }}
                 className={`font-body text-sm px-4 py-2 rounded-lg border transition-all ${
                   openGroup === i
-                    ? "bg-sky text-white border-sky"
+                    ? "text-white border-sky"
                     : "border-sky-border text-secondary hover:border-sky"
                 }`}
-                style={openGroup === i ? { backgroundColor: "hsl(var(--sky))" } : {}}
+                style={openGroup === i ? { backgroundColor: "#2B7DD4", borderColor: "#2B7DD4" } : {}}
               >
                 {group.title}
               </button>
             ))}
+          </div>
+
+          {/* Group Header */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 rounded-full" style={{ background: "#F5C518" }} />
+            <h2 className="font-display text-2xl font-bold text-navy">{faqGroups[openGroup].title}</h2>
           </div>
 
           {/* Questions */}
@@ -136,33 +142,50 @@ const FAQ = () => {
               return (
                 <div
                   key={key}
-                  className="border border-sky-border rounded-xl overflow-hidden bg-card card-shadow"
+                  className={`border rounded-xl overflow-hidden card-shadow transition-all ${
+                    isOpen
+                      ? "border-sky-border border-l-[3px]"
+                      : "border-sky-border"
+                  }`}
+                  style={{
+                    borderLeftColor: isOpen ? "#2B7DD4" : undefined,
+                    background: isOpen ? "#F0F6FF" : "hsl(var(--card))",
+                  }}
                 >
                   <button
                     onClick={() => setOpenQ(isOpen ? null : key)}
                     className="w-full flex items-center justify-between p-5 text-left gap-4"
                   >
                     <div className="flex items-center gap-3">
-                      <HelpCircle size={18} className="shrink-0" style={{ color: "hsl(var(--sky))" }} />
+                      <HelpCircle size={18} className="shrink-0" style={{ color: "#2B7DD4" }} />
                       <span className="font-display text-base font-semibold text-navy">{item.q}</span>
                     </div>
                     <ChevronDown
                       size={18}
-                      className={`shrink-0 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                      className="shrink-0 transition-transform duration-300"
+                      style={{
+                        color: "#2B7DD4",
+                        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                      }}
                     />
                   </button>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                      className="px-5 pb-5"
-                    >
-                      <p className="font-body text-sm text-secondary leading-relaxed pl-[30px]">
-                        {item.a}
-                      </p>
-                    </motion.div>
-                  )}
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-5 pb-5">
+                          <p className="font-body text-sm text-secondary leading-relaxed pl-[30px]">
+                            {item.a}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               );
             })}
@@ -171,25 +194,25 @@ const FAQ = () => {
       </SectionWrapper>
 
       {/* CTA */}
-      <SectionWrapper className="section-alt">
+      <section className="bg-navy py-16 md:py-24">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <span className="eyebrow mb-3 block">Still Have Questions?</span>
-          <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy mb-4">
+          <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Still Have Questions?</span>
+          <h2 className="font-display text-[28px] md:text-4xl font-bold text-white mb-4">
             Book a Free Demo — We'll Answer Everything
           </h2>
-          <p className="font-body text-lg text-secondary max-w-xl mx-auto mb-8">
+          <p className="font-body text-lg max-w-xl mx-auto mb-8" style={{ color: "#93C5FD" }}>
             Our coaches will personally walk you through the program and answer all your questions live.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/book-demo" className="cta-gold">
               Book a Free Demo Class
             </Link>
-            <Link to="/contact" className="cta-secondary">
+            <Link to="/contact" className="cta-secondary" style={{ borderColor: "#93C5FD", color: "#93C5FD" }}>
               Contact Us
             </Link>
           </div>
         </div>
-      </SectionWrapper>
+      </section>
     </div>
   );
 };

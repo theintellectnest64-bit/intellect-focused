@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Users, Trophy, Star, Clock, Brain, Heart, Lightbulb, Puzzle, BookOpen, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Quote, Globe } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import AnimatedCounter from "@/components/AnimatedCounter";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const stagger = {
   hidden: {},
@@ -21,6 +21,15 @@ const heroStagger = {
 const heroItem = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
+const slideInLeft = {
+  hidden: { opacity: 0, x: -60 },
+  show: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: { delay: i * 0.2, duration: 0.5 },
+  }),
 };
 
 const whyChessCards = [
@@ -49,9 +58,9 @@ const faqPreview = [
   { q: "Do you give homework?", a: "Yes — short focused puzzle sets and practice games that reinforce the weekly lesson without overwhelming students. Approximately 20 to 30 minutes daily." },
 ];
 
-// Chess board SVG component
+// Chess board SVG component with floating knight
 const ChessBoard = () => (
-  <svg viewBox="0 0 320 320" className="w-full max-w-xs animate-float" style={{ filter: "drop-shadow(0 0 20px rgba(43,125,212,0.4))" }}>
+  <svg viewBox="0 0 320 320" className="w-full max-w-xs" style={{ filter: "drop-shadow(0 0 20px rgba(43,125,212,0.4))" }}>
     {Array.from({ length: 8 }).map((_, row) =>
       Array.from({ length: 8 }).map((_, col) => (
         <rect
@@ -65,8 +74,8 @@ const ChessBoard = () => (
         />
       ))
     )}
-    {/* Knight piece in center */}
-    <text x="160" y="175" textAnchor="middle" fontSize="64" fill="#2B7DD4" fontFamily="serif">♞</text>
+    {/* Knight piece with float animation */}
+    <text x="160" y="175" textAnchor="middle" fontSize="64" fill="#2B7DD4" fontFamily="serif" className="animate-float">♞</text>
   </svg>
 );
 
@@ -105,6 +114,16 @@ const Index = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
+  // Auto-scroll testimonials every 4 seconds
+  const [isPaused, setIsPaused] = useState(false);
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
   return (
     <div>
       {/* HERO */}
@@ -117,7 +136,7 @@ const Index = () => {
               initial="hidden"
               animate="show"
             >
-              <motion.span variants={heroItem} className="eyebrow-left mb-4 block">India's Premium Online Chess Academy</motion.span>
+              <motion.span variants={heroItem} className="eyebrow-left mb-4 block">20+ Future Grandmasters Started Right Here</motion.span>
               <motion.h1 variants={heroItem} className="font-display text-[34px] md:text-5xl lg:text-[64px] font-black text-navy leading-[1.15] mb-6 text-balance" style={{ letterSpacing: "0.01em", textShadow: "0 2px 20px rgba(13,30,59,0.08)" }}>
                 Online Chess and Rubik's Cube Classes for Kids
               </motion.h1>
@@ -154,17 +173,17 @@ const Index = () => {
         </div>
       </section>
 
-      {/* TRUST BAR */}
-      <SectionWrapper className="section-alt">
+      {/* STATS BAR */}
+      <section className="bg-navy py-12">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-sky-border">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x" style={{ borderColor: "rgba(43,125,212,0.3)" }}>
             <AnimatedCounter target={500} suffix="+" label="Students Trained" icon={<Users size={24} />} />
-            <AnimatedCounter target={3} suffix="+" label="Years of Excellence" icon={<Globe size={24} />} />
+            <AnimatedCounter target={30} suffix="+" label="Countries Reached" icon={<Globe size={24} />} />
             <AnimatedCounter target={20} suffix="+" label="Tournament Winners" icon={<Trophy size={24} />} />
-            <AnimatedCounter target={4.9} suffix="" label="Parent Rating" icon={<Star size={24} />} />
+            <AnimatedCounter target={4.9} suffix="★" label="Parent Rating" icon={<Star size={24} />} />
           </div>
         </div>
-      </SectionWrapper>
+      </section>
 
       {/* WHY CHESS */}
       <SectionWrapper>
@@ -254,7 +273,7 @@ const Index = () => {
         </div>
       </SectionWrapper>
 
-      {/* HOW IT WORKS */}
+      {/* HOW IT WORKS — slide in from left */}
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
@@ -272,10 +291,11 @@ const Index = () => {
             ].map((item, i) => (
               <motion.div
                 key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                custom={i}
+                variants={slideInLeft}
+                initial="hidden"
+                whileInView="show"
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
                 className="text-center relative"
               >
                 <div
@@ -320,7 +340,7 @@ const Index = () => {
         </div>
       </SectionWrapper>
 
-      {/* TESTIMONIALS */}
+      {/* TESTIMONIALS — auto-scroll carousel */}
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
@@ -329,8 +349,19 @@ const Index = () => {
               What Parents Are Saying
             </h2>
           </div>
-          <div className="max-w-3xl mx-auto">
-            <div className="relative bg-card p-8 lg:p-12 rounded-xl card-shadow border border-sky-border">
+          <div
+            className="max-w-3xl mx-auto"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <motion.div
+              key={activeTestimonial}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.5 }}
+              className="relative bg-card p-8 lg:p-12 rounded-xl card-shadow border border-sky-border"
+            >
               <div className="absolute top-4 right-6 text-[120px] leading-none font-serif" style={{ color: "rgba(43,125,212,0.06)" }}>"</div>
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
@@ -344,7 +375,7 @@ const Index = () => {
                 <p className="font-body text-sm font-semibold text-sky">{testimonials[activeTestimonial].name}</p>
                 <p className="font-body text-xs text-muted-foreground">{testimonials[activeTestimonial].detail}</p>
               </div>
-            </div>
+            </motion.div>
             <div className="flex justify-center gap-3 mt-6">
               {testimonials.map((_, i) => (
                 <button
@@ -359,20 +390,20 @@ const Index = () => {
         </div>
       </SectionWrapper>
 
-      {/* DEMO BANNER */}
-      <SectionWrapper className="section-alt">
+      {/* DEMO BANNER — dark navy */}
+      <section className="bg-navy py-16 md:py-24">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy mb-4">
+          <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-white mb-4">
             Give Your Child the Gift of Smart Screen Time
           </h2>
-          <p className="font-body text-lg text-secondary mb-8 max-w-xl mx-auto">
+          <p className="font-body text-lg mb-8 max-w-xl mx-auto" style={{ color: "#93C5FD" }}>
             Book a free demo class today — no commitment, no payment required. We will personally call you within 24 hours.
           </p>
           <Link to="/book-demo" className="cta-gold text-lg px-8 py-4">
             Book My Free Demo Now
           </Link>
         </div>
-      </SectionWrapper>
+      </section>
 
       {/* FAQ PREVIEW */}
       <SectionWrapper>
@@ -391,7 +422,14 @@ const Index = () => {
                   className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
                 >
                   <span className="font-body text-sm font-medium text-navy pr-4">{item.q}</span>
-                  <ChevronDown size={18} className={`text-sky shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    size={18}
+                    className="shrink-0 transition-transform duration-300"
+                    style={{
+                      color: "#2B7DD4",
+                      transform: openFaq === i ? "rotate(180deg)" : "rotate(0deg)",
+                    }}
+                  />
                 </button>
                 {openFaq === i && (
                   <motion.div
@@ -436,7 +474,7 @@ const Index = () => {
                 transition={{ delay: i * 0.1 }}
               >
                 <Link to={`/blog/${blog.slug}`} className="block bg-card rounded-xl card-shadow card-hover border border-sky-border h-full overflow-hidden">
-                  <div className="bg-muted h-32 flex items-center justify-center">
+                  <div className="h-32 flex items-center justify-center" style={{ background: "#0D1E3B" }}>
                     <span className="text-5xl" style={{ color: "#2B7DD4" }}>{blog.piece}</span>
                   </div>
                   <div className="p-6">
