@@ -1,47 +1,40 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import BrandAnimationVideo from "@/components/BrandAnimationVideo";
 
 const LogoPopup = () => {
   const [show, setShow] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [ended, setEnded] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem("popup_played")) return;
 
-    const timeTimer = setTimeout(() => {
-      if (!sessionStorage.getItem("popup_played")) {
-        sessionStorage.setItem("popup_played", "true");
-        setShow(true);
-      }
-    }, 8000);
+    const showPopup = () => {
+      if (sessionStorage.getItem("popup_played")) return;
+      sessionStorage.setItem("popup_played", "true");
+      setShow(true);
+    };
+
+    const timeTimer = setTimeout(showPopup, 8000);
 
     const handleScroll = () => {
-      if (window.scrollY > window.innerHeight && !sessionStorage.getItem("popup_played")) {
-        sessionStorage.setItem("popup_played", "true");
-        setShow(true);
+      const hero = document.querySelector("[data-hero-section='true']");
+      const threshold = hero instanceof HTMLElement ? hero.offsetHeight - 120 : window.innerHeight;
+
+      if (window.scrollY > threshold) {
+        showPopup();
       }
     };
-    window.addEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       clearTimeout(timeTimer);
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  // When video ends, fade out after 1.5s
-  useEffect(() => {
-    if (!show || dismissed) return;
-    const video = videoRef.current;
-    if (!video) return;
-    const handleEnded = () => {
-      setTimeout(() => setDismissed(true), 1500);
-    };
-    video.addEventListener("ended", handleEnded);
-    return () => video.removeEventListener("ended", handleEnded);
-  }, [show, dismissed]);
 
   return (
     <AnimatePresence>
@@ -50,34 +43,23 @@ const LogoPopup = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.4 }}
-          className="fixed z-[998] overflow-hidden"
-          style={{
-            bottom: 24,
-            left: 24,
-            width: 160,
-            background: "#FFFFFF",
-            border: "1px solid #DBEAFE",
-            borderRadius: 12,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-          }}
+          transition={{ duration: ended ? 1.5 : 0.4 }}
+          className="fixed bottom-6 left-6 z-[998] w-[160px] overflow-hidden rounded-xl border border-sky-border bg-card shadow-[0_8px_24px_hsl(214_62%_15%/0.12)]"
         >
           <button
             onClick={() => setDismissed(true)}
-            className="absolute top-1 right-1 z-10 w-[18px] h-[18px] flex items-center justify-center"
-            style={{ color: "#6B7280" }}
+            className="absolute right-1 top-1 z-10 flex h-[18px] w-[18px] items-center justify-center text-muted-foreground"
+            aria-label="Close logo popup"
           >
             <X size={12} />
           </button>
           <div className="p-2">
-            <video
-              ref={videoRef}
-              src="/videos/logo_animation.mp4"
-              autoPlay
-              muted
-              playsInline
+            <BrandAnimationVideo
               className="w-full"
-              style={{ mixBlendMode: "screen" }}
+              onEnded={() => {
+                setEnded(true);
+                setDismissed(true);
+              }}
             />
           </div>
         </motion.div>

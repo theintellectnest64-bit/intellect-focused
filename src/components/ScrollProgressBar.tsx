@@ -4,28 +4,39 @@ const ScrollProgressBar = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    let rafId: number;
+    let rafId = 0;
+
     const updateProgress = () => {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
       setProgress(scrollPercent);
+      rafId = 0;
+    };
+
+    const handleScroll = () => {
+      if (rafId) return;
       rafId = requestAnimationFrame(updateProgress);
     };
-    rafId = requestAnimationFrame(updateProgress);
-    return () => cancelAnimationFrame(rafId);
+
+    updateProgress();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   return (
-    <div
-      className="fixed top-0 left-0 right-0 z-[1000] h-[3px] md:h-[3px]"
-      style={{ background: "transparent" }}
-    >
+    <div className="fixed left-0 right-0 top-0 z-[1000] h-[2px] bg-transparent md:h-[3px]">
       <div
-        className="h-full transition-none"
+        className="h-full"
         style={{
           width: `${progress}%`,
-          background: "linear-gradient(to right, #2B7DD4, #F5C518)",
+          background: "linear-gradient(90deg, hsl(var(--sky)), hsl(var(--gold)))",
         }}
       />
     </div>
