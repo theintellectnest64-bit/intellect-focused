@@ -5,8 +5,6 @@ const VIDEO_SOURCES = [
   { src: "/videos/logo_animation_transparent.mp4", type: "video/mp4" },
 ] as const;
 
-console.log("[BrandAnimationVideo] configured sources", VIDEO_SOURCES.map((source) => source.src));
-
 interface BrandAnimationVideoProps extends VideoHTMLAttributes<HTMLVideoElement> {
   videoStyle?: CSSProperties;
 }
@@ -33,7 +31,7 @@ const BrandAnimationVideo = forwardRef<HTMLVideoElement, BrandAnimationVideoProp
         autoPlay
         muted
         playsInline
-        preload="auto"
+        preload="none"
         className={className}
         style={{ mixBlendMode: "screen", display: "block", ...videoStyle }}
         onLoadedData={handleLoadedData}
