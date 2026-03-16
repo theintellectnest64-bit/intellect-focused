@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, Trophy, Star, Clock, Target, Brain, Shield, Heart, Sparkles, Globe, Check } from "lucide-react";
+import { Users, Trophy, Star, Target, Brain, Shield, Heart, Sparkles, Globe, Check } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import RevealImage from "@/components/RevealImage";
@@ -38,13 +38,13 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <p className="font-body text-lg text-secondary leading-[1.8] mb-6">
-                The Intellect Nest is more than a chess academy. We are a brain gym for kids — we transform unproductive screen time into focused learning through chess and Rubik's Cube training.
+                The Intellect Nest is more than a chess academy. We are a brain gym for kids — we transform unproductive screen time into focused learning through expert chess training.
               </p>
               <p className="font-body text-lg text-secondary leading-[1.8] mb-6">
                 Founded by chess trainers and educators who believe that small habits create champions, we combine world-class coaching with purpose-built technology to keep every child engaged, improving, and proud of their growth.
               </p>
               <p className="font-body text-lg text-secondary leading-[1.8]">
-                We built The Intellect Nest because we saw too many children spending hours on screens that gave nothing back. Chess and the Rubik's Cube are not just games — they are tools for building the kind of mind that succeeds in school, in relationships, and in life.
+                We built The Intellect Nest because we saw too many children spending hours on screens that gave nothing back. Chess is not just a game — it is a tool for building the kind of mind that succeeds in school, in relationships, and in life.
               </p>
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-xl card-shadow">
@@ -117,7 +117,7 @@ const About = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { title: "Child-First Pedagogy", body: "Playful, story-driven lessons for young kids. Structured rigor for advanced learners. Always age-appropriate." },
-              { title: "Small Groups of 6 to 10", body: "Personal attention without isolation. Peer competition without undue pressure. Students learn from each other." },
+              { title: "Small Groups of 4 to 6", body: "Personal attention without isolation. Peer competition without undue pressure. Students learn from each other." },
               { title: "Measurement-Driven Progress", body: "Monthly progress reports, milestone badges, visible improvement metrics, and real trackable results." },
             ].map((item, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="bg-card p-6 rounded-xl card-shadow card-hover sky-left-border border border-sky-border" style={{ borderLeftColor: "#2B7DD4" }}>
@@ -138,11 +138,10 @@ const About = () => {
           </div>
           <div className="max-w-3xl mx-auto space-y-4">
             {[
-              "Small batches of 6 to 10 students maximum vs crowded classrooms of 20 or more.",
+              "Small batches of 4 to 6 students maximum vs crowded classrooms of 20 or more.",
               "Real monthly progress reports with puzzle stats, game analysis, and coach notes.",
-              "Classes in both Hindi and English vs English-only instruction.",
+              "Classes available in multiple languages to suit global families.",
               "Weekly internal tournaments built into every plan at no extra cost.",
-              "Rubik's Cube as a cognitive add-on program vs chess-only offerings.",
               "Personal coach match based on learning style, language, and personality.",
             ].map((point, i) => (
               <motion.div

@@ -14,6 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+const WHATSAPP_URL = "https://wa.me/919893189566?text=Knock%20knock!%20Can%20I%20step%20into%20the%20nest%20for%20a%20free%20chess%20demo%3F%20%F0%9F%95%8A%E2%99%9F";
+
 const bookDemoSchema = z.object({
   parent_name: z.string().trim().min(2, "Name is required").max(100),
   parent_email: z.string().trim().email("Valid email is required").max(255),
@@ -61,7 +63,6 @@ const BookDemo = () => {
 
       if (error) throw error;
 
-      // Try to send email notification
       try {
         await supabase.functions.invoke("send-notification", {
           body: {
@@ -84,12 +85,8 @@ const BookDemo = () => {
       setSubmitted(true);
       toast.success("Demo booked successfully!");
 
-      // Redirect to WhatsApp after short delay
       setTimeout(() => {
-        const whatsappMsg = encodeURIComponent(
-          `Hi! I'm ${data.parent_name}. I just booked a free demo for my child ${data.child_name} (Age: ${data.child_age}, Level: ${data.current_level}). Looking forward to connecting!`
-        );
-        window.open(`https://wa.me/919893189566?text=${whatsappMsg}`, "_blank");
+        window.open(WHATSAPP_URL, "_blank");
       }, 2000);
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -124,7 +121,6 @@ const BookDemo = () => {
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-            {/* Left: Info */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -142,7 +138,7 @@ const BookDemo = () => {
                 {[
                   { icon: <Clock size={20} />, title: "30-Minute Free Session", desc: "A full interactive demo tailored to your child's age and level." },
                   { icon: <Phone size={20} />, title: "We Call You Within 24 Hours", desc: "Fill out the form and our team personally schedules the demo." },
-                  { icon: <Mail size={20} />, title: "Hindi & English Available", desc: "Choose the language your child is most comfortable with." },
+                  { icon: <Mail size={20} />, title: "Multiple Languages Available", desc: "Choose the language your child is most comfortable with." },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4">
                     <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
@@ -157,7 +153,6 @@ const BookDemo = () => {
               </div>
             </motion.div>
 
-            {/* Right: Form */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}

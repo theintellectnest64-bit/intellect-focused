@@ -11,7 +11,7 @@ const faqGroups = [
       { q: "What age group does The Intellect Nest teach?", a: "We teach primarily kids aged 5 to 15 in age-appropriate batches. Very young children aged 4 and up can try a demo and join starter groups when ready." },
       { q: "Does my child need prior chess experience?", a: "No. We have a full beginner pathway that starts from piece movements and basic checkmates and builds skills step by step from the very beginning." },
       { q: "How are classes delivered?", a: "All classes are live and instructor-led on Zoom, supported by practice and puzzles on Lichess and analysis using ChessBase for advanced levels." },
-      { q: "What is the typical class size?", a: "Group classes usually have 6 to 10 students, which balances individual attention with peer learning. Private sessions are 1-on-1." },
+      { q: "What is the typical class size?", a: "Group classes usually have 4 to 6 students, which balances individual attention with peer learning. Private sessions are 1-on-1." },
       { q: "Do you offer one-on-one coaching?", a: "Yes — private sessions are available for advanced learners, fast-track students, or anyone needing a fully custom learning plan." },
       { q: "How long is each class?", a: "Standard group classes run 45 to 60 minutes. One-on-one sessions are typically 60 minutes but can be adjusted to the student's needs." },
       { q: "What curriculum do you follow?", a: "We follow a progressive curriculum: Beginner Nest, Rising Pawns, Strategic Knights, Tactical Bishops, and Master Rooks and Queens, with defined milestones and assessments at each stage." },
@@ -88,7 +88,6 @@ const FAQ = () => {
 
   return (
     <div className="pt-[75px]">
-      {/* Hero — dark navy */}
       <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">FAQ</span>
@@ -101,10 +100,8 @@ const FAQ = () => {
         </div>
       </section>
 
-      {/* FAQ Accordion */}
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
-          {/* Group Tabs */}
           <div className="flex flex-wrap gap-3 justify-center mb-12">
             {faqGroups.map((group, i) => (
               <button
@@ -122,13 +119,11 @@ const FAQ = () => {
             ))}
           </div>
 
-          {/* Group Header */}
           <div className="flex items-center gap-3 mb-6">
             <div className="w-1 h-8 rounded-full" style={{ background: "#F5C518" }} />
             <h2 className="font-display text-2xl font-bold text-navy">{faqGroups[openGroup].title}</h2>
           </div>
 
-          {/* Questions */}
           <motion.div
             key={openGroup}
             initial={{ opacity: 0 }}
@@ -193,7 +188,6 @@ const FAQ = () => {
         </div>
       </SectionWrapper>
 
-      {/* CTA */}
       <section className="bg-navy py-16 md:py-24">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Still Have Questions?</span>

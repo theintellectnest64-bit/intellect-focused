@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, CheckCircle, Globe, Instagram, Youtube, Facebook, Linkedin, Twitter } from "lucide-react";
+import { Mail, Phone, CheckCircle, Globe, Instagram, Youtube, Facebook, Linkedin, Twitter } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+const WHATSAPP_URL = "https://wa.me/919893189566?text=Knock%20knock!%20Can%20I%20step%20into%20the%20nest%20for%20a%20free%20chess%20demo%3F%20%F0%9F%95%8A%E2%99%9F";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Name is required").max(100),
@@ -80,10 +82,7 @@ const Contact = () => {
       toast.success("Message sent successfully!");
 
       setTimeout(() => {
-        const whatsappMsg = encodeURIComponent(
-          `Hi! I'm ${data.name}. I just sent a message via your website about: ${data.subject}. Looking forward to hearing from you!`
-        );
-        window.open(`https://wa.me/919893189566?text=${whatsappMsg}`, "_blank");
+        window.open(WHATSAPP_URL, "_blank");
       }, 2000);
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -111,7 +110,6 @@ const Contact = () => {
 
   return (
     <div className="pt-[75px]">
-      {/* Hero */}
       <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Get in Touch</span>
@@ -156,12 +154,11 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-display text-base font-semibold text-navy">WhatsApp</h3>
-                    <a href="https://wa.me/919893189566" target="_blank" rel="noopener noreferrer" className="font-body text-sm text-sky hover:underline">Chat with us on WhatsApp</a>
+                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="font-body text-sm text-sky hover:underline">Chat with us on WhatsApp</a>
                   </div>
                 </div>
               </div>
 
-              {/* Locations */}
               <div className="mt-10">
                 <div className="flex items-center gap-3 mb-4">
                   <Globe size={24} className="text-sky" />
@@ -180,7 +177,6 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* Social Links */}
               <div className="mt-10">
                 <h3 className="font-display text-base font-semibold text-navy mb-4">Follow Us</h3>
                 <div className="flex gap-4">
@@ -192,7 +188,6 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* Website */}
               <div className="mt-6">
                 <a href="https://www.tinchess.com" target="_blank" rel="noopener noreferrer" className="font-body text-sm text-sky hover:underline">
                   www.tinchess.com

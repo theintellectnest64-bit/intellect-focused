@@ -14,15 +14,15 @@ const chessPieces = ["♟", "♞", "♝", "♜", "♛"];
 const chessPieceColors = ["#2B7DD4", "#2B7DD4", "#2B7DD4", "#2B7DD4", "#F5C518"];
 
 const chessLevels = [
-  { level: "Level 1", name: "Beginner Nest", badge: "Beginner Nest Badge", age: "Ages 5 to 7, zero experience required", learn: "Piece movement and board orientation for all 6 piece types, basic checkmates including back-rank mate and smothered mate, pattern recognition games designed for young attention spans, story-based lessons where each piece has a character and mission, fun tactical puzzles presented as adventures.", format: "Group 6 to 10 students, 45 minutes per class, weekly schedule", tools: "Zoom for live class, Lichess beginner puzzle sets", homework: "15 minutes daily puzzle practice, designed to feel like playing a game", milestone: "Completing an independent checkmate, solving basic tactical puzzles at beginner level", time: "2 to 4 months of consistent practice" },
-  { level: "Level 2", name: "Rising Pawns", badge: "Rising Pawn Badge", age: "Ages 7 to 10, basics mastered and ready for structure", learn: "Core tactical motifs including forks, pins, and skewers; opening principles covering center control, piece development, and king safety; basic endgame techniques; first internal tournament exposure.", format: "Group 6 to 10 students, 45 to 60 minutes, weekly", tools: "Zoom and Lichess tactical trainer", homework: "20 minutes daily — mixed puzzle set plus one practice game per day", milestone: "", time: "3 to 6 months" },
-  { level: "Level 3", name: "Strategic Knights", badge: "Strategic Knight Badge", age: "Ages 9 to 12, tactical basics solid", learn: "Positional ideas including weak squares, pawn structure, and piece activity; opening repertoire building; middlegame planning; introduction to ChessBase for game analysis; game annotation and self-review skills.", format: "Group 6 to 10, 60 minutes, weekly", tools: "Zoom, Lichess, ChessBase introduction", homework: "25 minutes daily — puzzle sets plus annotated game analysis", milestone: "", time: "4 to 8 months" },
+  { level: "Level 1", name: "Beginner Nest", badge: "Beginner Nest Badge", age: "Ages 5 to 7, zero experience required", learn: "Piece movement and board orientation for all 6 piece types, basic checkmates including back-rank mate and smothered mate, pattern recognition games designed for young attention spans, story-based lessons where each piece has a character and mission, fun tactical puzzles presented as adventures.", format: "Group 4 to 6 students, 45 minutes per class, weekly schedule", tools: "Zoom for live class, Lichess beginner puzzle sets", homework: "15 minutes daily puzzle practice, designed to feel like playing a game", milestone: "Completing an independent checkmate, solving basic tactical puzzles at beginner level", time: "2 to 4 months of consistent practice" },
+  { level: "Level 2", name: "Rising Pawns", badge: "Rising Pawn Badge", age: "Ages 7 to 10, basics mastered and ready for structure", learn: "Core tactical motifs including forks, pins, and skewers; opening principles covering center control, piece development, and king safety; basic endgame techniques; first internal tournament exposure.", format: "Group 4 to 6 students, 45 to 60 minutes, weekly", tools: "Zoom and Lichess tactical trainer", homework: "20 minutes daily — mixed puzzle set plus one practice game per day", milestone: "", time: "3 to 6 months" },
+  { level: "Level 3", name: "Strategic Knights", badge: "Strategic Knight Badge", age: "Ages 9 to 12, tactical basics solid", learn: "Positional ideas including weak squares, pawn structure, and piece activity; opening repertoire building; middlegame planning; introduction to ChessBase for game analysis; game annotation and self-review skills.", format: "Group 4 to 6, 60 minutes, weekly", tools: "Zoom, Lichess, ChessBase introduction", homework: "25 minutes daily — puzzle sets plus annotated game analysis", milestone: "", time: "4 to 8 months" },
   { level: "Level 4", name: "Tactical Bishops", badge: "Tactical Bishop Badge", age: "Ages 11 and above, strong positional and tactical foundation", learn: "Advanced tactical combinations including deflection, interference, and zugzwang; comprehensive endgame theory; deep ChessBase analysis; tournament preparation including clock management.", format: "Group plus optional private sessions, 60 minutes per class", tools: "Zoom, Lichess, ChessBase full professional suite", homework: "30 minutes daily — complex tactical puzzles plus full annotated game analysis", milestone: "", time: "" },
   { level: "Level 5", name: "Master Rooks & Queens", badge: "Master Rook Badge & FIDE Queens Path Badge", age: "Serious competitors wanting rated play", learn: "Complete opening repertoire for both colors; advanced endgame mastery; psychological preparation and mental toughness; full clock management; FIDE tournament entry guidance; study of grandmaster games.", format: "Primarily 1-on-1 private sessions, 60 to 90 minutes", tools: "", homework: "", milestone: "", time: "" },
 ];
 
 const cubeLevels = [
-  { name: "Cube Basics", age: "Ages 6 and up, no experience needed", learn: "Understanding cube notation and move language, the Layer-by-Layer solving method.", builds: "Spatial reasoning, sequential memory, algorithmic thinking, patience and persistence", format: "Group 6 to 10 students, 45 minutes per class, weekly", outcome: "Complete an independent 3x3 solve within the first month" },
+  { name: "Cube Basics", age: "Ages 6 and up, no experience needed", learn: "Understanding cube notation and move language, the Layer-by-Layer solving method.", builds: "Spatial reasoning, sequential memory, algorithmic thinking, patience and persistence", format: "Group 4 to 6 students, 45 minutes per class, weekly", outcome: "Complete an independent 3x3 solve within the first month" },
   { name: "Speedcubing Challenge", age: "Students who can already solve the cube", learn: "Full CFOP advanced solving method, efficient finger tricks, lookahead skills, personal best tracking, competition preparation.", builds: "", format: "Group sessions plus monthly timed challenge events", outcome: "Sub-1 minute first, then sub-30 seconds for dedicated students" },
 ];
 
@@ -43,7 +43,6 @@ const Courses = () => {
 
   return (
     <div>
-      {/* Hero */}
       <section className="relative pt-[75px]">
         <div className="container mx-auto px-4 lg:px-8 py-20">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl">
@@ -57,7 +56,6 @@ const Courses = () => {
         </div>
       </section>
 
-      {/* Tab Switcher */}
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex gap-4 mb-12 justify-center">
@@ -89,7 +87,7 @@ const Courses = () => {
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-start`}
+                  className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
                 >
                   <div className={`bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border ${i % 2 === 1 ? "lg:order-2" : ""}`}>
                     <div className="flex items-center gap-3 mb-4">
@@ -164,7 +162,6 @@ const Courses = () => {
         </div>
       </SectionWrapper>
 
-      {/* Class Features */}
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
@@ -182,7 +179,6 @@ const Courses = () => {
         </div>
       </SectionWrapper>
 
-      {/* Comparison Table */}
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
@@ -207,7 +203,7 @@ const Courses = () => {
                 {[
                   { feature: "Age", vals: ["5–7", "7–10", "9–12", "11+", "All", "6+", "Solvers"] },
                   { feature: "Duration", vals: ["45 min", "45–60", "60 min", "60 min", "60–90", "45 min", "Varies"] },
-                  { feature: "Group Size", vals: ["6–10", "6–10", "6–10", "Group+Pvt", "1-on-1", "6–10", "Group"] },
+                  { feature: "Group Size", vals: ["4–6", "4–6", "4–6", "Group+Pvt", "1-on-1", "4–6", "Group"] },
                   { feature: "Zoom", vals: ["✓", "✓", "✓", "✓", "✓", "✓", "✓"] },
                   { feature: "Lichess", vals: ["✓", "✓", "✓", "✓", "✓", "—", "—"] },
                   { feature: "ChessBase", vals: ["—", "—", "✓", "✓", "✓", "—", "—"] },
@@ -227,7 +223,6 @@ const Courses = () => {
         </div>
       </SectionWrapper>
 
-      {/* Bottom CTA */}
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy mb-6">

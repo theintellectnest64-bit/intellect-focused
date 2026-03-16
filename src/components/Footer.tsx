@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Instagram, Youtube, Facebook, Linkedin, Twitter } from "lucide-react";
 
+const WHATSAPP_URL = "https://wa.me/919893189566?text=Knock%20knock!%20Can%20I%20step%20into%20the%20nest%20for%20a%20free%20chess%20demo%3F%20%F0%9F%95%8A%E2%99%9F";
+
 const socialLinks = [
   { icon: Instagram, url: "https://www.instagram.com/the_intellectnest/" },
   { icon: Youtube, url: "https://www.youtube.com/@TheIntellectNest64" },
@@ -17,12 +19,12 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <img src="/images/logo.svg" alt="The Intellect Nest logo" className="object-contain" style={{ height: '52px' }} loading="lazy" />
+              <img src="/images/logo.svg" alt="The Intellect Nest logo" className="object-contain" style={{ height: '52px' }} loading="lazy" decoding="async" />
               <span className="font-display text-lg font-bold text-white">The Intellect Nest</span>
             </div>
             <p className="font-body text-sm italic mb-4" style={{ color: "#93C5FD" }}>where knowledge takes flight</p>
             <p className="font-body text-sm leading-relaxed mb-6" style={{ color: "#93C5FD" }}>
-              India's premier online chess and Rubik's Cube academy for kids aged 5–15. Building sharp minds and confident hearts.
+              A world-class online chess academy for kids aged 5–15. Trusted by families across 30+ countries. Where knowledge takes flight.
             </p>
             <div className="flex gap-4">
               {socialLinks.map(({ icon: Icon, url }, i) => (
@@ -102,7 +104,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="https://wa.me/919893189566?text=Hi%2C%20I%20want%20to%20book%20a%20free%20demo%20for%20my%20child%20at%20The%20Intellect%20Nest"
+                  href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-body text-sm text-white hover:underline"

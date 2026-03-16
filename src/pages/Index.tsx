@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, Trophy, Star, Clock, Brain, Heart, Lightbulb, Puzzle, BookOpen, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Quote, Globe } from "lucide-react";
+import { Users, Trophy, Star, Brain, Heart, Lightbulb, Puzzle, BookOpen, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Quote, Globe } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import SectionDivider from "@/components/SectionDivider";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import TypewriterEyebrow from "@/components/TypewriterEyebrow";
 import FloatingChessPieces from "@/components/FloatingChessPieces";
 import RevealImage from "@/components/RevealImage";
+import USPStrip from "@/components/USPStrip";
 import { useState, useEffect } from "react";
 
 const stagger = {
@@ -55,7 +56,7 @@ const faqPreview = [
   { q: "What age group does The Intellect Nest teach?", a: "We teach primarily kids aged 5 to 15 in age-appropriate batches. Very young children aged 4 and up can try a demo and join starter groups when ready." },
   { q: "Does my child need prior chess experience?", a: "No. We have a full beginner pathway that starts from piece movements and basic checkmates and builds skills step by step from the very beginning." },
   { q: "How are classes delivered?", a: "All classes are live and instructor-led on Zoom, supported by practice and puzzles on Lichess and analysis using ChessBase for advanced levels." },
-  { q: "What is the typical class size?", a: "Group classes usually have 6 to 10 students, which balances individual attention with peer learning. Private sessions are 1-on-1." },
+  { q: "What is the typical class size?", a: "Group classes usually have 4 to 6 students, which balances individual attention with peer learning. Private sessions are 1-on-1." },
   { q: "Do you offer one-on-one coaching?", a: "Yes — private sessions are available for advanced learners, fast-track students, or anyone needing a fully custom learning plan." },
   { q: "How long is each class?", a: "Standard group classes run 45 to 60 minutes. One-on-one sessions are typically 60 minutes but can be adjusted to the student's needs." },
   { q: "What curriculum do you follow?", a: "We follow a progressive curriculum: Beginner Nest, Rising Pawns, Strategic Knights, Tactical Bishops, and Master Rooks and Queens, with defined milestones and assessments at each stage." },
@@ -143,10 +144,10 @@ const Index = () => {
                 <TypewriterEyebrow />
               </motion.div>
               <motion.h1 variants={heroItem} className="font-display text-[34px] md:text-5xl lg:text-[64px] font-black text-navy leading-[1.15] mb-6 text-balance" style={{ letterSpacing: "0.01em", textShadow: "0 2px 20px rgba(13,30,59,0.08)" }}>
-                Online Chess and Rubik's Cube Classes for Kids
+                Online Chess Classes for Kids
               </motion.h1>
               <motion.p variants={heroItem} className="font-body text-lg md:text-xl text-secondary leading-relaxed mb-8 max-w-lg">
-                Turn screen time into brain time. Live coach-led sessions, weekly tournaments, and progress reports for ages 5 to 15.
+                Expert-led live chess coaching for ages 5–15. Small groups of 4–6 students. Real results. Trusted by families in 30+ countries worldwide.
               </motion.p>
               <motion.div variants={heroItem} className="flex flex-wrap gap-4 mb-6">
                 <Link to="/book-demo" className="cta-gold">
@@ -157,12 +158,13 @@ const Index = () => {
                 </Link>
               </motion.div>
               <motion.div variants={heroItem} className="flex flex-wrap gap-6 font-body text-sm text-muted-foreground">
-                <span>✓ Free demo</span>
-                <span>✓ No commitment</span>
-                <span>✓ Hindi & English</span>
+                <span>✓ Free demo class</span>
+                <span>✓ Expert coaches</span>
+                <span>✓ 30+ countries</span>
+                <span>✓ Multiple languages</span>
               </motion.div>
               <motion.p variants={heroItem} className="font-body text-xs text-muted-foreground mt-4">
-                Serving 500+ students across India and 30+ countries
+                Trusted by 500+ students across 30+ countries worldwide
               </motion.p>
             </motion.div>
 
@@ -219,7 +221,7 @@ const Index = () => {
                 Why Chess Changes Everything for Your Child
               </h2>
               <p className="font-body text-lg max-w-2xl mx-auto" style={{ color: "#93C5FD" }}>
-                Chess trains mental skills the way sport trains the body.
+                Chess is the ultimate brain sport. Backed by decades of research, regular chess practice develops the cognitive skills that matter most — focus, logic, resilience, and confidence. Our expert coaches make it engaging, structured, and genuinely fun for every child.
               </p>
             </div>
           </div>
@@ -250,16 +252,16 @@ const Index = () => {
 
       <SectionDivider />
 
-      {/* LEARNING PATHS */}
+      {/* LEARNING PATHS — Chess only */}
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
-            <span className="eyebrow mb-3 block">Our Programs</span>
+            <span className="eyebrow mb-3 block">Our Program</span>
             <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy">
-              Two Paths. One Mission: A Sharper Child.
+              A Structured Path to Chess Mastery
             </h2>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="max-w-3xl mx-auto">
             <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border">
               <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-4">
                 <Trophy size={28} style={{ color: "#2B7DD4" }} />
@@ -276,25 +278,6 @@ const Index = () => {
               </div>
               <Link to="/courses" className="inline-flex items-center gap-1 font-body text-sm text-sky hover:underline transition-colors font-medium">
                 Explore Chess Courses <ChevronRight size={16} />
-              </Link>
-            </motion.div>
-
-            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border">
-              <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-4">
-                <Puzzle size={28} style={{ color: "#2B7DD4" }} />
-              </div>
-              <span className="eyebrow-left text-xs mb-2 block">Ages 6 and up, Beginner to Speedcubing</span>
-              <h3 className="font-display text-2xl lg:text-3xl font-bold text-navy mb-4">Rubik's Cube Program</h3>
-              <p className="font-body text-secondary leading-relaxed mb-6">
-                Step-by-step solving to advanced speedcubing — the Cube sharpens spatial memory, algorithmic thinking, and lightning-fast pattern recognition. The perfect cognitive complement to chess training.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {["Cube Basics", "Speedcubing Challenge"].map((level) => (
-                  <span key={level} className="font-body text-xs bg-muted text-sky px-3 py-1 rounded-md border border-sky-border">{level}</span>
-                ))}
-              </div>
-              <Link to="/courses" className="inline-flex items-center gap-1 font-body text-sm text-sky hover:underline transition-colors font-medium">
-                Explore Cube Courses <ChevronRight size={16} />
               </Link>
             </motion.div>
           </div>
@@ -341,6 +324,11 @@ const Index = () => {
           </div>
         </div>
       </SectionWrapper>
+
+      <SectionDivider />
+
+      {/* USP STRIP */}
+      <USPStrip />
 
       <SectionDivider />
 
@@ -424,7 +412,7 @@ const Index = () => {
                 <button
                   key={i}
                   onClick={() => setActiveTestimonial(i)}
-                  className={`w-3 h-3 rounded-full transition-colors ${i === activeTestimonial ? "" : ""}`}
+                  className={`w-3 h-3 rounded-full transition-colors`}
                   style={{ background: i === activeTestimonial ? "#2B7DD4" : "rgba(255,255,255,0.3)" }}
                 />
               ))}
