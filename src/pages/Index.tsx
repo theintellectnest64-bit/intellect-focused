@@ -6,6 +6,7 @@ import SectionDivider from "@/components/SectionDivider";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import TypewriterEyebrow from "@/components/TypewriterEyebrow";
 import FloatingChessPieces from "@/components/FloatingChessPieces";
+import RevealImage from "@/components/RevealImage";
 import { useState, useEffect } from "react";
 
 const stagger = {
