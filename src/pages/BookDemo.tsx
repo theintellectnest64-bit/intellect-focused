@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { fireConfetti } from "@/lib/confetti";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
