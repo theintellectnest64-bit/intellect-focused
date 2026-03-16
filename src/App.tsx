@@ -18,6 +18,9 @@ import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
 import FAQ from "./pages/FAQ";
 import Gallery from "./pages/Gallery";
+import BookDemo from "./pages/BookDemo";
+import Contact from "./pages/Contact";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
