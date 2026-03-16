@@ -36,7 +36,7 @@ const pricingFaq = [
   { q: "Is there a sibling discount?", a: "Yes — sibling discounts are available for families enrolling more than one child." },
   { q: "What payment methods do you accept?", a: "UPI, debit and credit cards, and netbanking for India. Cards, PayPal, and bank transfer for international families." },
   { q: "Is there a trial or demo class?", a: "Yes — we offer a completely free demo class so families can experience a live session before committing." },
-  { q: "What are your fees?", a: "India: Rs 2,999/month for group, Rs 4,999/month for 1-on-1. International: $49/month group, $99/month 1-on-1." },
+  { q: "What are your fees?", a: "India: Rs 2,999/month for group, Rs 4,999/month for 1-on-1. International: $59/month group, $99/month 1-on-1." },
   { q: "Can I pause my enrollment?", a: "Yes — one pause per quarter is allowed. Contact us at least 7 days before the next billing cycle." },
   { q: "Are group classes suitable for advanced kids?", a: "Advanced learners benefit from group play but typically need occasional private sessions for deeper preparation." },
   { q: "Do you collaborate with schools?", a: "Yes — we run school partnership programs, curriculum integration, and corporate CSR chess workshops." },
