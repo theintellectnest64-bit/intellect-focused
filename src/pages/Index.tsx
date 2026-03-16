@@ -382,7 +382,7 @@ const Index = () => {
         style={{ background: "#0D1E3B" }}>
         
         <img
-          src="https://images.unsplash.com/photo-1560264280-88b68371db39?w=1200&q=80"
+          src="https://images.unsplash.com/photo-1560264280-88b68371db39?w=1200&q=60"
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
