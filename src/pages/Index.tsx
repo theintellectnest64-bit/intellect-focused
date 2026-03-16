@@ -258,10 +258,10 @@ const Index = () => {
           <div className="text-center mb-12">
             <span className="eyebrow mb-3 block">Our Programs</span>
             <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-navy">
-              Two Paths. One Mission: A Sharper Child.
+              Our Chess Mastery Program
             </h2>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="max-w-2xl mx-auto">
             <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border">
               <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-4">
                 <Trophy size={28} style={{ color: "#2B7DD4" }} />
@@ -278,25 +278,6 @@ const Index = () => {
               </div>
               <Link to="/courses" className="inline-flex items-center gap-1 font-body text-sm text-sky hover:underline transition-colors font-medium">
                 Explore Chess Courses <ChevronRight size={16} />
-              </Link>
-            </motion.div>
-
-            <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border">
-              <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center mb-4">
-                <Puzzle size={28} style={{ color: "#2B7DD4" }} />
-              </div>
-              <span className="eyebrow-left text-xs mb-2 block">Ages 6 and up, Beginner to Speedcubing</span>
-              <h3 className="font-display text-2xl lg:text-3xl font-bold text-navy mb-4">Rubik's Cube Program</h3>
-              <p className="font-body text-secondary leading-relaxed mb-6">
-                Step-by-step solving to advanced speedcubing — the Cube sharpens spatial memory, algorithmic thinking, and lightning-fast pattern recognition. The perfect cognitive complement to chess training.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {["Cube Basics", "Speedcubing Challenge"].map((level) =>
-                <span key={level} className="font-body text-xs bg-muted text-sky px-3 py-1 rounded-md border border-sky-border">{level}</span>
-                )}
-              </div>
-              <Link to="/courses" className="inline-flex items-center gap-1 font-body text-sm text-sky hover:underline transition-colors font-medium">
-                Explore Cube Courses <ChevronRight size={16} />
               </Link>
             </motion.div>
           </div>
