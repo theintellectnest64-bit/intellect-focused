@@ -46,10 +46,32 @@ const Header = () => {
       >
         <div className="container mx-auto flex items-center justify-between h-full px-4 lg:px-8">
           <Link to="/" className="flex items-center gap-3">
-            <img src="/images/logo.svg" alt="The Intellect Nest" className="object-contain" style={{ height: '44px' }} />
-            <span className={`font-display text-lg font-bold hidden sm:block ${scrolled ? "text-white" : "text-navy"}`}>
-              The Intellect Nest
-            </span>
+            <img
+              src="/images/logo.svg"
+              alt="The Intellect Nest"
+              className="object-contain transition-all duration-300"
+              style={{
+                height: '44px',
+                borderRadius: '50%',
+                border: scrolled ? '1.5px solid rgba(43,125,212,0.4)' : '1.5px solid transparent',
+              }}
+            />
+            <div className="hidden sm:flex flex-col transition-all duration-300">
+              <span className="font-display text-[20px] font-bold leading-tight">
+                <span style={{ color: scrolled ? '#FFFFFF' : '#0D1E3B', transition: 'color 0.3s ease' }}>
+                  The Intellect{' '}
+                </span>
+                <span style={{ color: scrolled ? '#F5C518' : '#2B7DD4', transition: 'color 0.3s ease' }}>
+                  Nest
+                </span>
+              </span>
+              <span
+                className="font-body italic text-[11px] font-normal leading-tight"
+                style={{ color: scrolled ? '#93C5FD' : '#4A5568', transition: 'color 0.3s ease' }}
+              >
+                where knowledge takes flight
+              </span>
+            </div>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">

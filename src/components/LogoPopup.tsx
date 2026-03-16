@@ -1,25 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
 const LogoPopup = () => {
   const [show, setShow] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (sessionStorage.getItem("logo_popup_shown")) return;
-    
-    let scrollTimer: ReturnType<typeof setTimeout> | null = null;
+    if (sessionStorage.getItem("popup_played")) return;
+
     const timeTimer = setTimeout(() => {
-      if (!sessionStorage.getItem("logo_popup_shown")) {
-        sessionStorage.setItem("logo_popup_shown", "true");
+      if (!sessionStorage.getItem("popup_played")) {
+        sessionStorage.setItem("popup_played", "true");
         setShow(true);
       }
-    }, 5000);
+    }, 8000);
 
     const handleScroll = () => {
-      if (window.scrollY > window.innerHeight && !sessionStorage.getItem("logo_popup_shown")) {
-        sessionStorage.setItem("logo_popup_shown", "true");
+      if (window.scrollY > window.innerHeight && !sessionStorage.getItem("popup_played")) {
+        sessionStorage.setItem("popup_played", "true");
         setShow(true);
       }
     };
@@ -27,16 +27,20 @@ const LogoPopup = () => {
 
     return () => {
       clearTimeout(timeTimer);
-      if (scrollTimer) clearTimeout(scrollTimer);
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
+  // When video ends, fade out after 1.5s
   useEffect(() => {
-    if (show && !dismissed) {
-      const t = setTimeout(() => setDismissed(true), 6000);
-      return () => clearTimeout(t);
-    }
+    if (!show || dismissed) return;
+    const video = videoRef.current;
+    if (!video) return;
+    const handleEnded = () => {
+      setTimeout(() => setDismissed(true), 1500);
+    };
+    video.addEventListener("ended", handleEnded);
+    return () => video.removeEventListener("ended", handleEnded);
   }, [show, dismissed]);
 
   return (
@@ -46,18 +50,35 @@ const LogoPopup = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          className="fixed bottom-6 left-6 z-[998] w-40 bg-background border border-sky-border rounded-xl shadow-lg overflow-hidden"
-          style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}
+          transition={{ duration: 0.4 }}
+          className="fixed z-[998] overflow-hidden"
+          style={{
+            bottom: 24,
+            left: 24,
+            width: 160,
+            background: "#FFFFFF",
+            border: "1px solid #DBEAFE",
+            borderRadius: 12,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+          }}
         >
           <button
             onClick={() => setDismissed(true)}
-            className="absolute top-1 right-1 z-10 w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground"
+            className="absolute top-1 right-1 z-10 w-[18px] h-[18px] flex items-center justify-center"
+            style={{ color: "#6B7280" }}
           >
             <X size={12} />
           </button>
-          <div className="p-4 flex flex-col items-center gap-2">
-            <img src="/images/logo.svg" alt="The Intellect Nest" className="w-16 h-16 object-contain" />
-            <span className="font-display text-xs font-semibold text-navy text-center">The Intellect Nest</span>
+          <div className="p-2">
+            <video
+              ref={videoRef}
+              src="/videos/logo_animation.mp4"
+              autoPlay
+              muted
+              playsInline
+              className="w-full"
+              style={{ mixBlendMode: "screen" }}
+            />
           </div>
         </motion.div>
       )}
