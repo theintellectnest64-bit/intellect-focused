@@ -206,13 +206,13 @@ const Index = () => {
         <div className="container mx-auto px-4 lg:px-8">
           {/* Atmospheric image strip */}
           <div className="relative h-[200px] rounded-xl overflow-hidden mb-12 lg:mb-16">
-            <img
-              src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1200&q=80"
-              alt="Chess atmosphere"
-              className="w-full h-full object-cover"
-              loading="lazy"
+            <RevealImage
+              src="/images/why-chess-strip.jpg"
+              alt="Atmospheric chess scene illustrating focus and strategy"
+              wrapperClassName="absolute inset-0"
+              imageClassName="ken-burns"
             />
-            <div className="absolute inset-0" style={{ background: "rgba(13,30,59,0.7)" }} />
+            <div className="absolute inset-0" style={{ backgroundColor: "hsl(var(--navy) / 0.7)" }} />
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
               <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3">Why It Works</span>
               <h2 className="font-display text-[28px] md:text-4xl lg:text-[48px] font-bold text-white mb-2">
