@@ -54,7 +54,7 @@ const faqPreview = [
 { q: "What age group does The Intellect Nest teach?", a: "We teach primarily kids aged 5 to 15 in age-appropriate batches. Very young children aged 4 and up can try a demo and join starter groups when ready." },
 { q: "Does my child need prior chess experience?", a: "No. We have a full beginner pathway that starts from piece movements and basic checkmates and builds skills step by step from the very beginning." },
 { q: "How are classes delivered?", a: "All classes are live and instructor-led on Zoom, supported by practice and puzzles on Lichess and analysis using ChessBase for advanced levels." },
-{ q: "What is the typical class size?", a: "Group classes usually have 6 to 10 students, which balances individual attention with peer learning. Private sessions are 1-on-1." },
+{ q: "What is the typical class size?", a: "Group classes usually have 4 to 6 students, which balances individual attention with peer learning. Private sessions are 1-on-1." },
 { q: "Do you offer one-on-one coaching?", a: "Yes — private sessions are available for advanced learners, fast-track students, or anyone needing a fully custom learning plan." },
 { q: "How long is each class?", a: "Standard group classes run 45 to 60 minutes. One-on-one sessions are typically 60 minutes but can be adjusted to the student's needs." },
 { q: "What curriculum do you follow?", a: "We follow a progressive curriculum: Beginner Nest, Rising Pawns, Strategic Knights, Tactical Bishops, and Master Rooks and Queens, with defined milestones and assessments at each stage." },
