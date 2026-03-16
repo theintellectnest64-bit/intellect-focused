@@ -166,9 +166,10 @@ const Index = () => {
                 </Link>
               </motion.div>
               <motion.div variants={heroItem} className="flex flex-wrap gap-6 font-body text-sm text-muted-foreground">
-                <span>✓ Free demo</span>
-                <span>✓ No commitment</span>
-                <span>✓ Hindi & English</span>
+                <span>✓ Free demo class</span>
+                <span>✓ Expert coaches</span>
+                <span>✓ 30+ countries</span>
+                <span>✓ Multiple languages</span>
               </motion.div>
               <motion.p variants={heroItem} className="font-body text-xs text-muted-foreground mt-4">
                 Serving 500+ students across India and 30+ countries
