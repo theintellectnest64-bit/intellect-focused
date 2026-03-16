@@ -499,9 +499,9 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}>
               
-                <Link to={`/blog/${blog.slug}`} className="block bg-card rounded-xl card-shadow card-hover border border-sky-border h-full overflow-hidden">
-                  <div className="h-32 flex items-center justify-center overflow-hidden" style={{ background: "#0D1E3B" }}>
-                    <span className="text-5xl transition-transform duration-400 hover:scale-[1.04]" style={{ color: "#2B7DD4" }}>{blog.piece}</span>
+                <Link to={`/blog/${blog.slug}`} className="block bg-card rounded-xl card-shadow card-hover border border-sky-border h-full overflow-hidden group">
+                  <div className="h-32 overflow-hidden">
+                    <LazyImage src={getBlogThumbnail(i)} alt={blog.title} width={400} height={128} className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-[1.04]" />
                   </div>
                   <div className="p-6">
                     <span className="eyebrow-left text-[10px] mb-2 block">{blog.cat}</span>
