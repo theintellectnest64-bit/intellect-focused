@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, ChevronDown, Crown } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import { Helmet } from "react-helmet-async";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -48,17 +49,37 @@ const Pricing = () => {
 
   return (
     <div>
-      {/* Hero */}
+      <Helmet>
+        <title>Pricing | The Intellect Nest</title>
+        <meta name="description" content="Transparent pricing for online chess classes. Group classes and private 1-on-1 coaching." />
+        <meta property="og:title" content="Pricing | The Intellect Nest" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@IntellectT43247" />
+      </Helmet>
+
+      {/* Hero with image */}
       <section className="relative pt-[75px]">
-        <div className="container mx-auto px-4 lg:px-8 py-20">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-3xl mx-auto">
-            <h1 className="font-display text-[34px] md:text-5xl lg:text-[64px] font-black text-navy leading-[1.15] mb-6" style={{ letterSpacing: "0.01em" }}>
+        <div className="h-[200px] overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1200&q=60"
+            alt="Chess pricing hero"
+            width={1200}
+            height={200}
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="absolute inset-0 top-[75px] flex items-center justify-center" style={{ background: "rgba(13,30,59,0.7)" }}>
+          <div className="text-center max-w-3xl mx-auto px-4">
+            <h1 className="font-display text-[34px] md:text-5xl lg:text-[64px] font-black text-white leading-[1.15] mb-6" style={{ letterSpacing: "0.01em" }}>
               Transparent Pricing. No Hidden Costs.
             </h1>
-            <p className="font-body text-lg text-secondary leading-relaxed">
+            <p className="font-body text-lg leading-relaxed" style={{ color: "#93C5FD" }}>
               Try a free demo first. No payment. No commitment.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -67,29 +88,12 @@ const Pricing = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex justify-center mb-12">
             <div className="bg-card rounded-lg p-1 border border-sky-border inline-flex">
-              <button
-                onClick={() => setCurrency("inr")}
-                className={`px-5 py-2 rounded-md font-body text-sm font-medium transition-all ${
-                  currency === "inr" ? "text-white" : "text-secondary hover:text-foreground"
-                }`}
-                style={currency === "inr" ? { background: "#2B7DD4" } : {}}
-              >
-                India (₹)
-              </button>
-              <button
-                onClick={() => setCurrency("usd")}
-                className={`px-5 py-2 rounded-md font-body text-sm font-medium transition-all ${
-                  currency === "usd" ? "text-white" : "text-secondary hover:text-foreground"
-                }`}
-                style={currency === "usd" ? { background: "#2B7DD4" } : {}}
-              >
-                International ($)
-              </button>
+              <button onClick={() => setCurrency("inr")} className={`px-5 py-2 rounded-md font-body text-sm font-medium transition-all ${currency === "inr" ? "text-white" : "text-secondary hover:text-foreground"}`} style={currency === "inr" ? { background: "#2B7DD4" } : {}}>India (₹)</button>
+              <button onClick={() => setCurrency("usd")} className={`px-5 py-2 rounded-md font-body text-sm font-medium transition-all ${currency === "usd" ? "text-white" : "text-secondary hover:text-foreground"}`} style={currency === "usd" ? { background: "#2B7DD4" } : {}}>International ($)</button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {/* Group */}
             <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border relative">
               <div className="absolute -top-3 left-6">
                 <span className="font-body text-xs font-bold px-3 py-1 rounded-md flex items-center gap-1 uppercase tracking-wider" style={{ background: "#F5C518", color: "#0D1E3B" }}>
@@ -98,9 +102,7 @@ const Pricing = () => {
               </div>
               <h3 className="font-display text-xl font-bold text-navy mt-2 mb-1">Group Classes</h3>
               <div className="mb-6">
-                <span className="font-display text-4xl font-bold text-sky">
-                  {currency === "inr" ? "₹2,999" : "$59"}
-                </span>
+                <span className="font-display text-4xl font-bold text-sky">{currency === "inr" ? "₹2,999" : "$59"}</span>
                 <span className="font-body text-sm text-muted-foreground"> /month</span>
               </div>
               <ul className="space-y-3 mb-8">
@@ -111,18 +113,13 @@ const Pricing = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/book-demo" className="cta-gold w-full justify-center">
-                Book Free Demo
-              </Link>
+              <Link to="/book-demo" className="cta-gold w-full justify-center">Book Free Demo</Link>
             </motion.div>
 
-            {/* Private */}
             <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border">
               <h3 className="font-display text-xl font-bold text-navy mb-1">Private 1-on-1</h3>
               <div className="mb-6">
-                <span className="font-display text-4xl font-bold text-sky">
-                  {currency === "inr" ? "₹4,999" : "$99"}
-                </span>
+                <span className="font-display text-4xl font-bold text-sky">{currency === "inr" ? "₹4,999" : "$99"}</span>
                 <span className="font-body text-sm text-muted-foreground"> /month</span>
               </div>
               <ul className="space-y-3 mb-8">
@@ -133,12 +130,9 @@ const Pricing = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/book-demo" className="cta-gold w-full justify-center">
-                Book Free Demo
-              </Link>
+              <Link to="/book-demo" className="cta-gold w-full justify-center">Book Free Demo</Link>
             </motion.div>
 
-            {/* Custom */}
             <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border flex flex-col">
               <h3 className="font-display text-xl font-bold text-navy mb-1">School & Custom</h3>
               <div className="mb-6">
@@ -147,9 +141,7 @@ const Pricing = () => {
               <p className="font-body text-sm text-secondary leading-relaxed mb-8 flex-1">
                 For schools, corporate CSR programs, and families enrolling 3 or more children. Custom batch sizes, dedicated coach, school branding, and progress dashboards.
               </p>
-              <Link to="/contact" className="cta-secondary w-full justify-center">
-                Contact Us
-              </Link>
+              <Link to="/contact" className="cta-secondary w-full justify-center">Contact Us</Link>
             </motion.div>
           </div>
 
@@ -212,10 +204,7 @@ const Pricing = () => {
           <div className="max-w-3xl mx-auto space-y-3">
             {pricingFaq.map((item, i) => (
               <div key={i} className="border border-sky-border rounded-xl overflow-hidden bg-card">
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors"
-                >
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between p-5 text-left hover:bg-muted/50 transition-colors">
                   <span className="font-body text-sm font-medium text-navy pr-4">{item.q}</span>
                   <ChevronDown size={18} className={`shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} style={{ color: "#2B7DD4" }} />
                 </button>

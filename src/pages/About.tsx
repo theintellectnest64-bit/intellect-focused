@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 import { Users, Trophy, Star, Target, Brain, Shield, Heart, Sparkles, Globe, Check } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import AnimatedCounter from "@/components/AnimatedCounter";
-import RevealImage from "@/components/RevealImage";
+import LazyImage from "@/components/LazyImage";
+import { Helmet } from "react-helmet-async";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -17,6 +18,15 @@ const stagger = {
 const About = () => {
   return (
     <div>
+      <Helmet>
+        <title>About Us | The Intellect Nest</title>
+        <meta name="description" content="The Intellect Nest is a world-class online chess academy for kids. More than an academy — a brain gym for kids." />
+        <meta property="og:title" content="About Us | The Intellect Nest" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@IntellectT43247" />
+      </Helmet>
+
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center pt-[75px]">
         <div className="container mx-auto px-4 lg:px-8 py-20">
@@ -47,12 +57,14 @@ const About = () => {
                 We built The Intellect Nest because we saw too many children spending hours on screens that gave nothing back. Chess is not just a game — it is a tool for building the kind of mind that succeeds in school, in relationships, and in life.
               </p>
             </motion.div>
-            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-xl card-shadow">
-              <RevealImage
-                src="/images/about-coach.jpg"
-                alt="Coach leading a chess training session at The Intellect Nest"
-                wrapperClassName="rounded-xl"
-                imageClassName="h-auto"
+            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="rounded-xl overflow-hidden card-shadow">
+              <LazyImage
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=60"
+                alt="Coaching atmosphere at The Intellect Nest"
+                width={800}
+                height={500}
+                className="w-full h-auto object-cover"
+                style={{ borderRadius: 16 }}
               />
             </motion.div>
           </div>
@@ -144,14 +156,7 @@ const About = () => {
               "Weekly internal tournaments built into every plan at no extra cost.",
               "Personal coach match based on learning style, language, and personality.",
             ].map((point, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="flex gap-4 items-start bg-card p-5 rounded-xl border border-sky-border card-hover"
-              >
+              <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="flex gap-4 items-start bg-card p-5 rounded-xl border border-sky-border card-hover">
                 <Check size={20} className="text-sky shrink-0 mt-0.5" style={{ color: "#2B7DD4" }} />
                 <p className="font-body text-sm text-secondary leading-relaxed">{point}</p>
               </motion.div>
@@ -175,12 +180,8 @@ const About = () => {
       {/* Bottom CTA */}
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy mb-6">
-            Ready to experience the difference?
-          </h2>
-          <Link to="/book-demo" className="cta-gold text-lg px-8 py-4">
-            Book Free Demo
-          </Link>
+          <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy mb-6">Ready to experience the difference?</h2>
+          <Link to="/book-demo" className="cta-gold text-lg px-8 py-4">Book Free Demo</Link>
         </div>
       </SectionWrapper>
     </div>

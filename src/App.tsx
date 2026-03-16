@@ -89,10 +89,12 @@ const App = () => {
             <WhatsAppButton />
             <BackToTop />
             <LogoPopup />
+            <StickyMobileCTA />
           </BrowserRouter>
         )}
       </TooltipProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   );
 };
 

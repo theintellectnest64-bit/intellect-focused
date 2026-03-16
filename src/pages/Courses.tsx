@@ -3,15 +3,26 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Trophy, Puzzle, Check, ChevronRight, Award, Clock as ClockIcon } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
-import RevealImage from "@/components/RevealImage";
+import LazyImage from "@/components/LazyImage";
+import { Helmet } from "react-helmet-async";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-const chessPieces = ["♟", "♞", "♝", "♜", "♛"];
-const chessPieceColors = ["#2B7DD4", "#2B7DD4", "#2B7DD4", "#2B7DD4", "#F5C518"];
+const courseThumbnails = [
+  "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=400&q=60",
+  "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=400&q=60",
+  "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=400&q=60",
+  "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&q=60",
+  "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=400&q=60",
+];
+
+const cubeThumbnails = [
+  "https://images.unsplash.com/photo-1560264280-88b68371db39?w=400&q=60",
+  "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=400&q=60",
+];
 
 const chessLevels = [
   { level: "Level 1", name: "Beginner Nest", badge: "Beginner Nest Badge", age: "Ages 5 to 7, zero experience required", learn: "Piece movement and board orientation for all 6 piece types, basic checkmates including back-rank mate and smothered mate, pattern recognition games designed for young attention spans, story-based lessons where each piece has a character and mission, fun tactical puzzles presented as adventures.", format: "Group 4 to 6 students, 45 minutes per class, weekly schedule", tools: "Zoom for live class, Lichess beginner puzzle sets", homework: "15 minutes daily puzzle practice, designed to feel like playing a game", milestone: "Completing an independent checkmate, solving basic tactical puzzles at beginner level", time: "2 to 4 months of consistent practice" },
@@ -43,6 +54,15 @@ const Courses = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Chess Courses for Kids | The Intellect Nest</title>
+        <meta name="description" content="From first move to champion — structured chess and Rubik's Cube programs for kids aged 4–16." />
+        <meta property="og:title" content="Chess Courses for Kids | The Intellect Nest" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@IntellectT43247" />
+      </Helmet>
+
       <section className="relative pt-[75px]">
         <div className="container mx-auto px-4 lg:px-8 py-20">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl">
@@ -59,22 +79,10 @@ const Courses = () => {
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex gap-4 mb-12 justify-center">
-            <button
-              onClick={() => setTab("chess")}
-              className={`px-6 py-3 font-body font-semibold text-sm rounded-lg transition-all ${
-                tab === "chess" ? "bg-sky text-white" : "cta-secondary"
-              }`}
-              style={tab === "chess" ? { background: "#2B7DD4" } : {}}
-            >
+            <button onClick={() => setTab("chess")} className={`px-6 py-3 font-body font-semibold text-sm rounded-lg transition-all ${tab === "chess" ? "bg-sky text-white" : "cta-secondary"}`} style={tab === "chess" ? { background: "#2B7DD4" } : {}}>
               <Trophy size={16} className="inline mr-2" /> Chess Program
             </button>
-            <button
-              onClick={() => setTab("cube")}
-              className={`px-6 py-3 font-body font-semibold text-sm rounded-lg transition-all ${
-                tab === "cube" ? "bg-sky text-white" : "cta-secondary"
-              }`}
-              style={tab === "cube" ? { background: "#2B7DD4" } : {}}
-            >
+            <button onClick={() => setTab("cube")} className={`px-6 py-3 font-body font-semibold text-sm rounded-lg transition-all ${tab === "cube" ? "bg-sky text-white" : "cta-secondary"}`} style={tab === "cube" ? { background: "#2B7DD4" } : {}}>
               <Puzzle size={16} className="inline mr-2" /> Rubik's Cube
             </button>
           </div>
@@ -82,55 +90,34 @@ const Courses = () => {
           {tab === "chess" && (
             <div className="space-y-12">
               {chessLevels.map((level, i) => (
-                <motion.div
-                  key={level.name}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
-                >
-                  <div className={`bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border ${i % 2 === 1 ? "lg:order-2" : ""}`}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="eyebrow-left">{level.level}</span>
+                <motion.div key={level.name} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                  <div className={`bg-card rounded-xl card-shadow card-hover border border-sky-border overflow-hidden ${i % 2 === 1 ? "lg:order-2" : ""}`}>
+                    <div className="h-[160px] overflow-hidden">
+                      <LazyImage src={courseThumbnails[i]} alt={`${level.name} chess course`} width={400} height={160} className="w-full h-full object-cover transition-transform duration-400 hover:scale-[1.04]" />
                     </div>
-                    <h3 className="font-display text-2xl lg:text-3xl font-bold text-navy mb-2">{level.name}</h3>
-                    <p className="font-body text-sm mb-4" style={{ color: "#2B7DD4" }}>{level.age}</p>
-                    <div className="space-y-4">
-                      <div>
-                        <h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">What They Learn</h4>
-                        <p className="font-body text-sm text-secondary leading-relaxed">{level.learn}</p>
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className="eyebrow-left">{level.level}</span>
                       </div>
-                      <div>
-                        <h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Format</h4>
-                        <p className="font-body text-sm text-secondary">{level.format}</p>
+                      <h3 className="font-display text-2xl lg:text-3xl font-bold text-navy mb-2">{level.name}</h3>
+                      <p className="font-body text-sm mb-4" style={{ color: "#2B7DD4" }}>{level.age}</p>
+                      <div className="space-y-4">
+                        <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">What They Learn</h4><p className="font-body text-sm text-secondary leading-relaxed">{level.learn}</p></div>
+                        <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Format</h4><p className="font-body text-sm text-secondary">{level.format}</p></div>
+                        {level.tools && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tools</h4><p className="font-body text-sm text-secondary">{level.tools}</p></div>}
+                        {level.homework && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Homework</h4><p className="font-body text-sm text-secondary">{level.homework}</p></div>}
+                        {level.milestone && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Milestone</h4><p className="font-body text-sm text-secondary">{level.milestone}</p></div>}
+                        {level.time && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Expected Time</h4><p className="font-body text-sm text-secondary">{level.time}</p></div>}
                       </div>
-                      {level.tools && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tools</h4><p className="font-body text-sm text-secondary">{level.tools}</p></div>}
-                      {level.homework && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Homework</h4><p className="font-body text-sm text-secondary">{level.homework}</p></div>}
-                      {level.milestone && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Milestone</h4><p className="font-body text-sm text-secondary">{level.milestone}</p></div>}
-                      {level.time && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Expected Time</h4><p className="font-body text-sm text-secondary">{level.time}</p></div>}
-                    </div>
-                    <div className="mt-4 flex items-center gap-2">
-                      <Award size={16} style={{ color: "#2B7DD4" }} />
-                      <span className="font-body text-xs" style={{ color: "#2B7DD4" }}>{level.badge}</span>
+                      <div className="mt-4 flex items-center gap-2">
+                        <Award size={16} style={{ color: "#2B7DD4" }} />
+                        <span className="font-body text-xs" style={{ color: "#2B7DD4" }}>{level.badge}</span>
+                      </div>
                     </div>
                   </div>
                   <div className={`hidden lg:flex items-center justify-center ${i % 2 === 1 ? "lg:order-1" : ""}`}>
                     <div className="w-48 h-48 rounded-xl overflow-hidden border border-sky-border">
-                      {i < 3 ? (
-                        <RevealImage
-                          src={[
-                            "/images/course-beginner.jpg",
-                            "/images/course-intermediate.jpg",
-                            "/images/course-advanced.jpg",
-                          ][i]}
-                          alt={`${level.name} chess course thumbnail`}
-                          imageClassName="h-full"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
-                          <span className="text-7xl" style={{ color: chessPieceColors[i] }}>{chessPieces[i]}</span>
-                        </div>
-                      )}
+                      <LazyImage src={courseThumbnails[i]} alt={`${level.name} thumbnail`} width={192} height={192} className="w-full h-full object-cover" />
                     </div>
                   </div>
                 </motion.div>
@@ -141,19 +128,24 @@ const Courses = () => {
           {tab === "cube" && (
             <div className="space-y-8">
               {cubeLevels.map((level, i) => (
-                <motion.div key={level.name} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
-                      {i === 0 ? <Puzzle size={28} style={{ color: "#2B7DD4" }} /> : <ClockIcon size={28} style={{ color: "#2B7DD4" }} />}
-                    </div>
-                    <h3 className="font-display text-2xl lg:text-3xl font-bold text-navy">{level.name}</h3>
+                <motion.div key={level.name} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-card rounded-xl card-shadow card-hover border border-sky-border overflow-hidden">
+                  <div className="h-[160px] overflow-hidden">
+                    <LazyImage src={cubeThumbnails[i]} alt={`${level.name} course`} width={400} height={160} className="w-full h-full object-cover" />
                   </div>
-                  <p className="font-body text-sm mb-4" style={{ color: "#2B7DD4" }}>{level.age}</p>
-                  <div className="space-y-4">
-                    <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">What They Learn</h4><p className="font-body text-sm text-secondary leading-relaxed">{level.learn}</p></div>
-                    {level.builds && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Skills Built</h4><p className="font-body text-sm text-secondary">{level.builds}</p></div>}
-                    <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Format</h4><p className="font-body text-sm text-secondary">{level.format}</p></div>
-                    <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Expected Outcome</h4><p className="font-body text-sm text-secondary">{level.outcome}</p></div>
+                  <div className="p-8">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
+                        {i === 0 ? <Puzzle size={28} style={{ color: "#2B7DD4" }} /> : <ClockIcon size={28} style={{ color: "#2B7DD4" }} />}
+                      </div>
+                      <h3 className="font-display text-2xl lg:text-3xl font-bold text-navy">{level.name}</h3>
+                    </div>
+                    <p className="font-body text-sm mb-4" style={{ color: "#2B7DD4" }}>{level.age}</p>
+                    <div className="space-y-4">
+                      <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">What They Learn</h4><p className="font-body text-sm text-secondary leading-relaxed">{level.learn}</p></div>
+                      {level.builds && <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Skills Built</h4><p className="font-body text-sm text-secondary">{level.builds}</p></div>}
+                      <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Format</h4><p className="font-body text-sm text-secondary">{level.format}</p></div>
+                      <div><h4 className="font-body text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Expected Outcome</h4><p className="font-body text-sm text-secondary">{level.outcome}</p></div>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -212,9 +204,7 @@ const Courses = () => {
                 ].map((row, i) => (
                   <tr key={i} className="border-b border-sky-border/30">
                     <td className="py-3 px-4 font-medium text-navy">{row.feature}</td>
-                    {row.vals.map((v, j) => (
-                      <td key={j} className="text-center py-3 px-2 text-xs">{v}</td>
-                    ))}
+                    {row.vals.map((v, j) => (<td key={j} className="text-center py-3 px-2 text-xs">{v}</td>))}
                   </tr>
                 ))}
               </tbody>
@@ -225,12 +215,8 @@ const Courses = () => {
 
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy mb-6">
-            Find the right level for your child
-          </h2>
-          <Link to="/book-demo" className="cta-gold text-lg px-8 py-4">
-            Book Free Demo
-          </Link>
+          <h2 className="font-display text-[28px] md:text-4xl font-bold text-navy mb-6">Find the right level for your child</h2>
+          <Link to="/book-demo" className="cta-gold text-lg px-8 py-4">Book Free Demo</Link>
         </div>
       </SectionWrapper>
     </div>
