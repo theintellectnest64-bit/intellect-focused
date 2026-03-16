@@ -9,6 +9,8 @@ import Footer from "@/components/Footer";
 import LocationsStrip from "@/components/LocationsStrip";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
+import ScrollToTop from "@/components/ScrollToTop";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
 import IntroAnimation from "@/components/IntroAnimation";
 import LogoPopup from "@/components/LogoPopup";
 import Index from "./pages/Index";
@@ -45,6 +47,8 @@ const App = () => {
         </AnimatePresence>
         {!showIntro && (
           <BrowserRouter>
+            <ScrollToTop />
+            <ScrollProgressBar />
             <Header />
             <main>
               <Routes>
