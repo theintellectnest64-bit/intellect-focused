@@ -376,16 +376,15 @@ const Index = () => {
 
       {/* TESTIMONIALS — auto-scroll carousel with bg image */}
       <section
-        className="relative py-16 md:py-[100px]"
-        style={{ background: "#0D1E3B" }}
+        className="relative py-16 md:py-[100px] bg-navy"
       >
-        <img
-          src="https://images.unsplash.com/photo-1560264280-88b68371db39?w=1200&q=80"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="lazy"
-          style={{ opacity: 0.05 }}
+        <RevealImage
+          src="/images/testimonials-bg.jpg"
+          alt="Subtle background of children learning together"
+          wrapperClassName="absolute inset-0 pointer-events-none"
+          imageClassName="ken-burns"
         />
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: "hsl(var(--navy) / 0.95)" }} />
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Parent Stories</span>
