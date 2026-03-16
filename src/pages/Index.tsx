@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, Trophy, Star, Clock, Brain, Heart, Lightbulb, Puzzle, BookOpen, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Quote, Globe } from "lucide-react";
+import { Users, Trophy, Star, Brain, Heart, Lightbulb, BookOpen, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Globe } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import SectionDivider from "@/components/SectionDivider";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import TypewriterEyebrow from "@/components/TypewriterEyebrow";
 import FloatingChessPieces from "@/components/FloatingChessPieces";
+import USPStrip from "@/components/USPStrip";
 import { useState, useEffect } from "react";
 
 const stagger = {
