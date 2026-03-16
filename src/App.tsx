@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AnimatePresence } from "framer-motion";
+import { HelmetProvider } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LocationsStrip from "@/components/LocationsStrip";
@@ -13,6 +14,8 @@ import ScrollToTop from "@/components/ScrollToTop";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
 import IntroAnimation from "@/components/IntroAnimation";
 import LogoPopup from "@/components/LogoPopup";
+import Breadcrumb from "@/components/Breadcrumb";
+import StickyMobileCTA from "@/components/StickyMobileCTA";
 
 const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
