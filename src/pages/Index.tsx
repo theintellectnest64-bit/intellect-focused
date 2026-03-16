@@ -328,7 +328,12 @@ const Index = () => {
 
       <SectionDivider />
 
-      {/* TOOLS */}
+      {/* USP STRIP */}
+      <USPStrip />
+
+      <SectionDivider />
+
+
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="text-center mb-12">
