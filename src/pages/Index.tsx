@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, Trophy, Star, Brain, Heart, Lightbulb, Puzzle, BookOpen, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Globe } from "lucide-react";
+import { Users, Trophy, Star, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Globe } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import SectionDivider from "@/components/SectionDivider";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import TypewriterEyebrow from "@/components/TypewriterEyebrow";
 import FloatingChessPieces from "@/components/FloatingChessPieces";
 import USPStrip from "@/components/USPStrip";
+import BenefitFlipCards from "@/components/BenefitFlipCards";
+import LazyImage from "@/components/LazyImage";
+import { getBlogThumbnail } from "@/components/ShareButtons";
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 
 const stagger = {
   hidden: {},
@@ -36,13 +40,7 @@ const slideInLeft = {
   })
 };
 
-const whyChessCards = [
-{ icon: <Brain size={32} />, title: "Focus and Concentration", body: "Chess sessions gradually lengthen attention spans through sustained problem-solving. Young players who practice regularly find homework focus improving within weeks." },
-{ icon: <Lightbulb size={32} />, title: "Logical Thinking", body: "Every chess move is a decision tree. Kids learn to analyze available options, anticipate consequences several moves ahead, and commit to logical conclusions under time pressure." },
-{ icon: <Puzzle size={32} />, title: "Problem Solving", body: "Pattern recognition on the board transfers directly to math and science performance. Tactical puzzles train the same brain regions activated by complex academic problems." },
-{ icon: <Heart size={32} />, title: "Emotional Resilience", body: "Losing is built into chess — and that is exactly the point. Children learn to face defeat with dignity, analyze what went wrong, and return stronger." },
-{ icon: <BookOpen size={32} />, title: "Academic Performance", body: "Executive function, planning, and sequential reasoning gained through chess practice directly improve performance across school subjects." },
-{ icon: <Trophy size={32} />, title: "Confidence Building", body: "Small wins accumulate into deep belief. Children who play chess learn to trust their own judgment, attempt harder challenges, and participate more actively." }];
+// whyChessCards removed — using BenefitFlipCards component instead
 
 
 const testimonials = [
@@ -129,6 +127,16 @@ const Index = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Online Chess Classes for Kids | The Intellect Nest</title>
+        <meta name="description" content="Expert-led live chess coaching for ages 5–15. Small groups of 4–6 students. Trusted by families in 30+ countries." />
+        <meta property="og:title" content="Online Chess Classes for Kids | The Intellect Nest" />
+        <meta property="og:description" content="Expert-led live chess coaching for ages 5–15. Small groups. Real results." />
+        <meta property="og:image" content="/images/logo.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@IntellectT43247" />
+      </Helmet>
       {/* HERO */}
       <section className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
         <Particles />
@@ -226,28 +234,7 @@ const Index = () => {
               </p>
             </div>
           </div>
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {whyChessCards.map((card, i) =>
-            <motion.div
-              key={i}
-              variants={fadeUp}
-              className="bg-card p-6 lg:p-8 rounded-xl sky-left-border card-shadow card-hover border border-sky-border"
-              style={{ borderLeftColor: "hsl(210,65%,49%)" }}>
-              
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${i === 5 ? "" : "bg-muted"}`} style={i === 5 ? { background: "#FFF9E6" } : {}}>
-                  <span style={{ color: i === 5 ? "#F5C518" : "#2B7DD4" }}>{card.icon}</span>
-                </div>
-                <h3 className="font-display text-xl lg:text-2xl font-semibold text-navy mb-3">{card.title}</h3>
-                <p className="font-body text-sm text-secondary leading-relaxed">{card.body}</p>
-              </motion.div>
-            )}
-          </motion.div>
+          <BenefitFlipCards />
         </div>
       </SectionWrapper>
 
@@ -512,9 +499,9 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}>
               
-                <Link to={`/blog/${blog.slug}`} className="block bg-card rounded-xl card-shadow card-hover border border-sky-border h-full overflow-hidden">
-                  <div className="h-32 flex items-center justify-center overflow-hidden" style={{ background: "#0D1E3B" }}>
-                    <span className="text-5xl transition-transform duration-400 hover:scale-[1.04]" style={{ color: "#2B7DD4" }}>{blog.piece}</span>
+                <Link to={`/blog/${blog.slug}`} className="block bg-card rounded-xl card-shadow card-hover border border-sky-border h-full overflow-hidden group">
+                  <div className="h-32 overflow-hidden">
+                    <LazyImage src={getBlogThumbnail(i)} alt={blog.title} width={400} height={128} className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-[1.04]" />
                   </div>
                   <div className="p-6">
                     <span className="eyebrow-left text-[10px] mb-2 block">{blog.cat}</span>
