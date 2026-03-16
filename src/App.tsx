@@ -51,6 +51,7 @@ const App = () => {
   }, []);
 
   return (
+    <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Sonner />
@@ -62,6 +63,7 @@ const App = () => {
             <ScrollToTop />
             <ScrollProgressBar />
             <Header />
+            <Breadcrumb />
             <main>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
