@@ -181,9 +181,9 @@ const Pricing = () => {
               </thead>
               <tbody className="text-secondary">
                 {[
-                  ["Sessions/month", "8", "4"],
+                  ["Sessions/month", "8", "8"],
                   ["Session length", "45–60 min", "60 min"],
-                  ["Batch size", "6–10", "1"],
+                  ["Batch size", "4–6", "1"],
                   ["Personalized curriculum", "Shared", "100% custom"],
                   ["ChessBase", "From L3+", "From day 1"],
                   ["Coach WhatsApp", "Group updates", "Direct access"],
