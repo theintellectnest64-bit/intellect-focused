@@ -54,13 +54,15 @@ const LogoPopup = () => {
             <X size={12} />
           </button>
           <div className="p-2">
-            <BrandAnimationVideo
-              className="w-full"
-              onEnded={() => {
-                setEnded(true);
-                setDismissed(true);
-              }}
-            />
+            <div className="rounded-lg bg-navy px-1 py-1">
+              <BrandAnimationVideo
+                className="w-full"
+                onEnded={() => {
+                  setEnded(true);
+                  setDismissed(true);
+                }}
+              />
+            </div>
           </div>
         </motion.div>
       )}

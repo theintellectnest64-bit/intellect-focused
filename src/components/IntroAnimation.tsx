@@ -36,7 +36,9 @@ const IntroAnimation = ({ onComplete }: { onComplete: () => void }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <BrandAnimationVideo className="w-[280px] max-w-[70vw]" />
+          <div className="rounded-[28px] bg-navy px-4 py-3 shadow-[0_24px_60px_hsl(var(--foreground)/0.18)]">
+            <BrandAnimationVideo className="w-[280px] max-w-[70vw]" />
+          </div>
 
           <motion.span
             initial={{ opacity: 0 }}
