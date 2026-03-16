@@ -170,8 +170,16 @@ const Index = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="hidden lg:flex justify-center relative"
+              className="relative hidden justify-center lg:flex"
             >
+              <div className="absolute inset-0 -m-10 rounded-[32px] pointer-events-none">
+                <RevealImage
+                  src="/images/hero-chess-bg.jpg"
+                  alt="Chess pieces on a board used as the hero background"
+                  wrapperClassName="h-full w-full rounded-[32px]"
+                  imageClassName="ken-burns opacity-15"
+                />
+              </div>
               <FloatingChessPieces />
               <ChessBoard />
             </motion.div>
