@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Users, Trophy, Star, Brain, Heart, Lightbulb, Puzzle, BookOpen, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Globe } from "lucide-react";
+import { Users, Trophy, Star, ChevronDown, ChevronRight, Video, Target, BarChart2, FileText, Globe } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import SectionDivider from "@/components/SectionDivider";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import TypewriterEyebrow from "@/components/TypewriterEyebrow";
 import FloatingChessPieces from "@/components/FloatingChessPieces";
 import USPStrip from "@/components/USPStrip";
+import BenefitFlipCards from "@/components/BenefitFlipCards";
+import LazyImage from "@/components/LazyImage";
+import { getBlogThumbnail } from "@/components/ShareButtons";
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 
 const stagger = {
   hidden: {},
