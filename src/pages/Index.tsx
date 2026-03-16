@@ -130,18 +130,8 @@ const Index = () => {
   return (
     <div>
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
+      <section data-hero-section="true" className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
         <Particles />
-        {/* Background image with overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          <img
-            src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=800&q=80"
-            alt=""
-            className="w-full h-full object-cover ken-burns"
-            loading="lazy"
-            style={{ opacity: 0.15 }}
-          />
-        </div>
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
