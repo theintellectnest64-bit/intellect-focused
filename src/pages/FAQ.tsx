@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, HelpCircle } from "lucide-react";
+import { ChevronDown, HelpCircle, BookOpen, Monitor, BarChart2, DollarSign, Settings } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import LazyImage from "@/components/LazyImage";
+import { Helmet } from "react-helmet-async";
+
+const groupIcons = [
+  <HelpCircle size={18} />,
+  <BookOpen size={18} />,
+  <Monitor size={18} />,
+  <BarChart2 size={18} />,
+  <DollarSign size={18} />,
+];
 
 const faqGroups = [
   {
@@ -88,8 +98,29 @@ const FAQ = () => {
 
   return (
     <div className="pt-[75px]">
-      <section className="bg-navy py-16 md:py-20">
-        <div className="container mx-auto px-4 lg:px-8 text-center">
+      <Helmet>
+        <title>FAQ | The Intellect Nest</title>
+        <meta name="description" content="50 frequently asked questions about online chess coaching for kids at The Intellect Nest." />
+        <meta property="og:title" content="FAQ | The Intellect Nest" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@IntellectT43247" />
+      </Helmet>
+
+      {/* Hero with image */}
+      <section className="relative">
+        <div className="h-[250px] overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1200&q=60"
+            alt="Chess coaching FAQ"
+            width={1200}
+            height={250}
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4" style={{ background: "rgba(13,30,59,0.6)" }}>
           <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">FAQ</span>
           <h1 className="font-display text-[34px] md:text-5xl lg:text-[56px] font-black text-white leading-[1.15] mb-4">
             Frequently Asked Questions
@@ -107,13 +138,12 @@ const FAQ = () => {
               <button
                 key={i}
                 onClick={() => { setOpenGroup(i); setOpenQ(null); }}
-                className={`font-body text-sm px-4 py-2 rounded-lg border transition-all ${
-                  openGroup === i
-                    ? "text-white border-sky"
-                    : "border-sky-border text-secondary hover:border-sky"
+                className={`font-body text-sm px-4 py-2 rounded-lg border transition-all flex items-center gap-2 ${
+                  openGroup === i ? "text-white border-sky" : "border-sky-border text-secondary hover:border-sky"
                 }`}
                 style={openGroup === i ? { backgroundColor: "#2B7DD4", borderColor: "#2B7DD4" } : {}}
               >
+                <span style={{ color: openGroup === i ? "#FFFFFF" : "#2B7DD4" }}>{groupIcons[i]}</span>
                 {group.title}
               </button>
             ))}
@@ -124,59 +154,28 @@ const FAQ = () => {
             <h2 className="font-display text-2xl font-bold text-navy">{faqGroups[openGroup].title}</h2>
           </div>
 
-          <motion.div
-            key={openGroup}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-3"
-          >
+          <motion.div key={openGroup} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="space-y-3">
             {faqGroups[openGroup].questions.map((item, i) => {
               const key = `${openGroup}-${i}`;
               const isOpen = openQ === key;
               return (
                 <div
                   key={key}
-                  className={`border rounded-xl overflow-hidden card-shadow transition-all ${
-                    isOpen
-                      ? "border-sky-border border-l-[3px]"
-                      : "border-sky-border"
-                  }`}
-                  style={{
-                    borderLeftColor: isOpen ? "#2B7DD4" : undefined,
-                    background: isOpen ? "#F0F6FF" : "hsl(var(--card))",
-                  }}
+                  className={`border rounded-xl overflow-hidden card-shadow transition-all ${isOpen ? "border-sky-border border-l-[3px]" : "border-sky-border"}`}
+                  style={{ borderLeftColor: isOpen ? "#2B7DD4" : undefined, background: isOpen ? "#F0F6FF" : "hsl(var(--card))" }}
                 >
-                  <button
-                    onClick={() => setOpenQ(isOpen ? null : key)}
-                    className="w-full flex items-center justify-between p-5 text-left gap-4"
-                  >
+                  <button onClick={() => setOpenQ(isOpen ? null : key)} className="w-full flex items-center justify-between p-5 text-left gap-4">
                     <div className="flex items-center gap-3">
                       <HelpCircle size={18} className="shrink-0" style={{ color: "#2B7DD4" }} />
                       <span className="font-display text-base font-semibold text-navy">{item.q}</span>
                     </div>
-                    <ChevronDown
-                      size={18}
-                      className="shrink-0 transition-transform duration-300"
-                      style={{
-                        color: "#2B7DD4",
-                        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                      }}
-                    />
+                    <ChevronDown size={18} className="shrink-0 transition-transform duration-300" style={{ color: "#2B7DD4", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }} />
                   </button>
                   <AnimatePresence>
                     {isOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: "easeInOut" }} className="overflow-hidden">
                         <div className="px-5 pb-5">
-                          <p className="font-body text-sm text-secondary leading-relaxed pl-[30px]">
-                            {item.a}
-                          </p>
+                          <p className="font-body text-sm text-secondary leading-relaxed pl-[30px]">{item.a}</p>
                         </div>
                       </motion.div>
                     )}
@@ -198,12 +197,8 @@ const FAQ = () => {
             Our coaches will personally walk you through the program and answer all your questions live.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link to="/book-demo" className="cta-gold">
-              Book a Free Demo Class
-            </Link>
-            <Link to="/contact" className="cta-secondary" style={{ borderColor: "#93C5FD", color: "#93C5FD" }}>
-              Contact Us
-            </Link>
+            <Link to="/book-demo" className="cta-gold">Book a Free Demo Class</Link>
+            <Link to="/contact" className="cta-secondary" style={{ borderColor: "#93C5FD", color: "#93C5FD" }}>Contact Us</Link>
           </div>
         </div>
       </section>

@@ -1,24 +1,18 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import SectionWrapper from "@/components/SectionWrapper";
 import { Link } from "react-router-dom";
-import RevealImage from "@/components/RevealImage";
+import LazyImage from "@/components/LazyImage";
+import Lightbox from "@/components/Lightbox";
+import { Helmet } from "react-helmet-async";
 
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
-};
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
-
-const galleryImages = [
-  "/images/gallery-1.jpg",
-  "/images/gallery-2.jpg",
-  "/images/gallery-3.jpg",
-  "/images/gallery-4.jpg",
-  "/images/gallery-5.jpg",
-  "/images/gallery-6.jpg",
+const galleryUrls = [
+  "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&q=60",
+  "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&q=60",
+  "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=60",
+  "https://images.unsplash.com/photo-1560264280-88b68371db39?w=600&q=60",
+  "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=600&q=60",
+  "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=600&q=60",
 ];
 
 const galleryItems = [
@@ -40,10 +34,27 @@ const galleryItems = [
   { caption: "End-of-month celebration and awards" },
 ];
 
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
+const fadeUp = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
+
 const Gallery = () => {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const images = galleryItems.map((item, i) => ({
+    src: galleryUrls[i % galleryUrls.length],
+    caption: item.caption,
+  }));
+
   return (
     <div className="pt-[75px]">
-      {/* Hero */}
+      <Helmet>
+        <title>Gallery | The Intellect Nest</title>
+        <meta name="description" content="Snapshots of learning, growth, and celebration at The Intellect Nest." />
+        <meta property="og:title" content="Gallery | The Intellect Nest" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@IntellectT43247" />
+      </Helmet>
+
       <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Gallery</span>
@@ -56,7 +67,6 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Gallery Grid */}
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
@@ -64,23 +74,26 @@ const Gallery = () => {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+            className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5"
           >
             {galleryItems.map((item, i) => (
               <motion.div
                 key={i}
                 variants={fadeUp}
-                className="rounded-xl border border-sky-border overflow-hidden card-hover group"
+                className="break-inside-avoid rounded-xl border border-sky-border overflow-hidden card-hover group cursor-pointer"
+                onClick={() => setLightboxIndex(i)}
               >
-                <div className="relative h-48 overflow-hidden">
-                  <RevealImage
-                    src={galleryImages[i % galleryImages.length]}
+                <div className="overflow-hidden">
+                  <LazyImage
+                    src={galleryUrls[i % galleryUrls.length]}
                     alt={item.caption}
-                    imageClassName="h-full ken-burns"
+                    width={600}
+                    height={400}
+                    className="w-full object-cover transition-transform duration-400 group-hover:scale-[1.04]"
                   />
                 </div>
                 <div className="p-4 bg-card">
-                  <p className="font-body text-[13px] text-secondary text-center leading-relaxed">
+                  <p className="font-body text-[13px] text-center leading-relaxed" style={{ color: "#4A5568" }}>
                     {item.caption}
                   </p>
                 </div>
@@ -90,7 +103,10 @@ const Gallery = () => {
         </div>
       </SectionWrapper>
 
-      {/* CTA */}
+      {lightboxIndex !== null && (
+        <Lightbox images={images} initialIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
+      )}
+
       <SectionWrapper className="section-alt">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <span className="eyebrow mb-3 block">Join Our Community</span>
