@@ -209,7 +209,7 @@ const Index = () => {
           {/* Atmospheric image strip */}
           <div className="relative h-[200px] rounded-xl overflow-hidden mb-12 lg:mb-16">
             <img
-              src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1200&q=80"
+              src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1200&q=60"
               alt="Chess atmosphere"
               className="w-full h-full object-cover"
               loading="lazy" />
