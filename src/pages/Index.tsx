@@ -155,7 +155,7 @@ const Index = () => {
                 Online Chess Classes for Kids
               </motion.h1>
               <motion.p variants={heroItem} className="font-body text-lg md:text-xl text-secondary leading-relaxed mb-8 max-w-lg">
-                Turn screen time into brain time. Live coach-led sessions, weekly tournaments, and progress reports for ages 5 to 15.
+                Expert-led live chess coaching for ages 5–15. Small groups of 4–6 students. Real results. Trusted by families in 30+ countries worldwide.
               </motion.p>
               <motion.div variants={heroItem} className="flex flex-wrap gap-4 mb-6">
                 <Link to="/book-demo" className="cta-gold">
