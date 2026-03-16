@@ -40,13 +40,7 @@ const slideInLeft = {
   })
 };
 
-const whyChessCards = [
-{ icon: <Brain size={32} />, title: "Focus and Concentration", body: "Chess sessions gradually lengthen attention spans through sustained problem-solving. Young players who practice regularly find homework focus improving within weeks." },
-{ icon: <Lightbulb size={32} />, title: "Logical Thinking", body: "Every chess move is a decision tree. Kids learn to analyze available options, anticipate consequences several moves ahead, and commit to logical conclusions under time pressure." },
-{ icon: <Puzzle size={32} />, title: "Problem Solving", body: "Pattern recognition on the board transfers directly to math and science performance. Tactical puzzles train the same brain regions activated by complex academic problems." },
-{ icon: <Heart size={32} />, title: "Emotional Resilience", body: "Losing is built into chess — and that is exactly the point. Children learn to face defeat with dignity, analyze what went wrong, and return stronger." },
-{ icon: <BookOpen size={32} />, title: "Academic Performance", body: "Executive function, planning, and sequential reasoning gained through chess practice directly improve performance across school subjects." },
-{ icon: <Trophy size={32} />, title: "Confidence Building", body: "Small wins accumulate into deep belief. Children who play chess learn to trust their own judgment, attempt harder challenges, and participate more actively." }];
+// whyChessCards removed — using BenefitFlipCards component instead
 
 
 const testimonials = [
