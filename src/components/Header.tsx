@@ -46,7 +46,7 @@ const Header = () => {
       >
         <div className="container mx-auto flex items-center justify-between h-full px-4 lg:px-8">
           <Link to="/" className="flex items-center gap-3">
-            <img src="/images/logo.png" alt="The Intellect Nest" className="h-10 w-10 object-contain" />
+            <img src="/images/logo.svg" alt="The Intellect Nest" className="object-contain" style={{ height: '44px' }} />
             <span className={`font-display text-lg font-bold hidden sm:block ${scrolled ? "text-white" : "text-navy"}`}>
               The Intellect Nest
             </span>

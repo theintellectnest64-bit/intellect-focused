@@ -56,7 +56,7 @@ const LogoPopup = () => {
             <X size={12} />
           </button>
           <div className="p-4 flex flex-col items-center gap-2">
-            <img src="/images/logo.png" alt="The Intellect Nest" className="w-16 h-16 object-contain" />
+            <img src="/images/logo.svg" alt="The Intellect Nest" className="w-16 h-16 object-contain" />
             <span className="font-display text-xs font-semibold text-navy text-center">The Intellect Nest</span>
           </div>
         </motion.div>
