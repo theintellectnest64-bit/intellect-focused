@@ -15,13 +15,13 @@ const groupFeaturesIndia = [
   "Daily Lichess puzzle assignments with tracking",
   "Monthly progress report PDF sent to parents",
   "Recorded class replays for all sessions",
-  "6 to 10 students per batch for personal attention",
+  "4 to 6 students per batch for personal attention",
   "Milestone achievement badges",
   "WhatsApp parent update",
 ];
 
 const privateFeaturesIndia = [
-  "4 private 60-minute sessions per month",
+  "8 private 60-minute sessions per month",
   "100% personalized curriculum built around your child's goals",
   "Custom game analysis and targeted feedback after every session",
   "Flexible scheduling around school and activity timetable",
@@ -181,9 +181,9 @@ const Pricing = () => {
               </thead>
               <tbody className="text-secondary">
                 {[
-                  ["Sessions/month", "8", "4"],
+                  ["Sessions/month", "8", "8"],
                   ["Session length", "45–60 min", "60 min"],
-                  ["Batch size", "6–10", "1"],
+                  ["Batch size", "4–6", "1"],
                   ["Personalized curriculum", "Shared", "100% custom"],
                   ["ChessBase", "From L3+", "From day 1"],
                   ["Coach WhatsApp", "Group updates", "Direct access"],
