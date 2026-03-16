@@ -14,7 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contacts: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          phone?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      leads: {
+        Row: {
+          child_age: string
+          child_name: string
+          created_at: string
+          current_level: string
+          id: string
+          message: string | null
+          parent_email: string
+          parent_name: string
+          parent_phone: string
+          preferred_language: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          child_age: string
+          child_name: string
+          created_at?: string
+          current_level: string
+          id?: string
+          message?: string | null
+          parent_email: string
+          parent_name: string
+          parent_phone: string
+          preferred_language?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          child_age?: string
+          child_name?: string
+          created_at?: string
+          current_level?: string
+          id?: string
+          message?: string | null
+          parent_email?: string
+          parent_name?: string
+          parent_phone?: string
+          preferred_language?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
