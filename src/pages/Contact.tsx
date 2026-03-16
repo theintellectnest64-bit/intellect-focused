@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import CountryCodePhone from "@/components/CountryCodePhone";
+import SupportHours from "@/components/SupportHours";
 
 const WHATSAPP_URL = "https://wa.me/919893189566?text=Knock%20knock!%20Can%20I%20step%20into%20the%20nest%20for%20a%20free%20chess%20demo%3F%20%F0%9F%95%8A%E2%99%9F";
 
@@ -40,9 +42,23 @@ const locations = [
   { flag: "🇬🇧", country: "UK", cities: "Reading, London" },
 ];
 
+const offices = [
+  {
+    flag: "🇮🇳",
+    city: "Indore, Madhya Pradesh",
+    address: "311, Asawa Chambers, Sapna Sangeeta Rd, near Lotus Showroom, Indore, Madhya Pradesh 452001",
+  },
+  {
+    flag: "🇮🇳",
+    city: "New Delhi",
+    address: "26, Krishna Market, Near Gurudwara Singh Sabha, Lajpat Nagar 1, New Delhi",
+  },
+];
+
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [countryCode, setCountryCode] = useState("+91|IN");
 
   const form = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
@@ -51,11 +67,13 @@ const Contact = () => {
 
   const onSubmit = async (data: ContactForm) => {
     setLoading(true);
+    const code = countryCode.split("|")[0];
+    const fullPhone = data.phone ? `${code} ${data.phone}` : null;
     try {
       const { error } = await supabase.from("contacts").insert({
         name: data.name,
         email: data.email,
-        phone: data.phone || null,
+        phone: fullPhone,
         subject: data.subject,
         message: data.message,
       });
@@ -68,7 +86,7 @@ const Contact = () => {
             type: "contact",
             name: data.name,
             email: data.email,
-            phone: data.phone,
+            phone: fullPhone,
             subject: data.subject,
             message: data.message,
           },
@@ -157,6 +175,16 @@ const Contact = () => {
                     <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="font-body text-sm text-sky hover:underline">Chat with us on WhatsApp</a>
                   </div>
                 </div>
+
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <span className="text-sky text-lg">🕐</span>
+                  </div>
+                  <div>
+                    <h3 className="font-display text-base font-semibold text-navy">Support Hours</h3>
+                    <SupportHours />
+                  </div>
+                </div>
               </div>
 
               <div className="mt-10">
@@ -223,7 +251,14 @@ const Contact = () => {
                   <FormField control={form.control} name="phone" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-body text-sm text-navy">Phone (Optional)</FormLabel>
-                      <FormControl><Input placeholder="+91 989 318 9566" {...field} /></FormControl>
+                      <FormControl>
+                        <CountryCodePhone
+                          value={field.value || ""}
+                          onChange={field.onChange}
+                          countryCode={countryCode}
+                          onCountryCodeChange={setCountryCode}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -250,6 +285,30 @@ const Contact = () => {
                 </form>
               </Form>
             </motion.div>
+          </div>
+
+          {/* Our Offices */}
+          <div className="mt-16 lg:mt-20">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-navy mb-8 text-center">Our Offices</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {offices.map((office, i) => (
+                <div
+                  key={i}
+                  className="p-6 rounded-xl transition-transform duration-200 hover:-translate-y-1"
+                  style={{
+                    background: "#F0F6FF",
+                    border: "0.5px solid #DBEAFE",
+                    borderRadius: 12,
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-2xl">{office.flag}</span>
+                    <h3 className="font-display text-lg font-semibold" style={{ color: "#0D1E3B" }}>{office.city}</h3>
+                  </div>
+                  <p className="font-body text-sm leading-relaxed" style={{ color: "#4A5568" }}>{office.address}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </SectionWrapper>

@@ -13,8 +13,17 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import AgePicker from "@/components/AgePicker";
+import CountryCodePhone from "@/components/CountryCodePhone";
+import SupportHours from "@/components/SupportHours";
 
 const WHATSAPP_URL = "https://wa.me/919893189566?text=Knock%20knock!%20Can%20I%20step%20into%20the%20nest%20for%20a%20free%20chess%20demo%3F%20%F0%9F%95%8A%E2%99%9F";
+
+const languages = [
+  "English", "Hindi", "Spanish", "French", "Arabic", "Punjabi", "Gujarati",
+  "Bengali", "Tamil", "Telugu", "Urdu", "Mandarin", "German", "Portuguese",
+  "Marathi", "Kannada", "Japanese", "Korean", "Other",
+];
 
 const bookDemoSchema = z.object({
   parent_name: z.string().trim().min(2, "Name is required").max(100),
@@ -23,7 +32,7 @@ const bookDemoSchema = z.object({
   child_name: z.string().trim().min(2, "Child's name is required").max(100),
   child_age: z.string().min(1, "Please select age"),
   current_level: z.string().min(1, "Please select current level"),
-  preferred_language: z.string().min(1, "Please select language"),
+  preferred_language: z.string().optional(),
   message: z.string().max(500).optional(),
 });
 
@@ -32,6 +41,7 @@ type BookDemoForm = z.infer<typeof bookDemoSchema>;
 const BookDemo = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [countryCode, setCountryCode] = useState("+91|IN");
 
   const form = useForm<BookDemoForm>({
     resolver: zodResolver(bookDemoSchema),
@@ -49,15 +59,17 @@ const BookDemo = () => {
 
   const onSubmit = async (data: BookDemoForm) => {
     setLoading(true);
+    const code = countryCode.split("|")[0];
+    const fullPhone = `${code} ${data.parent_phone}`;
     try {
       const { error } = await supabase.from("leads").insert({
         parent_name: data.parent_name,
         parent_email: data.parent_email,
-        parent_phone: data.parent_phone,
+        parent_phone: fullPhone,
         child_name: data.child_name,
         child_age: data.child_age,
         current_level: data.current_level,
-        preferred_language: data.preferred_language,
+        preferred_language: data.preferred_language || "English",
         message: data.message || null,
       });
 
@@ -69,7 +81,7 @@ const BookDemo = () => {
             type: "lead",
             name: data.parent_name,
             email: data.parent_email,
-            phone: data.parent_phone,
+            phone: fullPhone,
             child_name: data.child_name,
             child_age: data.child_age,
             current_level: data.current_level,
@@ -151,6 +163,10 @@ const BookDemo = () => {
                   </div>
                 ))}
               </div>
+
+              <div className="mt-8">
+                <SupportHours />
+              </div>
             </motion.div>
 
             <motion.div
@@ -181,7 +197,14 @@ const BookDemo = () => {
                   <FormField control={form.control} name="parent_phone" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-body text-sm text-navy">Phone / WhatsApp *</FormLabel>
-                      <FormControl><Input placeholder="+91 98765 43210" {...field} /></FormControl>
+                      <FormControl>
+                        <CountryCodePhone
+                          value={field.value}
+                          onChange={field.onChange}
+                          countryCode={countryCode}
+                          onCountryCodeChange={setCountryCode}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
@@ -194,21 +217,16 @@ const BookDemo = () => {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField control={form.control} name="child_age" render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-body text-sm text-navy">Child's Age *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Select age" /></SelectTrigger></FormControl>
-                          <SelectContent>
-                            {["4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"].map(age => (
-                              <SelectItem key={age} value={age}>{age} years</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
                   </div>
+
+                  <FormField control={form.control} name="child_age" render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <AgePicker value={field.value} onChange={field.onChange} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField control={form.control} name="current_level" render={({ field }) => (
@@ -228,12 +246,15 @@ const BookDemo = () => {
                     )} />
                     <FormField control={form.control} name="preferred_language" render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-body text-sm text-navy">Preferred Language *</FormLabel>
+                        <FormLabel className="font-body text-sm text-navy">
+                          Preferred Language <span className="text-xs text-muted-foreground">(Optional)</span>
+                        </FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl><SelectTrigger><SelectValue placeholder="Select language" /></SelectTrigger></FormControl>
                           <SelectContent>
-                            <SelectItem value="English">English</SelectItem>
-                            <SelectItem value="Hindi">Hindi</SelectItem>
+                            {languages.map((lang) => (
+                              <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />

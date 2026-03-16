@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Instagram, Youtube, Facebook, Linkedin, Twitter } from "lucide-react";
+import SupportHours from "@/components/SupportHours";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const WHATSAPP_URL = "https://wa.me/919893189566?text=Knock%20knock!%20Can%20I%20step%20into%20the%20nest%20for%20a%20free%20chess%20demo%3F%20%F0%9F%95%8A%E2%99%9F";
 
@@ -112,11 +114,24 @@ const Footer = () => {
                   WhatsApp Chat
                 </a>
               </li>
-              <li className="font-body text-sm" style={{ color: "#93C5FD" }}>Mon–Sat 9AM–7PM IST</li>
+              <li>
+                <SupportHours variant="dark" />
+              </li>
             </ul>
             {/* Locations */}
-            <p className="font-body text-xs mt-4 leading-relaxed" style={{ color: "#93C5FD" }}>
-              Indore · Delhi · Pune · Bhubaneswar · Brampton · Waterloo · Auckland · Hamilton · Reading · London
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <p className="font-body text-xs mt-4 leading-relaxed cursor-help" style={{ color: "#93C5FD" }}>
+                  Indore & New Delhi, India
+                </p>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs text-xs">
+                <p>311, Asawa Chambers, Sapna Sangeeta Rd, Indore, MP 452001</p>
+                <p className="mt-1">26, Krishna Market, Lajpat Nagar 1, New Delhi</p>
+              </TooltipContent>
+            </Tooltip>
+            <p className="font-body text-xs mt-1 leading-relaxed" style={{ color: "#93C5FD" }}>
+              Pune · Bhubaneswar · Brampton · Waterloo · Auckland · Hamilton · Reading · London
             </p>
           </div>
         </div>
@@ -134,8 +149,8 @@ const Footer = () => {
             © 2025 The Intellect Nest. All rights reserved. | info@tinchess.com | www.tinchess.com
           </p>
           <div className="flex gap-4">
-            <span className="font-body text-xs cursor-pointer transition-colors hover:text-white" style={{ color: "#93C5FD" }}>Privacy Policy</span>
-            <span className="font-body text-xs cursor-pointer transition-colors hover:text-white" style={{ color: "#93C5FD" }}>Terms</span>
+            <Link to="/privacy-policy" className="font-body text-xs cursor-pointer transition-colors hover:text-white" style={{ color: "#93C5FD" }}>Privacy Policy</Link>
+            <Link to="/terms" className="font-body text-xs cursor-pointer transition-colors hover:text-white" style={{ color: "#93C5FD" }}>Terms</Link>
             <a href="https://tinchess.com" className="font-body text-xs text-white hover:underline">www.tinchess.com</a>
           </div>
         </div>
