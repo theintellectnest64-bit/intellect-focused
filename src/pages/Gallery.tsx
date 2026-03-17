@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import LazyImage from "@/components/LazyImage";
 import Lightbox from "@/components/Lightbox";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/components/seo/schemas";
 
 const galleryUrls = [
   "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&q=60",
