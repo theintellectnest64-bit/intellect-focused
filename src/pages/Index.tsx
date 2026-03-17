@@ -12,6 +12,8 @@ import LazyImage from "@/components/LazyImage";
 import { getBlogThumbnail } from "@/components/ShareButtons";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { organizationSchema, websiteSchema, faqPageSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const stagger = {
   hidden: {},
