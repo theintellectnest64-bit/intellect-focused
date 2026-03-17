@@ -6,6 +6,8 @@ import { blogArticles } from "@/data/blogData";
 import ShareButtons, { getBlogThumbnail, getBlogInlineImage } from "@/components/ShareButtons";
 import LazyImage from "@/components/LazyImage";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { blogPostingSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const BlogArticle = () => {
   const { slug } = useParams<{ slug: string }>();
