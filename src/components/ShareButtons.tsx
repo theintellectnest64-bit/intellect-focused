@@ -3,7 +3,7 @@ import { toast } from "sonner";
 const blogThumbnails = [
   "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&q=60",
   "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=600&q=60",
-  "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=60",
+  "/lovable-uploads/49ece406-c97c-407c-9052-326393f9960d.jpg",
   "https://images.unsplash.com/photo-1560264280-88b68371db39?w=600&q=60",
   "/lovable-uploads/6def2495-4dff-4308-ae4d-fd57e34b0834.jpg",
   "https://images.unsplash.com/photo-1542621334-a254cf47733d?w=600&q=60",
