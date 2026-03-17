@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -30,22 +31,47 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { type, name, email, phone, child_name, child_age, current_level, preferred_language, subject, message } = body;
+    const { type, record_id } = body;
 
-    const eName = escapeHtml(name);
-    const eEmail = escapeHtml(email);
-    const ePhone = escapeHtml(phone);
-    const eChildName = escapeHtml(child_name);
-    const eChildAge = escapeHtml(child_age);
-    const eCurrentLevel = escapeHtml(current_level);
-    const ePreferredLanguage = escapeHtml(preferred_language);
-    const eSubject = escapeHtml(subject);
-    const eMessage = escapeHtml(message);
+    if (!record_id || typeof record_id !== "string") {
+      return new Response(JSON.stringify({ success: false, error: "Missing record_id" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Use service-role key to verify the record actually exists in the database
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
 
     let emailSubject: string;
     let emailHtml: string;
 
     if (type === "lead") {
+      const { data: lead, error } = await supabaseAdmin
+        .from("leads")
+        .select("*")
+        .eq("id", record_id)
+        .single();
+
+      if (error || !lead) {
+        return new Response(JSON.stringify({ success: false, error: "Record not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const eName = escapeHtml(lead.parent_name);
+      const eEmail = escapeHtml(lead.parent_email);
+      const ePhone = escapeHtml(lead.parent_phone);
+      const eChildName = escapeHtml(lead.child_name);
+      const eChildAge = escapeHtml(lead.child_age);
+      const eCurrentLevel = escapeHtml(lead.current_level);
+      const ePreferredLanguage = escapeHtml(lead.preferred_language);
+      const eMessage = escapeHtml(lead.message);
+
       emailSubject = `New Lead — ${eName}`;
       emailHtml = `
         <h2>New Demo Booking</h2>
@@ -60,7 +86,26 @@ serve(async (req) => {
           ${eMessage ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Message</td><td style="padding:8px;border-bottom:1px solid #eee">${eMessage}</td></tr>` : ""}
         </table>
       `;
-    } else {
+    } else if (type === "contact") {
+      const { data: contact, error } = await supabaseAdmin
+        .from("contacts")
+        .select("*")
+        .eq("id", record_id)
+        .single();
+
+      if (error || !contact) {
+        return new Response(JSON.stringify({ success: false, error: "Record not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const eName = escapeHtml(contact.name);
+      const eEmail = escapeHtml(contact.email);
+      const ePhone = escapeHtml(contact.phone);
+      const eSubject = escapeHtml(contact.subject);
+      const eMessage = escapeHtml(contact.message);
+
       emailSubject = `New Contact — ${eName}`;
       emailHtml = `
         <h2>New Contact Form Submission</h2>
@@ -72,6 +117,11 @@ serve(async (req) => {
           <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Message</td><td style="padding:8px;border-bottom:1px solid #eee">${eMessage}</td></tr>
         </table>
       `;
+    } else {
+      return new Response(JSON.stringify({ success: false, error: "Invalid type" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const res = await fetch("https://api.resend.com/emails", {
@@ -88,9 +138,12 @@ serve(async (req) => {
       }),
     });
 
-    const data = await res.json();
     if (!res.ok) {
-      throw new Error(`Resend API error [${res.status}]: ${JSON.stringify(data)}`);
+      console.error("Resend API error:", res.status);
+      return new Response(JSON.stringify({ success: false, error: "Email delivery failed" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     return new Response(JSON.stringify({ success: true }), {
@@ -99,8 +152,7 @@ serve(async (req) => {
     });
   } catch (error: unknown) {
     console.error("Error sending notification:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    return new Response(JSON.stringify({ success: false, error: errorMessage }), {
+    return new Response(JSON.stringify({ success: false, error: "Internal error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
