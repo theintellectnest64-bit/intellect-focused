@@ -7,6 +7,8 @@ import { getBlogThumbnail } from "@/components/ShareButtons";
 import LazyImage from "@/components/LazyImage";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/components/seo/schemas";
 
 const stagger = {
   hidden: {},
