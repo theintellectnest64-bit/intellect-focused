@@ -150,7 +150,7 @@ const Index = () => {
         <div className="absolute inset-0 pointer-events-none">
           <img
             src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=800&q=60"
-            alt=""
+            alt="Children learning chess online at The Intellect Nest"
             className="w-full h-full object-cover ken-burns"
             loading="lazy"
             style={{ opacity: 0.15 }} />
