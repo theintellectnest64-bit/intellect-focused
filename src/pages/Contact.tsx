@@ -84,11 +84,7 @@ const Contact = () => {
         await supabase.functions.invoke("send-notification", {
           body: {
             type: "contact",
-            name: data.name,
-            email: data.email,
-            phone: fullPhone,
-            subject: data.subject,
-            message: data.message,
+            record_id: insertedData.id,
           },
         });
       } catch {

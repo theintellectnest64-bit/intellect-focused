@@ -79,14 +79,7 @@ const BookDemo = () => {
         await supabase.functions.invoke("send-notification", {
           body: {
             type: "lead",
-            name: data.parent_name,
-            email: data.parent_email,
-            phone: fullPhone,
-            child_name: data.child_name,
-            child_age: data.child_age,
-            current_level: data.current_level,
-            preferred_language: data.preferred_language,
-            message: data.message,
+            record_id: insertedData.id,
           },
         });
       } catch {
