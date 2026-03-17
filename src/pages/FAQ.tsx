@@ -5,6 +5,8 @@ import { ChevronDown, HelpCircle, BookOpen, Monitor, BarChart2, DollarSign, Sett
 import SectionWrapper from "@/components/SectionWrapper";
 import LazyImage from "@/components/LazyImage";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { faqPageSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const groupIcons = [
   <HelpCircle size={18} />,
@@ -106,6 +108,13 @@ const FAQ = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={faqPageSchema(
+        faqGroups.flatMap((g) => g.questions)
+      )} />
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "FAQ", url: "https://tinchess.com/faq" },
+      ])} />
 
       {/* Hero with image */}
       <section className="relative">

@@ -13,6 +13,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/components/seo/schemas";
+import { Helmet } from "react-helmet-async";
 import AgePicker from "@/components/AgePicker";
 import CountryCodePhone from "@/components/CountryCodePhone";
 import SupportHours from "@/components/SupportHours";
@@ -123,6 +126,17 @@ const BookDemo = () => {
 
   return (
     <div className="pt-[75px]">
+      <Helmet>
+        <title>Book a Free Demo Class | The Intellect Nest</title>
+        <meta name="description" content="Book a free 30-minute demo chess class for your child. No commitment, no payment. We call within 24 hours." />
+        <meta property="og:title" content="Book a Free Demo Class | The Intellect Nest" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://tinchess.com/book-demo" />
+      </Helmet>
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Book Demo", url: "https://tinchess.com/book-demo" },
+      ])} />
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">

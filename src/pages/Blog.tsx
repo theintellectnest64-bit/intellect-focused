@@ -7,6 +7,8 @@ import { getBlogThumbnail } from "@/components/ShareButtons";
 import LazyImage from "@/components/LazyImage";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/components/seo/schemas";
 
 const stagger = {
   hidden: {},
@@ -35,6 +37,10 @@ const Blog = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Blog", url: "https://tinchess.com/blog" },
+      ])} />
 
       <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">

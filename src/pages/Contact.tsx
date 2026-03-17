@@ -12,6 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/components/seo/schemas";
+import { Helmet } from "react-helmet-async";
 import CountryCodePhone from "@/components/CountryCodePhone";
 import SupportHours from "@/components/SupportHours";
 
@@ -124,6 +127,17 @@ const Contact = () => {
 
   return (
     <div className="pt-[75px]">
+      <Helmet>
+        <title>Contact Us | The Intellect Nest</title>
+        <meta name="description" content="Get in touch with The Intellect Nest. Phone, email, WhatsApp — we respond within 24 hours." />
+        <meta property="og:title" content="Contact Us | The Intellect Nest" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://tinchess.com/contact" />
+      </Helmet>
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Contact", url: "https://tinchess.com/contact" },
+      ])} />
       <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <span className="font-body uppercase tracking-[0.2em] text-[11px] font-semibold text-gold mb-3 block">Get in Touch</span>

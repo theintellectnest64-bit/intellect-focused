@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import LazyImage from "@/components/LazyImage";
 import Lightbox from "@/components/Lightbox";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/components/seo/schemas";
 
 const galleryUrls = [
   "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=600&q=60",
@@ -54,6 +56,10 @@ const Gallery = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Gallery", url: "https://tinchess.com/gallery" },
+      ])} />
 
       <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">

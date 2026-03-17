@@ -6,6 +6,8 @@ import { blogArticles } from "@/data/blogData";
 import ShareButtons, { getBlogThumbnail, getBlogInlineImage } from "@/components/ShareButtons";
 import LazyImage from "@/components/LazyImage";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { blogPostingSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const BlogArticle = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -41,6 +43,19 @@ const BlogArticle = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={blogPostingSchema(
+        article.title,
+        article.slug,
+        article.sections[0].body.slice(0, 155),
+        heroImage,
+        article.category,
+        article.readTime
+      )} />
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Blog", url: "https://tinchess.com/blog" },
+        { name: article.title, url: articleUrl },
+      ])} />
 
       {/* Hero Image */}
       <div className="w-full h-[300px] overflow-hidden">

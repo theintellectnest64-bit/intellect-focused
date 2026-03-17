@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Check, ChevronDown, Crown } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { faqPageSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -57,13 +59,18 @@ const Pricing = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={faqPageSchema(pricingFaq)} />
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Pricing", url: "https://tinchess.com/pricing" },
+      ])} />
 
       {/* Hero with image */}
       <section className="relative pt-[75px]">
         <div className="h-[200px] overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1200&q=60"
-            alt="Chess pricing hero"
+            alt="Chess pieces on a board representing transparent pricing plans"
             width={1200}
             height={200}
             loading="eager"

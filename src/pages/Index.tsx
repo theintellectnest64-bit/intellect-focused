@@ -12,6 +12,8 @@ import LazyImage from "@/components/LazyImage";
 import { getBlogThumbnail } from "@/components/ShareButtons";
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { organizationSchema, websiteSchema, faqPageSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const stagger = {
   hidden: {},
@@ -137,6 +139,10 @@ const Index = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={organizationSchema} />
+      <JsonLd data={websiteSchema} />
+      <JsonLd data={faqPageSchema(faqPreview)} />
+      <JsonLd data={breadcrumbSchema([{ name: "Home", url: "https://tinchess.com/" }])} />
       {/* HERO */}
       <section className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
         <Particles />
@@ -144,7 +150,7 @@ const Index = () => {
         <div className="absolute inset-0 pointer-events-none">
           <img
             src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=800&q=60"
-            alt=""
+            alt="Children learning chess online at The Intellect Nest"
             className="w-full h-full object-cover ken-burns"
             loading="lazy"
             style={{ opacity: 0.15 }} />
@@ -219,7 +225,7 @@ const Index = () => {
           <div className="relative h-[200px] rounded-xl overflow-hidden mb-12 lg:mb-16">
             <img
               src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1200&q=60"
-              alt="Chess atmosphere"
+              alt="Kids developing focus and critical thinking through chess"
               className="w-full h-full object-cover"
               loading="lazy" />
             
