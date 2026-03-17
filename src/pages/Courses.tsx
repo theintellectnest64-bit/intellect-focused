@@ -14,7 +14,7 @@ const fadeUp = {
 };
 
 const courseThumbnails = [
-  "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=400&q=60",
+  "/lovable-uploads/ee01d72d-2a68-45ba-848d-09d5627cbbd1.jpg",
   "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=400&q=60",
   "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=400&q=60",
   "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&q=60",
@@ -23,7 +23,7 @@ const courseThumbnails = [
 
 const cubeThumbnails = [
   "https://images.unsplash.com/photo-1560264280-88b68371db39?w=400&q=60",
-  "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=400&q=60",
+  "/lovable-uploads/ee01d72d-2a68-45ba-848d-09d5627cbbd1.jpg",
 ];
 
 const chessLevels = [
