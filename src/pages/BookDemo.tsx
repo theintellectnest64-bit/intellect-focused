@@ -62,7 +62,7 @@ const BookDemo = () => {
     const code = countryCode.split("|")[0];
     const fullPhone = `${code} ${data.parent_phone}`;
     try {
-      const { error } = await supabase.from("leads").insert({
+      const { data: insertedData, error } = await supabase.from("leads").insert({
         parent_name: data.parent_name,
         parent_email: data.parent_email,
         parent_phone: fullPhone,
@@ -71,7 +71,7 @@ const BookDemo = () => {
         current_level: data.current_level,
         preferred_language: data.preferred_language || "English",
         message: data.message || null,
-      });
+      }).select("id").single();
 
       if (error) throw error;
 
