@@ -139,6 +139,10 @@ const Index = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={organizationSchema} />
+      <JsonLd data={websiteSchema} />
+      <JsonLd data={faqPageSchema(faqPreview)} />
+      <JsonLd data={breadcrumbSchema([{ name: "Home", url: "https://tinchess.com/" }])} />
       {/* HERO */}
       <section className="relative min-h-screen flex items-center chess-grid-bg overflow-hidden pt-[75px]">
         <Particles />
