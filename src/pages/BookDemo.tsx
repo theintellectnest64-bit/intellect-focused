@@ -126,6 +126,17 @@ const BookDemo = () => {
 
   return (
     <div className="pt-[75px]">
+      <Helmet>
+        <title>Book a Free Demo Class | The Intellect Nest</title>
+        <meta name="description" content="Book a free 30-minute demo chess class for your child. No commitment, no payment. We call within 24 hours." />
+        <meta property="og:title" content="Book a Free Demo Class | The Intellect Nest" />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://tinchess.com/book-demo" />
+      </Helmet>
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Book Demo", url: "https://tinchess.com/book-demo" },
+      ])} />
       <SectionWrapper>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
