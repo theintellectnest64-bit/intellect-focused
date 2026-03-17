@@ -59,6 +59,11 @@ const Pricing = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={faqPageSchema(pricingFaq)} />
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Pricing", url: "https://tinchess.com/pricing" },
+      ])} />
 
       {/* Hero with image */}
       <section className="relative pt-[75px]">
