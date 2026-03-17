@@ -5,6 +5,8 @@ import { Trophy, Puzzle, Check, ChevronRight, Award, Clock as ClockIcon } from "
 import SectionWrapper from "@/components/SectionWrapper";
 import LazyImage from "@/components/LazyImage";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { courseSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
