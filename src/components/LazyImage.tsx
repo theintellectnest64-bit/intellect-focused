@@ -18,7 +18,7 @@ const LazyImage = ({ src, alt, width, height, className = "", loading = "lazy", 
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      ([entry]) => {if (entry.isIntersecting) {setVisible(true);observer.disconnect();}},
       { rootMargin: "100px" }
     );
     observer.observe(el);
@@ -34,10 +34,10 @@ const LazyImage = ({ src, alt, width, height, className = "", loading = "lazy", 
       height={height}
       loading={loading}
       decoding="async"
-      className={`transition-opacity duration-500 ${visible ? "opacity-100" : "opacity-0"} ${className}`}
-      style={style}
-    />
-  );
+
+      style={style} className="" />);
+
+
 };
 
 export default LazyImage;
