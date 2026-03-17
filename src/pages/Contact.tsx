@@ -12,6 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import JsonLd from "@/components/seo/JsonLd";
+import { breadcrumbSchema } from "@/components/seo/schemas";
+import { Helmet } from "react-helmet-async";
 import CountryCodePhone from "@/components/CountryCodePhone";
 import SupportHours from "@/components/SupportHours";
 

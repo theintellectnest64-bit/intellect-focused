@@ -225,7 +225,7 @@ const Index = () => {
           <div className="relative h-[200px] rounded-xl overflow-hidden mb-12 lg:mb-16">
             <img
               src="https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=1200&q=60"
-              alt="Chess atmosphere"
+              alt="Kids developing focus and critical thinking through chess"
               className="w-full h-full object-cover"
               loading="lazy" />
             

@@ -56,6 +56,10 @@ const Gallery = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Gallery", url: "https://tinchess.com/gallery" },
+      ])} />
 
       <section className="bg-navy py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8 text-center">

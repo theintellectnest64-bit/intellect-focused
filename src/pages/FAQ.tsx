@@ -108,6 +108,13 @@ const FAQ = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={faqPageSchema(
+        faqGroups.flatMap((g) => g.questions)
+      )} />
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "FAQ", url: "https://tinchess.com/faq" },
+      ])} />
 
       {/* Hero with image */}
       <section className="relative">

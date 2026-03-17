@@ -70,7 +70,7 @@ const Pricing = () => {
         <div className="h-[200px] overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=1200&q=60"
-            alt="Chess pricing hero"
+            alt="Chess pieces on a board representing transparent pricing plans"
             width={1200}
             height={200}
             loading="eager"

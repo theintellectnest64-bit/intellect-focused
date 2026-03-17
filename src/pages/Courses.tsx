@@ -64,6 +64,20 @@ const Courses = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Courses", url: "https://tinchess.com/courses" },
+      ])} />
+      {chessLevels.map((level, i) => (
+        <JsonLd key={i} data={courseSchema(
+          `${level.name} — Chess Course for Kids`,
+          level.learn.slice(0, 200),
+          level.age,
+          i < 3 ? "2999" : "4999",
+          "INR",
+          courseThumbnails[i]
+        )} />
+      ))}
 
       <section className="relative pt-[75px]">
         <div className="container mx-auto px-4 lg:px-8 py-20">

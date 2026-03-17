@@ -43,6 +43,19 @@ const BlogArticle = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={blogPostingSchema(
+        article.title,
+        article.slug,
+        article.sections[0].body.slice(0, 155),
+        heroImage,
+        article.category,
+        article.readTime
+      )} />
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "Blog", url: "https://tinchess.com/blog" },
+        { name: article.title, url: articleUrl },
+      ])} />
 
       {/* Hero Image */}
       <div className="w-full h-[300px] overflow-hidden">

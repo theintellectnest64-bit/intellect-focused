@@ -28,6 +28,10 @@ const About = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@IntellectT43247" />
       </Helmet>
+      <JsonLd data={breadcrumbSchema([
+        { name: "Home", url: "https://tinchess.com/" },
+        { name: "About Us", url: "https://tinchess.com/about" },
+      ])} />
 
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center pt-[75px]">
