@@ -5,6 +5,8 @@ import { ChevronDown, HelpCircle, BookOpen, Monitor, BarChart2, DollarSign, Sett
 import SectionWrapper from "@/components/SectionWrapper";
 import LazyImage from "@/components/LazyImage";
 import { Helmet } from "react-helmet-async";
+import JsonLd from "@/components/seo/JsonLd";
+import { faqPageSchema, breadcrumbSchema } from "@/components/seo/schemas";
 
 const groupIcons = [
   <HelpCircle size={18} />,
