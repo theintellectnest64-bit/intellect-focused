@@ -70,13 +70,13 @@ const Contact = () => {
     const code = countryCode.split("|")[0];
     const fullPhone = data.phone ? `${code} ${data.phone}` : null;
     try {
-      const { error } = await supabase.from("contacts").insert({
+      const { data: insertedData, error } = await supabase.from("contacts").insert({
         name: data.name,
         email: data.email,
         phone: fullPhone,
         subject: data.subject,
         message: data.message,
-      });
+      }).select("id").single();
 
       if (error) throw error;
 
