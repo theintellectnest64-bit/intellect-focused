@@ -283,7 +283,7 @@ const BookDemo = () => {
                     </FormItem>
                   )} />
 
-                  <Button type="submit" disabled={loading} className="w-full cta-gold text-base py-6" onClick={() => trackFBEvent("Lead")}>
+                  <Button type="submit" disabled={loading} className="w-full cta-gold text-base py-6">
                     {loading ? "Submitting..." : "Book My Free Demo"}
                   </Button>
                   <p className="font-body text-xs text-muted-foreground text-center">
