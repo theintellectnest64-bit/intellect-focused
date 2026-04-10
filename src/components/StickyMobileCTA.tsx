@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { trackFBEvent } from "@/lib/fbpixel";
 
 const StickyMobileCTA = () => {
   const [show, setShow] = useState(false);

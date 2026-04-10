@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { fireConfetti } from "@/lib/confetti";
+import { trackFBEvent } from "@/lib/fbpixel";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -90,6 +91,7 @@ const BookDemo = () => {
       }
 
       await fireConfetti();
+      trackFBEvent("CompleteRegistration");
       setSubmitted(true);
       toast.success("Demo booked successfully!");
 
@@ -277,7 +279,7 @@ const BookDemo = () => {
                     </FormItem>
                   )} />
 
-                  <Button type="submit" disabled={loading} className="w-full cta-gold text-base py-6">
+                  <Button type="submit" disabled={loading} className="w-full cta-gold text-base py-6" onClick={() => trackFBEvent("Lead")}>
                     {loading ? "Submitting..." : "Book My Free Demo"}
                   </Button>
                   <p className="font-body text-xs text-muted-foreground text-center">
