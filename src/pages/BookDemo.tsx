@@ -83,16 +83,7 @@ const BookDemo = () => {
 
       if (error) throw error;
 
-      try {
-        await supabase.functions.invoke("send-notification", {
-          body: {
-            type: "lead",
-            record_id: insertedData.id,
-          },
-        });
-      } catch {
-        // Email notification is best-effort
-      }
+      // Email notification skipped — INSERT-only RLS prevents reading back the record ID
 
       await fireConfetti();
       trackFBEvent("CompleteRegistration");
