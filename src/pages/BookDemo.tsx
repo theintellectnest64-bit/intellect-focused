@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fireConfetti } from "@/lib/confetti";
 import { trackFBEvent } from "@/lib/fbpixel";
 import { useForm } from "react-hook-form";
