@@ -62,6 +62,7 @@ const App = () => {
         {!showIntro && (
           <BrowserRouter>
             <ScrollToTop />
+            <RouteTracker />
             <ScrollProgressBar />
             <Header />
             <Breadcrumb />
