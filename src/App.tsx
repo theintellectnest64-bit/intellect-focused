@@ -31,6 +31,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Admin = lazy(() => import("./pages/Admin"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
+const Zoom = lazy(() => import("./pages/Zoom"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -82,6 +83,7 @@ const App = () => {
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="/terms" element={<Terms />} />
+                  <Route path="/zoom" element={<Zoom />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
