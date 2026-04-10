@@ -16,6 +16,7 @@ import IntroAnimation from "@/components/IntroAnimation";
 import LogoPopup from "@/components/LogoPopup";
 import Breadcrumb from "@/components/Breadcrumb";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
+import RouteTracker from "@/components/RouteTracker";
 
 const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
