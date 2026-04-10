@@ -11,9 +11,7 @@ const WhatsAppButton = () => {
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-[999] group"
       aria-label="Chat with us on WhatsApp"
-      title="Chat with us on WhatsApp"
       onClick={() => trackFBEvent("Contact")}
-      title="Chat with us on WhatsApp"
     >
       <span className="absolute inset-0 rounded-full animate-pulse-ring" style={{ background: "hsl(49,91%,53%)" }} />
       <span
