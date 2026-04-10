@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -31,6 +32,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Admin = lazy(() => import("./pages/Admin"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
+const Zoom = lazy(() => import("./pages/Zoom"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -40,6 +42,46 @@ const PageLoader = () => (
     <div className="w-8 h-8 border-3 border-t-transparent rounded-full animate-spin" style={{ borderColor: "#2B7DD4", borderTopColor: "transparent" }} />
   </div>
 );
+
+const AppShell = () => {
+  const location = useLocation();
+  const isZoom = location.pathname === "/zoom";
+
+  return (
+    <>
+      {!isZoom && <ScrollProgressBar />}
+      {!isZoom && <Header />}
+      {!isZoom && <Breadcrumb />}
+      <main>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogArticle />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/book-demo" element={<BookDemo />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/zoom" element={<Zoom />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </main>
+      {!isZoom && <LocationsStrip />}
+      {!isZoom && <Footer />}
+      {!isZoom && <WhatsAppButton />}
+      {!isZoom && <BackToTop />}
+      {!isZoom && <LogoPopup />}
+      {!isZoom && <StickyMobileCTA />}
+    </>
+  );
+};
 
 const App = () => {
   const [showIntro, setShowIntro] = useState(() => {
@@ -63,35 +105,7 @@ const App = () => {
           <BrowserRouter>
             <ScrollToTop />
             <RouteTracker />
-            <ScrollProgressBar />
-            <Header />
-            <Breadcrumb />
-            <main>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/pricing" element={<Pricing />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:slug" element={<BlogArticle />} />
-                  <Route path="/gallery" element={<Gallery />} />
-                  <Route path="/faq" element={<FAQ />} />
-                  <Route path="/book-demo" element={<BookDemo />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </main>
-            <LocationsStrip />
-            <Footer />
-            <WhatsAppButton />
-            <BackToTop />
-            <LogoPopup />
-            <StickyMobileCTA />
+            <AppShell />
           </BrowserRouter>
         )}
       </TooltipProvider>
