@@ -47,6 +47,10 @@ const BookDemo = () => {
   const [loading, setLoading] = useState(false);
   const [countryCode, setCountryCode] = useState("+91|IN");
 
+  useEffect(() => {
+    trackFBEvent("Lead");
+  }, []);
+
   const form = useForm<BookDemoForm>({
     resolver: zodResolver(bookDemoSchema),
     defaultValues: {
