@@ -50,6 +50,10 @@ const Pricing = () => {
   const [currency, setCurrency] = useState<"inr" | "usd">("inr");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  useEffect(() => {
+    trackFBEvent("ViewContent", { content_name: "Pricing" });
+  }, []);
+
   return (
     <div>
       <Helmet>
