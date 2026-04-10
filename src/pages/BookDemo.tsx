@@ -100,6 +100,7 @@ const BookDemo = () => {
       toast.success("Demo booked successfully!");
 
       setTimeout(() => {
+        trackFBEvent("Contact");
         window.open(WHATSAPP_URL, "_blank");
       }, 2000);
     } catch {
