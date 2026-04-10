@@ -1,4 +1,5 @@
 import { MessageCircle } from "lucide-react";
+import { trackFBEvent } from "@/lib/fbpixel";
 
 const WHATSAPP_URL = "https://wa.me/919893189566?text=Knock%20knock!%20Can%20I%20step%20into%20the%20nest%20for%20a%20free%20chess%20demo%3F%20%F0%9F%95%8A%E2%99%9F";
 
@@ -10,7 +11,7 @@ const WhatsAppButton = () => {
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-[999] group"
       aria-label="Chat with us on WhatsApp"
-      title="Chat with us on WhatsApp"
+      onClick={() => trackFBEvent("Contact")}
     >
       <span className="absolute inset-0 rounded-full animate-pulse-ring" style={{ background: "hsl(49,91%,53%)" }} />
       <span

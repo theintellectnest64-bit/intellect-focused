@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { trackFBEvent } from "@/lib/fbpixel";
 
 const StickyMobileCTA = () => {
   const [show, setShow] = useState(false);
@@ -22,6 +23,7 @@ const StickyMobileCTA = () => {
     >
       <Link
         to="/book-demo"
+        onClick={() => trackFBEvent("Lead")}
         className="flex items-center justify-center w-full font-body font-bold uppercase text-sm"
         style={{
           height: 52,

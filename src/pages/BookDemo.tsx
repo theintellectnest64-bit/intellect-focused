@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fireConfetti } from "@/lib/confetti";
+import { trackFBEvent } from "@/lib/fbpixel";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,6 +47,10 @@ const BookDemo = () => {
   const [loading, setLoading] = useState(false);
   const [countryCode, setCountryCode] = useState("+91|IN");
 
+  useEffect(() => {
+    trackFBEvent("Lead");
+  }, []);
+
   const form = useForm<BookDemoForm>({
     resolver: zodResolver(bookDemoSchema),
     defaultValues: {
@@ -90,10 +95,12 @@ const BookDemo = () => {
       }
 
       await fireConfetti();
+      trackFBEvent("CompleteRegistration");
       setSubmitted(true);
       toast.success("Demo booked successfully!");
 
       setTimeout(() => {
+        trackFBEvent("Contact");
         window.open(WHATSAPP_URL, "_blank");
       }, 2000);
     } catch {

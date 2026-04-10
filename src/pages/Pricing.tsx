@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, ChevronDown, Crown } from "lucide-react";
@@ -6,6 +6,7 @@ import SectionWrapper from "@/components/SectionWrapper";
 import { Helmet } from "react-helmet-async";
 import JsonLd from "@/components/seo/JsonLd";
 import { faqPageSchema, breadcrumbSchema } from "@/components/seo/schemas";
+import { trackFBEvent } from "@/lib/fbpixel";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -48,6 +49,10 @@ const pricingFaq = [
 const Pricing = () => {
   const [currency, setCurrency] = useState<"inr" | "usd">("inr");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  useEffect(() => {
+    trackFBEvent("ViewContent", { content_name: "Pricing" });
+  }, []);
 
   return (
     <div>
