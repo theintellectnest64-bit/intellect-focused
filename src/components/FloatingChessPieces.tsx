@@ -1,11 +1,18 @@
-const FloatingChessPieces = () => {
+interface FloatingChessPiecesProps {
+  variant?: "dark" | "light";
+}
+
+const FloatingChessPieces = ({ variant = "dark" }: FloatingChessPiecesProps) => {
+  const gold = variant === "light" ? "#0D1E3B" : "#F5C518";
+  const blue = variant === "light" ? "#2B7DD4" : "#2B7DD4";
+
   return (
     <>
       {/* Queen — top-right */}
       <span
         className="absolute -top-4 -right-8 text-[48px] select-none animate-float pointer-events-none"
         style={{
-          color: "#F5C518",
+          color: gold,
           filter: "drop-shadow(0 4px 12px rgba(43,125,212,0.4))",
           animationDuration: "4s",
           animationDelay: "0s",
