@@ -25,7 +25,7 @@ const FloatingChessPieces = ({ variant = "dark" }: FloatingChessPiecesProps) => 
       <span
         className="absolute -bottom-4 -left-8 text-[36px] select-none animate-float pointer-events-none hidden md:block"
         style={{
-          color: "#2B7DD4",
+          color: blue,
           filter: "drop-shadow(0 4px 12px rgba(43,125,212,0.4))",
           animationDuration: "3.5s",
           animationDelay: "0.8s",
@@ -38,7 +38,7 @@ const FloatingChessPieces = ({ variant = "dark" }: FloatingChessPiecesProps) => 
       <span
         className="absolute -top-6 -left-6 text-[32px] select-none animate-float pointer-events-none hidden md:block"
         style={{
-          color: "#2B7DD4",
+          color: blue,
           filter: "drop-shadow(0 4px 12px rgba(43,125,212,0.4))",
           animationDuration: "5s",
           animationDelay: "1.5s",
@@ -51,7 +51,7 @@ const FloatingChessPieces = ({ variant = "dark" }: FloatingChessPiecesProps) => 
       <span
         className="absolute -bottom-6 -right-6 text-[40px] select-none animate-float pointer-events-none"
         style={{
-          color: "#F5C518",
+          color: gold,
           filter: "drop-shadow(0 4px 12px rgba(43,125,212,0.4))",
           animationDuration: "4.5s",
           animationDelay: "0.3s",
