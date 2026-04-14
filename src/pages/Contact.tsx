@@ -73,26 +73,23 @@ const Contact = () => {
     const code = countryCode.split("|")[0];
     const fullPhone = data.phone ? `${code} ${data.phone}` : null;
     try {
-      const { data: insertedData, error } = await supabase.from("contacts").insert({
+      const recordId = crypto.randomUUID();
+
+      const { error } = await supabase.from("contacts").insert({
+        id: recordId,
         name: data.name,
         email: data.email,
         phone: fullPhone,
         subject: data.subject,
         message: data.message,
-      }).select("id").single();
+      });
 
       if (error) throw error;
 
-      try {
-        await supabase.functions.invoke("send-notification", {
-          body: {
-            type: "contact",
-            record_id: insertedData.id,
-          },
-        });
-      } catch {
-        // best-effort
-      }
+      // Send email notification (fire-and-forget)
+      supabase.functions.invoke("send-notification", {
+        body: { type: "contact", record_id: recordId },
+      }).catch((err) => console.warn("Notification failed:", err));
 
       await fireConfetti();
       setSubmitted(true);

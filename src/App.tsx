@@ -13,7 +13,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
 import ScrollToTop from "@/components/ScrollToTop";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
-import IntroAnimation from "@/components/IntroAnimation";
+const IntroAnimation = lazy(() => import("@/components/IntroAnimation"));
 import LogoPopup from "@/components/LogoPopup";
 import Breadcrumb from "@/components/Breadcrumb";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
@@ -99,7 +99,11 @@ const App = () => {
       <TooltipProvider>
         <Sonner />
         <AnimatePresence>
-          {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
+          {showIntro && (
+            <Suspense fallback={null}>
+              <IntroAnimation onComplete={handleIntroComplete} />
+            </Suspense>
+          )}
         </AnimatePresence>
         {!showIntro && (
           <BrowserRouter>
