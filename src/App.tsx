@@ -99,7 +99,11 @@ const App = () => {
       <TooltipProvider>
         <Sonner />
         <AnimatePresence>
-          {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
+          {showIntro && (
+            <Suspense fallback={null}>
+              <IntroAnimation onComplete={handleIntroComplete} />
+            </Suspense>
+          )}
         </AnimatePresence>
         {!showIntro && (
           <BrowserRouter>
