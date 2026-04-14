@@ -70,7 +70,11 @@ const BookDemo = () => {
     const code = countryCode.split("|")[0];
     const fullPhone = `${code} ${data.parent_phone}`;
     try {
+      // Generate ID client-side so we can reference it for the notification
+      const recordId = crypto.randomUUID();
+
       const { error } = await supabase.from("leads").insert({
+        id: recordId,
         parent_name: data.parent_name,
         parent_email: data.parent_email,
         parent_phone: fullPhone,
@@ -83,7 +87,10 @@ const BookDemo = () => {
 
       if (error) throw error;
 
-      // Email notification skipped — INSERT-only RLS prevents reading back the record ID
+      // Send email notification (fire-and-forget)
+      supabase.functions.invoke("send-notification", {
+        body: { type: "lead", record_id: recordId },
+      }).catch((err) => console.warn("Notification failed:", err));
 
       await fireConfetti();
       trackFBEvent("CompleteRegistration");
