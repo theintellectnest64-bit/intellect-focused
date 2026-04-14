@@ -82,11 +82,11 @@ const NotesSection = ({ recordType, recordId }: { recordType: string; recordId: 
   const addNote = async () => {
     if (!newNote.trim()) return;
     setLoading(true);
-    const { error } = await supabase.from("admin_notes").insert({
+    const { error } = await supabase.from("admin_notes").insert([{
       record_type: recordType,
       record_id: recordId,
       note: newNote.trim(),
-    } as Record<string, unknown>);
+    }] as any);
     if (error) { toast.error("Failed to add note"); }
     else { setNewNote(""); await fetchNotes(); toast.success("Note added"); }
     setLoading(false);
