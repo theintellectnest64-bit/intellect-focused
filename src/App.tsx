@@ -85,9 +85,6 @@ const AppShell = () => {
 
 const App = () => {
   const [showIntro, setShowIntro] = useState(() => {
-    if (typeof window === "undefined") return false;
-    // Skip intro on the /zoom landing page — parents need it to load fast.
-    if (window.location.pathname === "/zoom") return false;
     return !sessionStorage.getItem("intro_played");
   });
 
