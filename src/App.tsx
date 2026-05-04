@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -15,6 +15,8 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import Breadcrumb from "@/components/Breadcrumb";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import RouteTracker from "@/components/RouteTracker";
+
+const LogoPopup = lazy(() => import("@/components/LogoPopup"));
 
 const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
@@ -43,6 +45,18 @@ const PageLoader = () => (
 const AppShell = () => {
   const location = useLocation();
   const isZoom = location.pathname === "/zoom";
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    if (isZoom) return;
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+    const id = w.requestIdleCallback
+      ? w.requestIdleCallback(() => setShowPopup(true), { timeout: 4000 })
+      : window.setTimeout(() => setShowPopup(true), 3000);
+    return () => {
+      if (typeof id === "number") clearTimeout(id);
+    };
+  }, [isZoom]);
 
   return (
     <>
@@ -75,6 +89,11 @@ const AppShell = () => {
       {!isZoom && <WhatsAppButton />}
       {!isZoom && <BackToTop />}
       {!isZoom && <StickyMobileCTA />}
+      {!isZoom && showPopup && (
+        <Suspense fallback={null}>
+          <LogoPopup />
+        </Suspense>
+      )}
     </>
   );
 };
