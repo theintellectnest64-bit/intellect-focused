@@ -15,7 +15,6 @@ import ScrollProgressBar from "@/components/ScrollProgressBar";
 import Breadcrumb from "@/components/Breadcrumb";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import RouteTracker from "@/components/RouteTracker";
-import { useEffect, useState } from "react";
 
 const LogoPopup = lazy(() => import("@/components/LogoPopup"));
 
