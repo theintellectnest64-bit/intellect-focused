@@ -89,6 +89,11 @@ const AppShell = () => {
       {!isZoom && <WhatsAppButton />}
       {!isZoom && <BackToTop />}
       {!isZoom && <StickyMobileCTA />}
+      {!isZoom && showPopup && (
+        <Suspense fallback={null}>
+          <LogoPopup />
+        </Suspense>
+      )}
     </>
   );
 };
