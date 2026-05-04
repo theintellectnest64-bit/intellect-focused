@@ -45,6 +45,18 @@ const PageLoader = () => (
 const AppShell = () => {
   const location = useLocation();
   const isZoom = location.pathname === "/zoom";
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    if (isZoom) return;
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
+    const id = w.requestIdleCallback
+      ? w.requestIdleCallback(() => setShowPopup(true), { timeout: 4000 })
+      : window.setTimeout(() => setShowPopup(true), 3000);
+    return () => {
+      if (typeof id === "number") clearTimeout(id);
+    };
+  }, [isZoom]);
 
   return (
     <>
