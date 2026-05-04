@@ -1,10 +1,9 @@
-import { lazy, Suspense, useState, useCallback } from "react";
+import { lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AnimatePresence } from "framer-motion";
 import { HelmetProvider } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -13,8 +12,6 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
 import ScrollToTop from "@/components/ScrollToTop";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
-const IntroAnimation = lazy(() => import("@/components/IntroAnimation"));
-import LogoPopup from "@/components/LogoPopup";
 import Breadcrumb from "@/components/Breadcrumb";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import RouteTracker from "@/components/RouteTracker";
@@ -77,41 +74,22 @@ const AppShell = () => {
       {!isZoom && <Footer />}
       {!isZoom && <WhatsAppButton />}
       {!isZoom && <BackToTop />}
-      {!isZoom && <LogoPopup />}
       {!isZoom && <StickyMobileCTA />}
     </>
   );
 };
 
 const App = () => {
-  const [showIntro, setShowIntro] = useState(() => {
-    return !sessionStorage.getItem("intro_played");
-  });
-
-  const handleIntroComplete = useCallback(() => {
-    sessionStorage.setItem("intro_played", "true");
-    setShowIntro(false);
-  }, []);
-
   return (
     <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Sonner />
-        <AnimatePresence>
-          {showIntro && (
-            <Suspense fallback={null}>
-              <IntroAnimation onComplete={handleIntroComplete} />
-            </Suspense>
-          )}
-        </AnimatePresence>
-        {!showIntro && (
-          <BrowserRouter>
-            <ScrollToTop />
-            <RouteTracker />
-            <AppShell />
-          </BrowserRouter>
-        )}
+        <BrowserRouter>
+          <ScrollToTop />
+          <RouteTracker />
+          <AppShell />
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
     </HelmetProvider>
