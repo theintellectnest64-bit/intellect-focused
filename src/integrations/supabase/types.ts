@@ -41,6 +41,54 @@ export type Database = {
         }
         Relationships: []
       }
+      applications: {
+        Row: {
+          about: string
+          created_at: string
+          email: string
+          experience: string | null
+          full_name: string
+          heard_from: string | null
+          id: string
+          location: string | null
+          phone: string
+          resume_url: string | null
+          role: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          about: string
+          created_at?: string
+          email: string
+          experience?: string | null
+          full_name: string
+          heard_from?: string | null
+          id?: string
+          location?: string | null
+          phone: string
+          resume_url?: string | null
+          role: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          about?: string
+          created_at?: string
+          email?: string
+          experience?: string | null
+          full_name?: string
+          heard_from?: string | null
+          id?: string
+          location?: string | null
+          phone?: string
+          resume_url?: string | null
+          role?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contacts: {
         Row: {
           created_at: string
