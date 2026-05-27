@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { CheckCircle, Globe, TrendingUp, Heart, Clock, Briefcase, MapPin } from "lucide-react";
+import { CheckCircle, Briefcase, MapPin } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import SectionWrapper from "@/components/SectionWrapper";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
