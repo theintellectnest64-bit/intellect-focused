@@ -41,7 +41,7 @@ const Footer = () => {
           <div>
             <h4 className="font-display text-sm font-semibold text-white mb-4">Quick Links</h4>
             <ul className="space-y-2.5">
-              {["Home", "About", "Courses", "Pricing", "Blog", "Gallery", "FAQ", "Contact"].map((label) => (
+              {["Home", "About", "Courses", "Pricing", "Blog", "Gallery", "FAQ", "Careers", "Contact"].map((label) => (
                 <li key={label}>
                   <Link to={`/${label === "Home" ? "" : label.toLowerCase()}`} className="font-body text-sm transition-colors hover:text-white" style={{ color: "#93C5FD" }}>
                     {label}
@@ -74,6 +74,7 @@ const Footer = () => {
                 { label: "FAQ", path: "/faq" },
                 { label: "Gallery", path: "/gallery" },
                 { label: "Book Demo", path: "/book-demo" },
+                { label: "Careers", path: "/careers" },
                 { label: "Contact", path: "/contact" },
               ].map((item) => (
                 <li key={item.label}>
