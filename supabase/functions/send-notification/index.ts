@@ -117,6 +117,45 @@ serve(async (req) => {
           <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Message</td><td style="padding:8px;border-bottom:1px solid #eee">${eMessage}</td></tr>
         </table>
       `;
+    } else if (type === "application") {
+      const { data: app, error } = await supabaseAdmin
+        .from("applications")
+        .select("*")
+        .eq("id", record_id)
+        .single();
+
+      if (error || !app) {
+        return new Response(JSON.stringify({ success: false, error: "Record not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const eName = escapeHtml(app.full_name);
+      const eEmail = escapeHtml(app.email);
+      const ePhone = escapeHtml(app.phone);
+      const eRole = escapeHtml(app.role);
+      const eLocation = escapeHtml(app.location);
+      const eAbout = escapeHtml(app.about);
+      const eExperience = escapeHtml(app.experience);
+      const eResume = escapeHtml(app.resume_url);
+      const eHeard = escapeHtml(app.heard_from);
+
+      emailSubject = `New Job Application — ${eRole} — ${eName}`;
+      emailHtml = `
+        <h2>New Job Application</h2>
+        <table style="border-collapse:collapse;width:100%">
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Full Name</td><td style="padding:8px;border-bottom:1px solid #eee">${eName}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Email</td><td style="padding:8px;border-bottom:1px solid #eee">${eEmail}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Phone / WhatsApp</td><td style="padding:8px;border-bottom:1px solid #eee">${ePhone}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Role</td><td style="padding:8px;border-bottom:1px solid #eee">${eRole}</td></tr>
+          ${eLocation ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Location</td><td style="padding:8px;border-bottom:1px solid #eee">${eLocation}</td></tr>` : ""}
+          <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;vertical-align:top">About</td><td style="padding:8px;border-bottom:1px solid #eee;white-space:pre-wrap">${eAbout}</td></tr>
+          ${eExperience ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;vertical-align:top">Experience</td><td style="padding:8px;border-bottom:1px solid #eee;white-space:pre-wrap">${eExperience}</td></tr>` : ""}
+          ${eResume ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Resume / CV</td><td style="padding:8px;border-bottom:1px solid #eee"><a href="${eResume}">${eResume}</a></td></tr>` : ""}
+          ${eHeard ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Heard From</td><td style="padding:8px;border-bottom:1px solid #eee">${eHeard}</td></tr>` : ""}
+        </table>
+      `;
     } else {
       return new Response(JSON.stringify({ success: false, error: "Invalid type" }), {
         status: 400,
