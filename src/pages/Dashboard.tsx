@@ -589,7 +589,7 @@ const Dashboard = () => {
   };
 
   const PageShell = ({ children }: { children: React.ReactNode }) => (
-    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "Inter, sans-serif" }}>
+    <div className="[&_h1]:font-sans [&_h2]:font-sans [&_h3]:font-sans" style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "Inter, sans-serif" }}>
       <Helmet><title>Dashboard — The Intellect Nest</title><meta name="robots" content="noindex,nofollow" /></Helmet>
       {children}
     </div>
