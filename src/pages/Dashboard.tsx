@@ -60,7 +60,13 @@ const C = {
 };
 
 type Row = Record<string, string>;
-type Payload = { tabs: string[]; data: Record<string, Row[]>; fetchedAt: string };
+type Payload = {
+  tabs: string[];
+  rawTabs?: string[];
+  data: Record<string, Row[]>;
+  fetchedAt: string;
+  diagnostics?: Array<{ tab: string; canonical: string; rows: number; headerRow: number; headers: string[] }>;
+};
 type AppTab = "Overview" | "Growth" | "Funnel" | "Unit Economics" | "Coaches";
 type Kpi = { label: string; value: string; hint: string; icon: React.ElementType; accent: string };
 
@@ -75,24 +81,61 @@ const PIE_COLORS = [C.sky, C.green, C.amber, C.red, "#A78BFA", "#F472B6", "#22D3
 
 const toNumber = (value: unknown): number => {
   if (value === null || value === undefined) return 0;
-  const clean = String(value).replace(/[,₹$€£%\s]/g, "").trim();
+  const raw = String(value).trim();
+  const clean = raw.replace(/[(),₹$€£%\s]/g, "").trim();
   if (!clean || clean === "-" || clean.toLowerCase() === "na") return 0;
   const n = Number.parseFloat(clean);
-  return Number.isFinite(n) ? n : 0;
+  return Number.isFinite(n) ? (raw.includes("(") && raw.includes(")") ? -n : n) : 0;
 };
 
 const normalizeKey = (key: string) => key.toLowerCase().replace(/[\s_-]+/g, "");
+const FIELD_ALIASES: Record<string, string[]> = {
+  Month: ["Month", "Billing Month", "Payment Month", "Expense Month", "Coach Month", "Ads Month", "Period"],
+  Date: ["Date", "Payment Date", "Paid Date", "Expense Date", "Created At", "Timestamp", "Submitted At"],
+  Received: ["Received", "Amount Received", "Paid", "Payment", "Fee Received", "Revenue", "Total Received", "Net Received", "Collected", "Collection"],
+  Amount: ["Amount", "Cost", "Expense", "Spent", "Paid", "Value", "Total", "Debit"],
+  "Actual Pay": ["Actual Pay", "Pay", "Coach Pay", "Amount Paid", "Salary", "Payout", "Actual", "Total Pay"],
+  "Estimated Pay": ["Estimated Pay", "Expected Pay", "Estimate", "Projected Pay"],
+  Difference: ["Difference", "Diff", "Balance", "Variance"],
+  "Classes This Month": ["Classes This Month", "Classes", "Sessions", "No. of Classes", "Class Count", "Total Classes"],
+  Spend: ["Spend", "Ad Spend", "Ads Spend", "Meta Spend", "Amount Spent", "Marketing Spend"],
+  Leads: ["Leads", "Lead", "Enquiries", "Inquiries", "Prospects"],
+  "Demos Booked": ["Demos Booked", "Demo Booked", "Booked", "Trial Booked", "Demo Scheduled"],
+  "Demos Shown": ["Demos Shown", "Demo Shown", "Shown", "Attended", "Demo Attended", "Trial Attended"],
+  Conversions: ["Conversions", "Conversion", "Paid Conversions", "Sales", "Admissions", "Enrollments", "Enrolments"],
+  "Student Name": ["Student Name", "Student", "Name", "Child Name", "Kid Name", "Learner"],
+  "Coach Name": ["Coach Name", "Coach", "Teacher", "Trainer", "Instructor"],
+  "Net Monthly Fee": ["Net Monthly Fee", "Monthly Fee", "Fee", "Net Fee", "Package Fee", "Amount", "Price"],
+  Status: ["Status", "Payment Status", "Student Status", "Active Status"],
+  Category: ["Category", "Type", "Expense Category", "Head", "Particulars", "Description"],
+  Type: ["Type", "Class Type", "Program Type"],
+  Package: ["Package", "Plan", "Batch", "Program"],
+};
 const get = (row: Row, key: string): string => {
   if (row[key] !== undefined) return row[key];
-  const want = normalizeKey(key);
-  for (const k of Object.keys(row)) {
-    if (normalizeKey(k) === want) return row[k] ?? "";
+  const wants = (FIELD_ALIASES[key] ?? [key]).map(normalizeKey);
+  const rowKeys = Object.keys(row);
+  for (const k of rowKeys) {
+    if (wants.includes(normalizeKey(k))) return row[k] ?? "";
+  }
+  for (const k of rowKeys) {
+    const nk = normalizeKey(k);
+    if (wants.some((want) => nk.includes(want) || want.includes(nk))) return row[k] ?? "";
   }
   return "";
 };
+const monthFromDate = (value: string) => {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  if (/^[A-Za-z]{3,9}\s+\d{4}$/.test(raw) || /^[A-Za-z]{3,9}$/.test(raw)) return raw;
+  const slash = raw.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})/);
+  const date = slash ? new Date(Number(slash[3].length === 2 ? `20${slash[3]}` : slash[3]), Number(slash[2]) - 1, Number(slash[1])) : new Date(raw);
+  return Number.isNaN(date.getTime()) ? raw : date.toLocaleDateString("en-IN", { month: "short", year: "numeric" });
+};
+const getRowMonth = (row: Row) => get(row, "Month").trim() || monthFromDate(get(row, "Date"));
 const sameMonth = (row: Row, selectedMonth: string) => {
   if (selectedMonth === "All") return true;
-  return String(get(row, "Month")).trim() === selectedMonth;
+  return getRowMonth(row) === selectedMonth;
 };
 const percent = (num: number, den: number) => (den > 0 ? (num / den) * 100 : 0);
 const ratio = (num: number, den: number) => (den > 0 ? num / den : 0);
@@ -117,7 +160,7 @@ const collectMonths = (payload: Payload | null) => {
     if (clean && !months.includes(clean)) months.push(clean);
   };
   ["Payments", "Expenses", "Coaches", "Ads", "Students"].forEach((tab) =>
-    (payload.data[tab] ?? []).forEach((r) => push(get(r, "Month"))),
+    (payload.data[tab] ?? []).forEach((r) => push(getRowMonth(r))),
   );
   if (months.length === 0) {
     const hasAnyRows = Object.values(payload.data).some((rows) => rows.length > 0);
