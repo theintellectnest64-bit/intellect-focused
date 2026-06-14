@@ -173,7 +173,7 @@ const KpiCard = ({ label, value, hint, icon: Icon, accent }: Kpi) => (
 const DarkTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color?: string }>; label?: string }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="px-3 py-2 text-sm shadow-2xl" style={{ background: "#071321", border: `1px solid ${C.border}`, color: C.text, borderRadius: 12 }}>
+    <div className="px-3 py-2 text-sm shadow-2xl" style={{ background: "#FFFFFF", border: `1px solid ${C.border}`, color: C.text, borderRadius: 12, boxShadow: "0 12px 32px rgba(13,30,59,0.15)" }}>
       <div className="font-semibold mb-1">{label}</div>
       {payload.map((entry, index) => (
         <div key={`${entry.name}-${index}`} className="flex items-center gap-2">
