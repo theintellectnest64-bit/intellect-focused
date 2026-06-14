@@ -640,8 +640,8 @@ const Dashboard = () => {
 
   const model = useDashboardModel(payload, selectedMonth);
   const monthOptions = model.months;
-  const syncCounts = payload ? APP_TABS.map((tab) => `${tab}: ${(payload.data[tab] ?? []).length}`).join(" · ") : "Not synced yet";
-  const totalRows = payload ? APP_TABS.reduce((sum, tab) => sum + (payload.data[tab] ?? []).length, 0) : 0;
+  const syncCounts = payload ? DATA_TABS.map((tab) => `${tab}: ${(payload.data[tab] ?? []).length}`).join(" · ") : "Not synced yet";
+  const totalRows = payload ? DATA_TABS.reduce((sum, tab) => sum + (payload.data[tab] ?? []).length, 0) : 0;
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -699,7 +699,7 @@ const Dashboard = () => {
           {error && <Card className="mb-5"><div className="flex items-start gap-3" style={{ color: C.red }}><AlertCircle size={18} /><div><div className="font-semibold">Failed to load live dashboard data</div><div className="text-sm" style={{ color: C.muted }}>{error}</div><div className="text-xs mt-2" style={{ color: C.muted }}>Make sure the sheet is shared as “Anyone with the link · Viewer” and the Google Sheets API key is valid.</div></div></div></Card>}
           {payload && <div className="mb-5 p-3 text-xs sm:text-sm overflow-x-auto" style={{ ...cardStyle, color: C.muted }}><span className="font-semibold" style={{ color: C.text }}>Google Sheet sync:</span> {syncCounts}</div>}
           {payload && selectedMonth && <AnimatePresence mode="wait">{activeTab === "Overview" && <OverviewTab key="overview" model={model} selectedMonth={selectedMonth} />}{activeTab === "Growth" && <GrowthTab key="growth" model={model} />}{activeTab === "Funnel" && <FunnelTab key="funnel" model={model} />}{activeTab === "Unit Economics" && <UnitEconomicsTab key="unit" model={model} />}{activeTab === "Coaches" && <CoachesTab key="coaches" model={model} />}</AnimatePresence>}
-          {payload && !selectedMonth && <EmptyState text="No Month values found. Add Month values to the Payments tab to populate the dashboard." />}
+          {payload && !selectedMonth && <EmptyState text="No valid payment months found. Use formats like Apr 2026 or May 2026 in Payments column C." />}
         </main>
       </div>
     </PageShell>
