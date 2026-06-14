@@ -45,13 +45,15 @@ import {
 import { toast } from "sonner";
 
 const C = {
-  bg: "#0D1B2A",
-  card: "#132236",
-  card2: "#0F2034",
-  border: "#1E3A5F",
-  text: "#FFFFFF",
-  muted: "#94A3B8",
-  sky: "#38BDF8",
+  bg: "#FFFFFF",
+  bgAlt: "#F0F6FF",
+  card: "#FFFFFF",
+  card2: "#F0F6FF",
+  border: "#D6E4F5",
+  text: "#0D1E3B",
+  muted: "#4A5568",
+  sky: "#2B7DD4",
+  gold: "#F5C518",
   green: "#10B981",
   red: "#EF4444",
   amber: "#F59E0B",
@@ -79,8 +81,19 @@ const toNumber = (value: unknown): number => {
   return Number.isFinite(n) ? n : 0;
 };
 
-const get = (row: Row, key: string) => row[key] ?? row[key.trim()] ?? "";
-const sameMonth = (row: Row, selectedMonth: string) => String(get(row, "Month")).trim() === selectedMonth;
+const normalizeKey = (key: string) => key.toLowerCase().replace(/[\s_-]+/g, "");
+const get = (row: Row, key: string): string => {
+  if (row[key] !== undefined) return row[key];
+  const want = normalizeKey(key);
+  for (const k of Object.keys(row)) {
+    if (normalizeKey(k) === want) return row[k] ?? "";
+  }
+  return "";
+};
+const sameMonth = (row: Row, selectedMonth: string) => {
+  if (selectedMonth === "All") return true;
+  return String(get(row, "Month")).trim() === selectedMonth;
+};
 const percent = (num: number, den: number) => (den > 0 ? (num / den) * 100 : 0);
 const ratio = (num: number, den: number) => (den > 0 ? num / den : 0);
 
@@ -103,14 +116,17 @@ const collectMonths = (payload: Payload | null) => {
     const clean = String(month || "").trim();
     if (clean && !months.includes(clean)) months.push(clean);
   };
-  (payload.data.Payments ?? []).forEach((r) => push(get(r, "Month")));
+  ["Payments", "Expenses", "Coaches", "Ads", "Students"].forEach((tab) =>
+    (payload.data[tab] ?? []).forEach((r) => push(get(r, "Month"))),
+  );
   if (months.length === 0) {
-    ["Expenses", "Coaches", "Ads"].forEach((tab) => (payload.data[tab] ?? []).forEach((r) => push(get(r, "Month"))));
+    const hasAnyRows = Object.values(payload.data).some((rows) => rows.length > 0);
+    if (hasAnyRows) months.push("All");
   }
   return months;
 };
 
-const cardStyle = { background: C.card, border: `1px solid ${C.border}`, borderRadius: 16 };
+const cardStyle = { background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, boxShadow: "0 4px 24px rgba(13,30,59,0.06)" };
 const inputStyle = { background: C.bg, border: `1px solid ${C.border}`, color: C.text };
 
 const Card = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
@@ -157,7 +173,7 @@ const KpiCard = ({ label, value, hint, icon: Icon, accent }: Kpi) => (
 const DarkTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color?: string }>; label?: string }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="px-3 py-2 text-sm shadow-2xl" style={{ background: "#071321", border: `1px solid ${C.border}`, color: C.text, borderRadius: 12 }}>
+    <div className="px-3 py-2 text-sm shadow-2xl" style={{ background: "#FFFFFF", border: `1px solid ${C.border}`, color: C.text, borderRadius: 12, boxShadow: "0 12px 32px rgba(13,30,59,0.15)" }}>
       <div className="font-semibold mb-1">{label}</div>
       {payload.map((entry, index) => (
         <div key={`${entry.name}-${index}`} className="flex items-center gap-2">
@@ -589,7 +605,7 @@ const Dashboard = () => {
   };
 
   const PageShell = ({ children }: { children: React.ReactNode }) => (
-    <div className="[&_h1]:font-sans [&_h2]:font-sans [&_h3]:font-sans" style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "Inter, sans-serif" }}>
+    <div className="[&_h1]:font-sans [&_h2]:font-sans [&_h3]:font-sans" style={{ background: C.bgAlt, minHeight: "100vh", color: C.text, fontFamily: "Inter, sans-serif" }}>
       <Helmet><title>Dashboard — The Intellect Nest</title><meta name="robots" content="noindex,nofollow" /></Helmet>
       {children}
     </div>
