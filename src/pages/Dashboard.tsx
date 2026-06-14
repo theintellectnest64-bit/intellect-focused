@@ -323,10 +323,11 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
       packageRows.filter((r) => matcher.test(`${get(r, "Type")} ${get(r, "Package")}`)).reduce((sum, r) => sum + toNumber(get(r, "Net Monthly Fee")), 0),
       packageRows.filter((r) => matcher.test(`${get(r, "Type")} ${get(r, "Package")}`)).length,
     );
+    const effectiveAvgFee = avgFee || ratio(revenue, Math.max(activeStudents, 1));
     const groupFee = packageAvg(/group|batch/i) || 2999;
     const oneOnOneFee = packageAvg(/1[-\s]?on[-\s]?1|private|one/i) || 4999;
     const variableCostPct = Math.min(Math.max(coachCostPct, 0), 85);
-    const netContributionPerStudent = avgFee * (1 - variableCostPct / 100);
+    const netContributionPerStudent = effectiveAvgFee * (1 - variableCostPct / 100);
     const fixedCosts = Math.max(sheetExpenses - metaAdsSpend, 0);
 
     return {
@@ -349,8 +350,8 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
       monthly,
       expenseBreakdown,
       funnel: { leads, demosBooked, demosShown, conversions: adsConversions, spend: adsSpend, cpl: ratio(adsSpend, leads), cpa: ratio(adsSpend, adsConversions) },
-      avgFee: avgFee || ratio(revenue, Math.max(activeStudents, 1)),
-      ltv: [3, 6, 12].map((monthsCount) => ({ label: `${monthsCount}mo`, value: avgFee * monthsCount })),
+      avgFee: effectiveAvgFee,
+      ltv: [3, 6, 12].map((monthsCount) => ({ label: `${monthsCount}mo`, value: effectiveAvgFee * monthsCount })),
       breakEvenStudents: netContributionPerStudent > 0 ? Math.ceil(fixedCosts / netContributionPerStudent) : 0,
       fixedCosts,
       netContributionPerStudent,
