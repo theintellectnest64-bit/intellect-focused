@@ -50,20 +50,23 @@ const rowScore = (row: string[]) => {
 
 const rowsToObjects = (tab: string, rows: string[][]) => {
   if (!rows.length) return { rows: [], headerRow: 0, headers: [] as string[] };
+  const headers = rows[0].map((h) => String(h ?? "").trim());
   const objects = rows.map((row) => {
     const obj: Record<string, string> = {};
-    const maxColumns = row.length;
+    const maxColumns = Math.max(row.length, headers.length);
     for (let i = 0; i < maxColumns; i += 1) {
       const value = (row[i] ?? "").toString();
       const letter = columnLetter(i);
       obj[letter] = value;
       obj[`Column ${letter}`] = value;
+      const header = headers[i];
+      if (header) obj[header] = value;
       const fixedName = FIXED_COLUMNS[tab]?.[i];
       if (fixedName) obj[fixedName] = value;
     }
     return obj;
   }).filter((obj) => Object.values(obj).some((value) => String(value).trim() !== ""));
-  return { rows: objects, headerRow: 4, headers: [] as string[] };
+  return { rows: objects, headerRow: 4, headers };
 };
 
 serve(async (req) => {
