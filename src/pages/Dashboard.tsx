@@ -635,6 +635,8 @@ const Dashboard = () => {
 
   const model = useDashboardModel(payload, selectedMonth);
   const monthOptions = model.months;
+  const syncCounts = payload ? APP_TABS.map((tab) => `${tab}: ${(payload.data[tab] ?? []).length}`).join(" · ") : "Not synced yet";
+  const totalRows = payload ? APP_TABS.reduce((sum, tab) => sum + (payload.data[tab] ?? []).length, 0) : 0;
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -675,6 +677,7 @@ const Dashboard = () => {
           <div className="max-w-[1500px] mx-auto px-4 sm:px-6 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0"><div className="h-11 w-11 shrink-0 flex items-center justify-center text-2xl" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14 }}>♟️</div><div className="min-w-0"><h1 className="text-xl sm:text-2xl font-bold truncate" style={{ color: C.text }}>The Intellect Nest</h1><div className="text-xs sm:text-sm uppercase" style={{ color: C.muted, letterSpacing: 0 }}>Business OS · tinchess.com</div></div></div>
             <div className="flex flex-wrap items-center gap-2">
+              <div className="px-3 py-2 text-xs sm:text-sm" style={{ ...inputStyle, borderRadius: 12 }}>Synced rows: {totalRows}</div>
               <div className="px-3 py-2 text-xs sm:text-sm" style={{ ...inputStyle, borderRadius: 12 }}>Last updated: {payload ? new Date(payload.fetchedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) : "—"}</div>
               <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} className="px-3 py-2 text-sm outline-none" style={{ ...inputStyle, borderRadius: 12 }}>{monthOptions.map((month) => <option key={month} value={month}>{month}</option>)}</select>
               <button onClick={() => fetchData(false)} disabled={loading} className="px-3 py-2 text-sm flex items-center gap-2 disabled:opacity-60" style={{ ...inputStyle, borderRadius: 12 }}><RefreshCw size={15} className={loading ? "animate-spin" : ""} /> Refresh</button>
@@ -689,6 +692,7 @@ const Dashboard = () => {
         <main className="max-w-[1500px] mx-auto px-4 sm:px-6 py-6">
           {loading && !payload && <div className="flex justify-center py-24"><div className="w-9 h-9 border-2 rounded-full animate-spin" style={{ borderColor: C.sky, borderTopColor: "transparent" }} /></div>}
           {error && <Card className="mb-5"><div className="flex items-start gap-3" style={{ color: C.red }}><AlertCircle size={18} /><div><div className="font-semibold">Failed to load live dashboard data</div><div className="text-sm" style={{ color: C.muted }}>{error}</div><div className="text-xs mt-2" style={{ color: C.muted }}>Make sure the sheet is shared as “Anyone with the link · Viewer” and the Google Sheets API key is valid.</div></div></div></Card>}
+          {payload && <div className="mb-5 p-3 text-xs sm:text-sm overflow-x-auto" style={{ ...cardStyle, color: C.muted }}><span className="font-semibold" style={{ color: C.text }}>Google Sheet sync:</span> {syncCounts}</div>}
           {payload && selectedMonth && <AnimatePresence mode="wait">{activeTab === "Overview" && <OverviewTab key="overview" model={model} selectedMonth={selectedMonth} />}{activeTab === "Growth" && <GrowthTab key="growth" model={model} />}{activeTab === "Funnel" && <FunnelTab key="funnel" model={model} />}{activeTab === "Unit Economics" && <UnitEconomicsTab key="unit" model={model} />}{activeTab === "Coaches" && <CoachesTab key="coaches" model={model} />}</AnimatePresence>}
           {payload && !selectedMonth && <EmptyState text="No Month values found. Add Month values to the Payments tab to populate the dashboard." />}
         </main>
