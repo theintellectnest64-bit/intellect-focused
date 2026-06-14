@@ -158,6 +158,7 @@ serve(async (req) => {
         diagnostics.push({ tab: tabName, canonical, rows: converted.rows.length, headerRow: converted.headerRow + 1, headers: converted.headers });
       },
     );
+    console.info("dashboard sync diagnostics", JSON.stringify(diagnostics.map((d) => ({ tab: d.tab, canonical: d.canonical, rows: d.rows, headerRow: d.headerRow }))));
 
     return new Response(
       JSON.stringify({ tabs: CANONICAL_TABS, rawTabs: tabs, data, diagnostics, fetchedAt: new Date().toISOString() }),
