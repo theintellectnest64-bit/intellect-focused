@@ -71,6 +71,8 @@ type AppTab = "Overview" | "Growth" | "Funnel" | "Unit Economics" | "Coaches";
 type Kpi = { label: string; value: string; hint: string; icon: React.ElementType; accent: string };
 
 const APP_TABS: AppTab[] = ["Overview", "Growth", "Funnel", "Unit Economics", "Coaches"];
+const DATA_TABS = ["Payments", "Expenses", "Coaches", "Students", "Ads"] as const;
+const VALID_MONTH_RE = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
 const MILESTONES = [
   { label: "Jun", target: 25 },
   { label: "Sep", target: 50 },
@@ -124,6 +126,17 @@ const get = (row: Row, key: string): string => {
   }
   return "";
 };
+const col = (row: Row, letter: string) => row[letter] ?? row[`Column ${letter}`] ?? "";
+const cleanMonth = (value: string) => String(value || "").trim();
+const isValidMonth = (value: string) => VALID_MONTH_RE.test(cleanMonth(value));
+const paymentMonth = (row: Row) => cleanMonth(col(row, "C") || get(row, "Month"));
+const expenseMonth = (row: Row) => cleanMonth(col(row, "B") || get(row, "Month"));
+const coachMonth = (row: Row) => cleanMonth(col(row, "B") || get(row, "Month"));
+const paymentReceived = (row: Row) => toNumber(col(row, "F") || get(row, "Received"));
+const expenseAmount = (row: Row) => toNumber(col(row, "E") || get(row, "Amount"));
+const expenseCategory = (row: Row) => String(col(row, "C") || get(row, "Category")).trim();
+const coachActualPay = (row: Row) => toNumber(col(row, "G") || get(row, "Actual Pay"));
+const studentStatus = (row: Row) => String(col(row, "L") || get(row, "Status")).trim().toLowerCase();
 const monthFromDate = (value: string) => {
   const raw = String(value || "").trim();
   if (!raw) return "";
@@ -132,11 +145,9 @@ const monthFromDate = (value: string) => {
   const date = slash ? new Date(Number(slash[3].length === 2 ? `20${slash[3]}` : slash[3]), Number(slash[2]) - 1, Number(slash[1])) : new Date(raw);
   return Number.isNaN(date.getTime()) ? raw : date.toLocaleDateString("en-IN", { month: "short", year: "numeric" });
 };
-const getRowMonth = (row: Row) => get(row, "Month").trim() || monthFromDate(get(row, "Date"));
-const sameMonth = (row: Row, selectedMonth: string) => {
-  if (selectedMonth === "All") return true;
-  return getRowMonth(row) === selectedMonth;
-};
+const adsMonth = (row: Row) => cleanMonth(get(row, "Month")) || monthFromDate(get(row, "Date"));
+const getRowMonth = (row: Row) => cleanMonth(get(row, "Month")) || monthFromDate(get(row, "Date"));
+const sameMonth = (row: Row, selectedMonth: string, getMonth: (row: Row) => string = getRowMonth) => getMonth(row) === selectedMonth;
 const percent = (num: number, den: number) => (den > 0 ? (num / den) * 100 : 0);
 const ratio = (num: number, den: number) => (den > 0 ? num / den : 0);
 
@@ -157,15 +168,9 @@ const collectMonths = (payload: Payload | null) => {
   const months: string[] = [];
   const push = (month: string) => {
     const clean = String(month || "").trim();
-    if (clean && !months.includes(clean)) months.push(clean);
+    if (isValidMonth(clean) && !months.includes(clean)) months.push(clean);
   };
-  ["Payments", "Expenses", "Coaches", "Ads", "Students"].forEach((tab) =>
-    (payload.data[tab] ?? []).forEach((r) => push(getRowMonth(r))),
-  );
-  if (months.length === 0) {
-    const hasAnyRows = Object.values(payload.data).some((rows) => rows.length > 0);
-    if (hasAnyRows) months.push("All");
-  }
+  (payload.data.Payments ?? []).forEach((r) => push(paymentMonth(r)));
   return months;
 };
 
@@ -246,24 +251,24 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
     const ads = payload?.data.Ads ?? [];
     const months = collectMonths(payload);
 
-    const rowsFor = (rows: Row[]) => rows.filter((r) => sameMonth(r, selectedMonth));
-    const payRows = rowsFor(payments);
-    const expenseRows = rowsFor(expenses);
-    const coachRows = rowsFor(coaches);
-    const adRows = rowsFor(ads);
+    const rowsFor = (rows: Row[], getMonth: (row: Row) => string) => rows.filter((r) => selectedMonth && sameMonth(r, selectedMonth, getMonth));
+    const payRows = rowsFor(payments, paymentMonth);
+    const expenseRows = rowsFor(expenses, expenseMonth);
+    const coachRows = rowsFor(coaches, coachMonth);
+    const adRows = rowsFor(ads, adsMonth);
 
     const activeStudents = students.filter((r) => {
-      const status = String(get(r, "Status")).trim().toLowerCase();
+      const status = studentStatus(r);
       return !status || status === "active" || status === "paid" || status === "ongoing";
     }).length;
-    const revenue = payRows.reduce((sum, r) => sum + toNumber(get(r, "Received")), 0);
-    const sheetExpenses = expenseRows.reduce((sum, r) => sum + toNumber(get(r, "Amount")), 0);
-    const coachPay = coachRows.reduce((sum, r) => sum + toNumber(get(r, "Actual Pay")), 0);
+    const revenue = payRows.reduce((sum, r) => sum + paymentReceived(r), 0);
+    const sheetExpenses = expenseRows.reduce((sum, r) => sum + expenseAmount(r), 0);
+    const coachPay = coachRows.reduce((sum, r) => sum + coachActualPay(r), 0);
     const totalExpenses = sheetExpenses + coachPay;
     const profit = revenue - totalExpenses;
     const metaAdsSpend = expenseRows
-      .filter((r) => /meta|facebook|instagram|ads?/i.test(get(r, "Category")))
-      .reduce((sum, r) => sum + toNumber(get(r, "Amount")), 0);
+      .filter((r) => /meta|facebook|instagram|ads?/i.test(expenseCategory(r)))
+      .reduce((sum, r) => sum + expenseAmount(r), 0);
     const adsSpend = adRows.reduce((sum, r) => sum + toNumber(get(r, "Spend")), 0);
     const adsConversions = adRows.reduce((sum, r) => sum + toNumber(get(r, "Conversions")), 0);
     const leads = adRows.reduce((sum, r) => sum + toNumber(get(r, "Leads")), 0);
@@ -274,13 +279,13 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
     const avgFee = ratio(students.reduce((sum, r) => sum + toNumber(get(r, "Net Monthly Fee")), 0), students.filter((r) => toNumber(get(r, "Net Monthly Fee")) > 0).length);
 
     const monthly = months.map((month) => {
-      const p = payments.filter((r) => sameMonth(r, month));
-      const e = expenses.filter((r) => sameMonth(r, month));
-      const c = coaches.filter((r) => sameMonth(r, month));
-      const a = ads.filter((r) => sameMonth(r, month));
-      const mRevenue = p.reduce((sum, r) => sum + toNumber(get(r, "Received")), 0);
-      const mExpenses = e.reduce((sum, r) => sum + toNumber(get(r, "Amount")), 0);
-      const mCoach = c.reduce((sum, r) => sum + toNumber(get(r, "Actual Pay")), 0);
+      const p = payments.filter((r) => sameMonth(r, month, paymentMonth));
+      const e = expenses.filter((r) => sameMonth(r, month, expenseMonth));
+      const c = coaches.filter((r) => sameMonth(r, month, coachMonth));
+      const a = ads.filter((r) => sameMonth(r, month, adsMonth));
+      const mRevenue = p.reduce((sum, r) => sum + paymentReceived(r), 0);
+      const mExpenses = e.reduce((sum, r) => sum + expenseAmount(r), 0);
+      const mCoach = c.reduce((sum, r) => sum + coachActualPay(r), 0);
       const mProfit = mRevenue - mExpenses - mCoach;
       const uniquePaidStudents = new Set(p.map((r) => get(r, "Student Name").trim()).filter(Boolean)).size;
       return {
@@ -292,7 +297,7 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
         profit: mProfit,
         margin: percent(mProfit, mRevenue),
         coachCost: percent(mCoach, mRevenue),
-        activeStudents: uniquePaidStudents || students.filter((r) => getRowMonth(r) === month).length,
+        activeStudents: uniquePaidStudents || activeStudents,
         adsSpend: a.reduce((sum, r) => sum + toNumber(get(r, "Spend")), 0),
         conversions: a.reduce((sum, r) => sum + toNumber(get(r, "Conversions")), 0),
       };
@@ -300,19 +305,19 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
 
     const expenseBreakdownMap = new Map<string, number>();
     expenseRows.forEach((r) => {
-      const category = get(r, "Category").trim() || "Other";
-      expenseBreakdownMap.set(category, (expenseBreakdownMap.get(category) ?? 0) + toNumber(get(r, "Amount")));
+      const category = expenseCategory(r) || "Other";
+      expenseBreakdownMap.set(category, (expenseBreakdownMap.get(category) ?? 0) + expenseAmount(r));
     });
     if (coachPay > 0) expenseBreakdownMap.set("Coach Pay", (expenseBreakdownMap.get("Coach Pay") ?? 0) + coachPay);
     const expenseBreakdown = Array.from(expenseBreakdownMap, ([name, value]) => ({ name, value })).filter((item) => item.value > 0);
 
     const coachTotalsMap = new Map<string, { coach: string; classes: number; estimated: number; actual: number; difference: number }>();
-    coaches.forEach((r) => {
+    coachRows.forEach((r) => {
       const coach = get(r, "Coach Name").trim() || "Unassigned";
       const current = coachTotalsMap.get(coach) ?? { coach, classes: 0, estimated: 0, actual: 0, difference: 0 };
       current.classes += toNumber(get(r, "Classes This Month"));
       current.estimated += toNumber(get(r, "Estimated Pay"));
-      current.actual += toNumber(get(r, "Actual Pay"));
+      current.actual += coachActualPay(r);
       current.difference += toNumber(get(r, "Difference"));
       coachTotalsMap.set(coach, current);
     });
@@ -635,8 +640,8 @@ const Dashboard = () => {
 
   const model = useDashboardModel(payload, selectedMonth);
   const monthOptions = model.months;
-  const syncCounts = payload ? APP_TABS.map((tab) => `${tab}: ${(payload.data[tab] ?? []).length}`).join(" · ") : "Not synced yet";
-  const totalRows = payload ? APP_TABS.reduce((sum, tab) => sum + (payload.data[tab] ?? []).length, 0) : 0;
+  const syncCounts = payload ? DATA_TABS.map((tab) => `${tab}: ${(payload.data[tab] ?? []).length}`).join(" · ") : "Not synced yet";
+  const totalRows = payload ? DATA_TABS.reduce((sum, tab) => sum + (payload.data[tab] ?? []).length, 0) : 0;
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -694,7 +699,7 @@ const Dashboard = () => {
           {error && <Card className="mb-5"><div className="flex items-start gap-3" style={{ color: C.red }}><AlertCircle size={18} /><div><div className="font-semibold">Failed to load live dashboard data</div><div className="text-sm" style={{ color: C.muted }}>{error}</div><div className="text-xs mt-2" style={{ color: C.muted }}>Make sure the sheet is shared as “Anyone with the link · Viewer” and the Google Sheets API key is valid.</div></div></div></Card>}
           {payload && <div className="mb-5 p-3 text-xs sm:text-sm overflow-x-auto" style={{ ...cardStyle, color: C.muted }}><span className="font-semibold" style={{ color: C.text }}>Google Sheet sync:</span> {syncCounts}</div>}
           {payload && selectedMonth && <AnimatePresence mode="wait">{activeTab === "Overview" && <OverviewTab key="overview" model={model} selectedMonth={selectedMonth} />}{activeTab === "Growth" && <GrowthTab key="growth" model={model} />}{activeTab === "Funnel" && <FunnelTab key="funnel" model={model} />}{activeTab === "Unit Economics" && <UnitEconomicsTab key="unit" model={model} />}{activeTab === "Coaches" && <CoachesTab key="coaches" model={model} />}</AnimatePresence>}
-          {payload && !selectedMonth && <EmptyState text="No Month values found. Add Month values to the Payments tab to populate the dashboard." />}
+          {payload && !selectedMonth && <EmptyState text="No valid payment months found. Use formats like Apr 2026 or May 2026 in Payments column C." />}
         </main>
       </div>
     </PageShell>
