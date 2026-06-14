@@ -71,6 +71,8 @@ type AppTab = "Overview" | "Growth" | "Funnel" | "Unit Economics" | "Coaches";
 type Kpi = { label: string; value: string; hint: string; icon: React.ElementType; accent: string };
 
 const APP_TABS: AppTab[] = ["Overview", "Growth", "Funnel", "Unit Economics", "Coaches"];
+const DATA_TABS = ["Payments", "Expenses", "Coaches", "Students", "Ads"] as const;
+const VALID_MONTH_RE = /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
 const MILESTONES = [
   { label: "Jun", target: 25 },
   { label: "Sep", target: 50 },
@@ -124,6 +126,17 @@ const get = (row: Row, key: string): string => {
   }
   return "";
 };
+const col = (row: Row, letter: string) => row[letter] ?? row[`Column ${letter}`] ?? "";
+const cleanMonth = (value: string) => String(value || "").trim();
+const isValidMonth = (value: string) => VALID_MONTH_RE.test(cleanMonth(value));
+const paymentMonth = (row: Row) => cleanMonth(col(row, "C") || get(row, "Month"));
+const expenseMonth = (row: Row) => cleanMonth(col(row, "B") || get(row, "Month"));
+const coachMonth = (row: Row) => cleanMonth(col(row, "B") || get(row, "Month"));
+const paymentReceived = (row: Row) => toNumber(col(row, "F") || get(row, "Received"));
+const expenseAmount = (row: Row) => toNumber(col(row, "E") || get(row, "Amount"));
+const expenseCategory = (row: Row) => String(col(row, "C") || get(row, "Category")).trim();
+const coachActualPay = (row: Row) => toNumber(col(row, "G") || get(row, "Actual Pay"));
+const studentStatus = (row: Row) => String(col(row, "L") || get(row, "Status")).trim().toLowerCase();
 const monthFromDate = (value: string) => {
   const raw = String(value || "").trim();
   if (!raw) return "";
@@ -132,11 +145,9 @@ const monthFromDate = (value: string) => {
   const date = slash ? new Date(Number(slash[3].length === 2 ? `20${slash[3]}` : slash[3]), Number(slash[2]) - 1, Number(slash[1])) : new Date(raw);
   return Number.isNaN(date.getTime()) ? raw : date.toLocaleDateString("en-IN", { month: "short", year: "numeric" });
 };
-const getRowMonth = (row: Row) => get(row, "Month").trim() || monthFromDate(get(row, "Date"));
-const sameMonth = (row: Row, selectedMonth: string) => {
-  if (selectedMonth === "All") return true;
-  return getRowMonth(row) === selectedMonth;
-};
+const adsMonth = (row: Row) => cleanMonth(get(row, "Month")) || monthFromDate(get(row, "Date"));
+const getRowMonth = (row: Row) => cleanMonth(get(row, "Month")) || monthFromDate(get(row, "Date"));
+const sameMonth = (row: Row, selectedMonth: string, getMonth: (row: Row) => string = getRowMonth) => getMonth(row) === selectedMonth;
 const percent = (num: number, den: number) => (den > 0 ? (num / den) * 100 : 0);
 const ratio = (num: number, den: number) => (den > 0 ? num / den : 0);
 
@@ -157,15 +168,9 @@ const collectMonths = (payload: Payload | null) => {
   const months: string[] = [];
   const push = (month: string) => {
     const clean = String(month || "").trim();
-    if (clean && !months.includes(clean)) months.push(clean);
+    if (isValidMonth(clean) && !months.includes(clean)) months.push(clean);
   };
-  ["Payments", "Expenses", "Coaches", "Ads", "Students"].forEach((tab) =>
-    (payload.data[tab] ?? []).forEach((r) => push(getRowMonth(r))),
-  );
-  if (months.length === 0) {
-    const hasAnyRows = Object.values(payload.data).some((rows) => rows.length > 0);
-    if (hasAnyRows) months.push("All");
-  }
+  (payload.data.Payments ?? []).forEach((r) => push(paymentMonth(r)));
   return months;
 };
 
