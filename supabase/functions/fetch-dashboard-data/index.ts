@@ -35,19 +35,6 @@ const columnLetter = (index: number) => {
   return letter;
 };
 
-const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
-
-const HEADER_HINTS = [
-  "month", "student", "name", "received", "amount", "status", "category", "coach", "actual",
-  "pay", "classes", "spend", "leads", "demo", "conversion", "fee", "package", "type",
-];
-
-const rowScore = (row: string[]) => {
-  const cells = row.map((cell) => String(cell ?? "").trim()).filter(Boolean);
-  const hintMatches = cells.filter((cell) => HEADER_HINTS.some((hint) => normalize(cell).includes(hint))).length;
-  return hintMatches * 10 + Math.min(cells.length, 12);
-};
-
 const rowsToObjects = (tab: string, rows: string[][]) => {
   if (!rows.length) return { rows: [], headerRow: 0, headers: [] as string[] };
   const headers = rows[0].map((h) => String(h ?? "").trim());
