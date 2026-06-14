@@ -9,19 +9,33 @@ const corsHeaders = {
 
 const SHEET_ID = "1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k";
 
-const CANONICAL_TABS = ["Payments", "Expenses", "Coaches", "Ads", "Students"];
+const DASHBOARD_RANGES = [
+  { tab: "Payments", range: "Payments!A4:J503" },
+  { tab: "Expenses", range: "Expenses!A4:G403" },
+  { tab: "Coaches", range: "Coaches!A4:I203" },
+  { tab: "Students", range: "Students!A4:M103" },
+  { tab: "Ads", range: "Ads!A4:N203" },
+] as const;
+
+const FIXED_COLUMNS: Record<string, Record<number, string>> = {
+  Payments: { 2: "Month", 5: "Received" },
+  Expenses: { 1: "Month", 2: "Category", 4: "Amount" },
+  Coaches: { 1: "Month", 6: "Actual Pay" },
+  Students: { 11: "Status" },
+};
+
+const columnLetter = (index: number) => {
+  let n = index + 1;
+  let letter = "";
+  while (n > 0) {
+    const rem = (n - 1) % 26;
+    letter = String.fromCharCode(65 + rem) + letter;
+    n = Math.floor((n - 1) / 26);
+  }
+  return letter;
+};
 
 const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, "");
-
-const canonicalTabName = (tabName: string) => {
-  const n = normalize(tabName);
-  if (/payment|revenue|fee|invoice|collection/.test(n)) return "Payments";
-  if (/expense|cost|spend|outflow/.test(n) && !/ad|ads|meta|facebook|instagram/.test(n)) return "Expenses";
-  if (/coach|teacher|trainer|payroll|salary/.test(n)) return "Coaches";
-  if (/ad|ads|meta|facebook|instagram|campaign|lead|funnel|marketing/.test(n)) return "Ads";
-  if (/student|learner|kid|child|enrol|enroll|active/.test(n)) return "Students";
-  return tabName;
-};
 
 const HEADER_HINTS = [
   "month", "student", "name", "received", "amount", "status", "category", "coach", "actual",
@@ -47,14 +61,27 @@ const findHeaderIndex = (rows: string[][]) => {
   return bestIndex;
 };
 
-const rowsToObjects = (rows: string[][]) => {
+const rowsToObjects = (tab: string, rows: string[][]) => {
   if (!rows.length) return { rows: [], headerRow: 0, headers: [] as string[] };
-  const headerRow = findHeaderIndex(rows);
-  const headers = rows[headerRow].map((h, i) => String(h ?? "").trim() || `Column ${i + 1}`);
-  const objects = rows.slice(headerRow + 1).map((row) => {
+  const firstRowLooksLikeHeader = rowScore(rows[0]) >= 20;
+  const headers = firstRowLooksLikeHeader ? rows[0].map((h) => String(h ?? "").trim()) : [];
+  const objects = rows.slice(firstRowLooksLikeHeader ? 1 : 0).map((row) => {
     const obj: Record<string, string> = {};
-    headers.forEach((h, i) => {
-      obj[h] = (row[i] ?? "").toString();
+    const maxColumns = Math.max(row.length, headers.length);
+    for (let i = 0; i < maxColumns; i += 1) {
+      const value = (row[i] ?? "").toString();
+      const letter = columnLetter(i);
+      obj[letter] = value;
+      obj[`Column ${letter}`] = value;
+      const header = headers[i];
+      if (header) obj[header] = value;
+      const fixedName = FIXED_COLUMNS[tab]?.[i];
+      if (fixedName) obj[fixedName] = value;
+    }
+    return obj;
+  }).filter((obj) => Object.values(obj).some((value) => String(value).trim() !== ""));
+  return { rows: objects, headerRow: firstRowLooksLikeHeader ? 4 : 0, headers };
+};
     });
     return obj;
   }).filter((obj) => Object.values(obj).some((value) => String(value).trim() !== ""));
