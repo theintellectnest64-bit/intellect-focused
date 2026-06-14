@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TIN Business OS — tinchess.com</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0D1B2A;color:#F8FAFC;min-height:100vh}
+:root{--navy:#0D1B2A;--navym:#132236;--navyl:#1A2F47;--blue:#1D6FA5;--sky:#38BDF8;--teal:#06B6D4;--green:#10B981;--red:#EF4444;--amber:#F59E0B;--purple:#8B5CF6;--white:#F8FAFC;--muted:#94A3B8;--border:#1E3A5F}
+.hdr{background:#0A1628;border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100}
+.hdr-brand{display:flex;align-items:center;gap:12px}
+.hdr-brand .icon{font-size:28px}
+.brand-name{font-size:18px;font-weight:700;letter-spacing:-0.5px}
+.brand-sub{font-size:10px;color:var(--sky);font-weight:600;letter-spacing:1px}
+.hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sync-badge{background:rgba(16,185,129,0.15);color:var(--green);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:4px 12px;font-size:11px;font-weight:600}
+.sync-badge.loading{background:rgba(245,158,11,0.15);color:var(--amber);border-color:rgba(245,158,11,0.3)}
+.sync-badge.error{background:rgba(239,68,68,0.15);color:var(--red);border-color:rgba(239,68,68,0.3)}
+.last-updated{font-size:11px;color:var(--muted)}
+.month-sel{background:#1A2F47;border:1px solid var(--border);color:var(--white);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer}
+.tabs{display:flex;gap:2px;padding:14px 24px 0;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);padding:10px 18px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;border-radius:8px 8px 0 0}
+.tab:hover{color:var(--white);background:rgba(255,255,255,0.05)}
+.tab.active{color:var(--sky);border-bottom-color:var(--sky);background:rgba(56,189,248,0.08)}
+.body{padding:24px;max-width:1400px;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:linear-gradient(135deg,#132236,#1A2F47);border:1px solid var(--border);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:rgba(56,189,248,0.06)}
+.kpi-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.kpi-val{font-size:24px;font-weight:800;letter-spacing:-1px;line-height:1.1}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
+.alert-bar{border-radius:12px;padding:12px 18px;font-size:12px;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.alert-bar.ok{background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:var(--green)}
+.alert-bar.warn{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:var(--amber)}
+.alert-bar.bad{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.grid32{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:16px}
+.grid23{display:grid;grid-template-columns:2fr 3fr;gap:16px;margin-bottom:16px}
+@media(max-width:700px){.grid2,.grid32,.grid23{grid-template-columns:1fr}}
+.card{background:linear-gradient(160deg,#132236,#1A2F47);border:1px solid var(--border);border-radius:20px;padding:20px}
+.card-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px}
+.card-sub{font-size:11px;color:var(--muted);margin-bottom:16px}
+.chart-wrap{position:relative;width:100%}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:11px;color:var(--muted);margin-bottom:10px}
+.legend span{display:flex;align-items:center;gap:5px}
+.leg-dot{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:var(--muted);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:8px 12px;border-bottom:1px solid rgba(30,58,95,0.5);color:var(--white)}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even){background:rgba(255,255,255,0.02)}
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.pill-green{background:rgba(16,185,129,0.15);color:var(--green)}
+.pill-red{background:rgba(239,68,68,0.15);color:var(--red)}
+.pill-amber{background:rgba(245,158,11,0.15);color:var(--amber)}
+.pill-blue{background:rgba(56,189,248,0.15);color:var(--sky)}
+.funnel-row{margin-bottom:14px}
+.funnel-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.funnel-name{color:var(--muted)}
+.funnel-val{color:var(--white);font-weight:700}
+.funnel-track{background:#1A2F47;border-radius:6px;height:12px;overflow:hidden}
+.funnel-fill{height:100%;border-radius:6px;transition:width 1s ease}
+.student-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,58,95,0.4);font-size:12px}
+.student-row:last-child{border-bottom:none}
+.warn-item{padding:12px 16px;border-radius:12px;font-size:12px;font-weight:500;margin-bottom:10px;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+.section-head{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:20px 0 12px}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(245,158,11,0.3);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.refresh-btn{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);color:var(--sky);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.refresh-btn:hover{background:rgba(56,189,248,0.2)}
+.milestone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.milestone{border-radius:14px;padding:16px;border:1px solid}
+.what-if-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px}
+.what-if-card{border-radius:12px;padding:14px;border:1px solid var(--border);text-align:center}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="icon">♟️</div>
+    <div>
+      <div class="brand-name">The Intellect Nest</div>
+      <div class="brand-sub">BUSINESS OS · TINCHESS.COM</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span class="last-updated" id="lastUpdated">Loading...</span>
+    <select class="month-sel" id="monthSel" onchange="renderAll()">
+      <option value="Jun 2026">Jun 2026</option>
+      <option value="May 2026">May 2026</option>
+      <option value="Apr 2026">Apr 2026</option>
+    </select>
+    <button class="refresh-btn" onclick="fetchAll()">↻ Refresh</button>
+    <span class="sync-badge loading" id="syncBadge">⟳ Syncing...</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('overview',this)">📊 Overview</button>
+  <button class="tab" onclick="switchTab('pnl',this)">💰 P&amp;L</button>
+  <button class="tab" onclick="switchTab('funnel',this)">🎯 Funnel</button>
+  <button class="tab" onclick="switchTab('growth',this)">📈 Growth</button>
+  <button class="tab" onclick="switchTab('students',this)">🧒 Students</button>
+  <button class="tab" onclick="switchTab('coaches',this)">👨‍🏫 Coaches</button>
+  <button class="tab" onclick="switchTab('health',this)">⚠️ Health</button>
+</div>
+
+<div class="body">
+
+<!-- OVERVIEW -->
+<div class="panel active" id="panel-overview">
+  <div class="alert-bar ok" id="alertBar">✅ Loading data...</div>
+  <div class="kpis" id="kpiGrid"></div>
+  <div class="grid32">
+    <div class="card">
+      <div class="card-title">Revenue vs Expenses vs Profit</div>
+      <div class="card-sub">All months — actual data from your sheet</div>
+      <div class="legend">
+        <span><span class="leg-dot" style="background:#10B981"></span>Revenue</span>
+        <span><span class="leg-dot" style="background:#EF4444"></span>Expenses</span>
+        <span><span class="leg-dot" style="background:#38BDF8"></span>Profit</span>
+      </div>
+      <div class="chart-wrap" style="height:220px"><canvas id="cRevExp" role="img" aria-label="Revenue expenses and profit by month"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Expense breakdown</div>
+      <div class="card-sub" id="expBreakSub">Selected month</div>
+      <div class="chart-wrap" style="height:160px"><canvas id="cExpBreak" role="img" aria-label="Expense breakdown donut chart"></canvas></div>
+      <div class="legend" id="expBreakLegend" style="margin-top:10px;margin-bottom:0"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Monthly P&L summary</div>
+    <div class="card-sub">Auto-calculated from all sheets</div>
+    <div style="overflow-x:auto"><table id="pnlSummaryTable"></table></div>
+  </div>
+</div>
+
+<!-- P&L -->
+<div class="panel" id="panel-pnl">
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">Full P&L — line by line</div>
+    <div class="card-sub">Every rupee in and out, by month</div>
+    <div style="overflow-x:auto"><table id="pnlFullTable"></table></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Revenue ramp</div>
+    <div class="card-sub">Monthly revenue collected</div>
+    <div class="chart-wrap" style="height:200px"><canvas id="cRevRamp" role="img" aria-label="Revenue by month bar chart"></canvas></div>
+  </div>
+</div>
+
+<!-- FUNNEL -->
+<div class="panel" id="panel-funnel">
+  <div class="kpis" id="funnelKpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Acquisition funnel</div>
+      <div class="card-sub">Per month · from your Ads sheet</div>
+      <div id="funnelBars"></div>
+      <div style="margin-top:16px;padding:12px 14px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:10px;font-size:11px;color:var(--amber)">
+        💡 Only 50% of booked demos show up. Fixing this alone = double the students with zero extra ad spend.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Ad campaigns</div>
+      <div class="card-sub">From your Ads sheet</div>
+      <div style="overflow-x:auto"><table id="adsTable"></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">What-if: improve conversion rate</div>
+    <div class="card-sub">Same 200 leads/month, better follow-up</div>
+    <div class="chart-wrap" style="height:180px"><canvas id="cWhatIf" role="img" aria-label="Revenue at different conversion rates"></canvas></div>
+    <div class="what-if-grid" id="whatIfGrid"></div>
+  </div>
+</div>
+
+<!-- GROWTH -->
+<div class="panel" id="panel-growth">
+  <div class="kpis" id="growthKpis"></div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title">Student growth projection</div>
+    <div class="card-sub">Actual Apr–Jun, projected Jul–Mar at current growth rate</div>
+    <div class="chart-wrap" style="height:240px"><canvas id="cGrowth" role="img" aria-label="Student count growth chart"></canvas></div>
+  </div>
+  <div class="section-head">Milestones</div>
+  <div class="milestone-grid" id="milestoneGrid"></div>
+</div>
+
+<!-- STUDENTS -->
+<div class="panel" id="panel-students">
+  <div class="kpis" id="studentKpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Fee distribution</div>
+      <div class="card-sub">How much each student pays</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="cFees" role="img" aria-label="Student fee distribution bar chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">All students</div>
+      <div class="card-sub" id="studentListSub"></div>
+      <div style="max-height:280px;overflow-y:auto" id="studentList"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">Payment log</div>
+    <div class="card-sub" id="paymentsSub"></div>
+    <div style="overflow-x:auto"><table id="paymentsTable"></table></div>
+  </div>
+</div>
+
+<!-- COACHES -->
+<div class="panel" id="panel-coaches">
+  <div class="kpis" id="coachKpis"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Coach pay vs revenue</div>
+      <div class="card-sub">Keep coach cost below 40% of revenue</div>
+      <div class="legend">
+        <span><span class="leg-dot" style="background:rgba(16,185,129,0.6)"></span>Revenue</span>
+        <span><span class="leg-dot" style="background:#EF4444"></span>Coach pay</span>
+      </div>
+      <div class="chart-wrap" style="height:200px"><canvas id="cCoachRev" role="img" aria-label="Coach pay versus revenue bar chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Coach cost % trend</div>
+      <div class="card-sub">Red line = 40% target ceiling</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="cCoachPct" role="img" aria-label="Coach cost percentage trend line chart"></canvas></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">Coach log</div>
+    <div class="card-sub">From your Coaches sheet</div>
+    <div style="overflow-x:auto"><table id="coachTable"></table></div>
+  </div>
+</div>
+
+<!-- HEALTH -->
+<div class="panel" id="panel-health">
+  <div class="section-head">Business health checks — auto-updated</div>
+  <div id="healthChecks"></div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">LTV scenarios</div>
+    <div class="card-sub">At avg ₹3,000/month fee · CAC ₹750</div>
+    <div class="what-if-grid">
+      <div class="what-if-card" style="border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.06)">
+        <div style="font-size:10px;color:var(--amber);font-weight:700;margin-bottom:6px">WORST · 3 months</div>
+        <div style="font-size:22px;font-weight:800;color:var(--amber)">₹9,000</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">LTV · 12:1 ratio</div>
+      </div>
+      <div class="what-if-card" style="border-color:rgba(56,189,248,0.3);background:rgba(56,189,248,0.06)">
+        <div style="font-size:10px;color:var(--sky);font-weight:700;margin-bottom:6px">AVERAGE · 6 months</div>
+        <div style="font-size:22px;font-weight:800;color:var(--sky)">₹18,000</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">LTV · 24:1 ratio</div>
+      </div>
+      <div class="what-if-card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.06)">
+        <div style="font-size:10px;color:var(--green);font-weight:700;margin-bottom:6px">DREAM · 12 months</div>
+        <div style="font-size:22px;font-weight:800;color:var(--green)">₹36,000</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">LTV · 48:1 ratio</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end body -->
+
+<script>
+const SHEET_ID = '1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k';
+const API_KEY = 'AIzaSyAoRXrbfhZJtchwXgEnT_Iyfh2yido7BnM';
+const BASE = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/`;
+
+let DATA = { payments:[], expenses:[], coaches:[], students:[], ads:[] };
+let CHARTS = {};
+
+function inr(n){ if(isNaN(n)||n===null||n===undefined) return '₹0'; n=Number(n); if(n>=100000) return '₹'+(n/100000).toFixed(1)+'L'; if(n>=1000) return '₹'+(n/1000).toFixed(0)+'K'; return '₹'+Math.round(n).toLocaleString('en-IN'); }
+function inrFull(n){ return '₹'+Math.round(Number(n)||0).toLocaleString('en-IN'); }
+function pct(n){ return (Math.round((Number(n)||0)*100)/100).toFixed(1)+'%'; }
+function parseNum(s){ if(!s) return 0; return Number(String(s).replace(/[^0-9.-]/g,''))||0; }
+function monthMatch(row, col, m){ return (row[col]||'').trim()===m.trim(); }
+
+async function fetchSheet(range){
+  const r = await fetch(`${BASE}${encodeURIComponent(range)}?key=${API_KEY}`);
+  const d = await r.json();
+  return d.values||[];
+}
+
+function parseSheet(rows, headerRow){
+  if(rows.length<=headerRow) return [];
+  const headers = rows[headerRow];
+  return rows.slice(headerRow+1).map(r=>{
+    const obj={};
+    headers.forEach((h,i)=>{ obj[h.trim()]=r[i]||''; });
+    return obj;
+  }).filter(r=>Object.values(r).some(v=>v!==''));
+}
+
+async function fetchAll(){
+  setBadge('loading','⟳ Syncing...');
+  try{
+    const [pRaw,eRaw,cRaw,sRaw,aRaw] = await Promise.all([
+      fetchSheet('Payments!A3:J503'),
+      fetchSheet('Expenses!A3:G403'),
+      fetchSheet('Coaches!A3:I203'),
+      fetchSheet('Students!A3:M103'),
+      fetchSheet('Ads!A3:N203')
+    ]);
+    DATA.payments = parseSheet(pRaw,0).filter(r=>r['Month']&&/[A-Z][a-z]{2} 20\d\d/.test(r['Month']));
+    DATA.expenses = parseSheet(eRaw,0).filter(r=>r['Month']&&/[A-Z][a-z]{2} 20\d\d/.test(r['Month']));
+    DATA.coaches  = parseSheet(cRaw,0).filter(r=>r['Month']&&/[A-Z][a-z]{2} 20\d\d/.test(r['Month']));
+    DATA.students = parseSheet(sRaw,0).filter(r=>r['Student Name']&&r['Student Name'].trim()!=='');
+    DATA.ads      = parseSheet(aRaw,0).filter(r=>r['Month']&&/[A-Z][a-z]{2} 20\d\d/.test(r['Month']));
+
+    // Populate month selector
+    const months=[...new Set([...DATA.payments.map(r=>r['Month']),...DATA.expenses.map(r=>r['Month'])])].filter(Boolean).sort((a,b)=>new Date('01 '+a)-new Date('01 '+b)).reverse();
+    const sel=document.getElementById('monthSel');
+    const cur=sel.value;
+    sel.innerHTML=months.map(m=>`<option value="${m}"${m===cur?'selected':''}>${m}</option>`).join('');
+
+    document.getElementById('lastUpdated').textContent='Updated '+new Date().toLocaleTimeString();
+    setBadge('ok','✓ Live');
+    renderAll();
+  }catch(e){
+    setBadge('error','✗ Error — check API key');
+    console.error(e);
+  }
+}
+
+function setBadge(type,txt){
+  const b=document.getElementById('syncBadge');
+  b.textContent=txt;
+  b.className='sync-badge '+type;
+}
+
+function selMonth(){ return document.getElementById('monthSel').value; }
+
+function revForMonth(m){ return DATA.payments.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>s+parseNum(r['Received']),0); }
+function expForMonth(m){ return DATA.expenses.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>s+parseNum(r['Amount']),0); }
+function coachPayForMonth(m){
+  return DATA.coaches.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>{
+    const actual=parseNum(r['Actual Pay (Rs.)']);
+    const est=parseNum(r['Estimated Pay (Rs.)']);
+    return s+(actual>0?actual:est);
+  },0);
+}
+function profitForMonth(m){ return revForMonth(m)-expForMonth(m); }
+
+function allMonths(){
+  return [...new Set([...DATA.payments.map(r=>r['Month']),...DATA.expenses.map(r=>r['Month'])])].filter(Boolean).sort((a,b)=>new Date('01 '+a)-new Date('01 '+b));
+}
+
+function destroyChart(id){ if(CHARTS[id]){ CHARTS[id].destroy(); delete CHARTS[id]; } }
+
+function makeChart(id,config){
+  destroyChart(id);
+  const el=document.getElementById(id);
+  if(!el) return;
+  CHARTS[id]=new Chart(el,config);
+}
+
+const gridC='rgba(255,255,255,0.06)';
+const textC='#94A3B8';
+const baseScales={
+  x:{ grid:{color:gridC}, ticks:{color:textC,font:{size:10}}, border:{color:'transparent'} },
+  y:{ grid:{color:gridC}, ticks:{color:textC,font:{size:10}}, border:{color:'transparent'} }
+};
+
+function renderAll(){
+  renderOverview();
+  renderPnL();
+  renderFunnel();
+  renderGrowth();
+  renderStudents();
+  renderCoaches();
+  renderHealth();
+}
+
+function renderOverview(){
+  const m=selMonth();
+  const rev=revForMonth(m);
+  const exp=expForMonth(m);
+  const coach=coachPayForMonth(m);
+  const profit=rev-exp;
+  const activeStudents=DATA.students.filter(r=>(r['Status']||'').trim()==='Active').length;
+  const overdue=DATA.payments.filter(r=>(r['Status']||'').trim()==='Overdue').length;
+  const adSpend=DATA.expenses.filter(r=>monthMatch(r,'Month',m)&&(r['Category']||'').trim()==='Meta Ads').reduce((s,r)=>s+parseNum(r['Amount']),0);
+  const roas=adSpend>0?(rev/adSpend):0;
+  const adConv=DATA.ads.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>s+parseNum(r['Conversions (Paid)']),0);
+  const adSpendTotal=DATA.ads.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>s+parseNum(r['Spend']),0);
+  // If no ad data for this month, fall back to all-time average
+  const allConv=DATA.ads.reduce((s,r)=>s+parseNum(r['Conversions (Paid)']),0);
+  const allSpend=DATA.ads.reduce((s,r)=>s+parseNum(r['Spend']),0);
+  const cac=adConv>0?(adSpendTotal/adConv):allConv>0?(allSpend/allConv):0;
+  const coachPct=rev>0?(coach/rev*100):0;
+
+  document.getElementById('kpiGrid').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Active students</div><div class="kpi-val" style="color:#38BDF8">${activeStudents}</div><div class="kpi-sub">Status = Active</div></div>
+    <div class="kpi"><div class="kpi-label">${m} revenue</div><div class="kpi-val" style="color:#10B981">${inr(rev)}</div><div class="kpi-sub">${inrFull(rev)} collected</div></div>
+    <div class="kpi"><div class="kpi-label">${m} profit</div><div class="kpi-val" style="color:${profit>=0?'#10B981':'#EF4444'}">${inr(profit)}</div><div class="kpi-sub">${rev>0?Math.round(profit/rev*100):0}% margin</div></div>
+    <div class="kpi"><div class="kpi-label">${m} expenses</div><div class="kpi-val" style="color:#F59E0B">${inr(exp)}</div><div class="kpi-sub">All categories</div></div>
+    <div class="kpi"><div class="kpi-label">ROAS</div><div class="kpi-val" style="color:#8B5CF6">${roas>0?roas.toFixed(1)+'×':'—'}</div><div class="kpi-sub">vs Meta Ads spend</div></div>
+    <div class="kpi"><div class="kpi-label">CAC</div><div class="kpi-val" style="color:#F59E0B">${cac>0?inr(cac):'—'}</div><div class="kpi-sub">${adConv>0?'This month':'All-time avg'}</div></div>
+    <div class="kpi"><div class="kpi-label">Coach cost %</div><div class="kpi-val" style="color:${coachPct>40?'#EF4444':coachPct>0?'#10B981':'#F59E0B'}">${coach>0?(coachPct.toFixed(1)+'%'):'Log pay →'}</div><div class="kpi-sub">${coach>0?'Target <40%':'Add to Coaches sheet'}</div></div>
+    <div class="kpi"><div class="kpi-label">Overdue</div><div class="kpi-val" style="color:${overdue>0?'#EF4444':'#10B981'}">${overdue}</div><div class="kpi-sub">Payments overdue</div></div>
+  `;
+
+  const alertEl=document.getElementById('alertBar');
+  if(coachPct>40){ alertEl.className='alert-bar bad'; alertEl.textContent=`⚠️ Coach cost ${coachPct.toFixed(1)}% — above 40% target. Scale group batches now.`; }
+  else if(coachPct>0){ alertEl.className='alert-bar ok'; alertEl.textContent=`✅ Coach cost ${coachPct.toFixed(1)}% — within 40% target.`; }
+  else{ alertEl.className='alert-bar warn'; alertEl.textContent=`⚡ Log Sanyam's actual pay for ${m} in the Coaches sheet to see coach cost %.`; }
+
+  const months=allMonths();
+  const revData=months.map(mm=>revForMonth(mm));
+  const expData=months.map(mm=>expForMonth(mm));
+  const proData=months.map(mm=>profitForMonth(mm));
+
+  makeChart('cRevExp',{type:'bar',data:{labels:months,datasets:[
+    {label:'Revenue',data:revData,backgroundColor:'rgba(16,185,129,0.8)',borderRadius:4},
+    {label:'Expenses',data:expData,backgroundColor:'rgba(239,68,68,0.8)',borderRadius:4},
+    {label:'Profit',data:proData,backgroundColor:'rgba(56,189,248,0.8)',borderRadius:4}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
+    x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false,maxRotation:30}},
+    y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}
+  }}});
+
+  // Expense donut
+  const cats=['Meta Ads','Zoom','Domain/Hosting','Tools','Salary','Merchandise','Other'];
+  const catColors=['#1D6FA5','#06B6D4','#10B981','#8B5CF6','#F59E0B','#EF4444','#94A3B8'];
+  const catVals=cats.map(c=>DATA.expenses.filter(r=>monthMatch(r,'Month',m)&&(r['Category']||'').trim()===c).reduce((s,r)=>s+parseNum(r['Amount']),0));
+  const nonZero=cats.map((c,i)=>({c,v:catVals[i],col:catColors[i]})).filter(x=>x.v>0);
+  document.getElementById('expBreakSub').textContent=`${m} · ${inrFull(exp)} total`;
+  makeChart('cExpBreak',{type:'doughnut',data:{labels:nonZero.map(x=>x.c),datasets:[{data:nonZero.map(x=>x.v),backgroundColor:nonZero.map(x=>x.col),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+inrFull(ctx.parsed)}}}}});
+  document.getElementById('expBreakLegend').innerHTML=nonZero.map(x=>`<span><span class="leg-dot" style="background:${x.col}"></span>${x.c} ${inrFull(x.v)}</span>`).join('');
+
+  // P&L summary table
+  const tableMonths=months.slice(0,6);
+  document.getElementById('pnlSummaryTable').innerHTML=`<thead><tr><th>Metric</th>${tableMonths.map(mm=>`<th>${mm}</th>`).join('')}<th>FY Total</th></tr></thead><tbody>
+    <tr><td style="color:var(--muted)">Revenue</td>${tableMonths.map(mm=>`<td style="color:#10B981;font-weight:600">${inrFull(revForMonth(mm))}</td>`).join('')}<td style="color:#10B981;font-weight:700">${inrFull(tableMonths.reduce((s,mm)=>s+revForMonth(mm),0))}</td></tr>
+    <tr><td style="color:var(--muted)">Expenses</td>${tableMonths.map(mm=>`<td>${inrFull(expForMonth(mm))}</td>`).join('')}<td>${inrFull(tableMonths.reduce((s,mm)=>s+expForMonth(mm),0))}</td></tr>
+    <tr><td style="color:var(--muted)">Net profit</td>${tableMonths.map(mm=>{const p=profitForMonth(mm);return`<td><span class="pill ${p>=0?'pill-green':'pill-red'}">${inrFull(p)}</span></td>`;}).join('')}<td><span class="pill pill-green">${inrFull(tableMonths.reduce((s,mm)=>s+profitForMonth(mm),0))}</span></td></tr>
+    <tr><td style="color:var(--muted)">Margin %</td>${tableMonths.map(mm=>{const r=revForMonth(mm);const p=profitForMonth(mm);const mg=r>0?Math.round(p/r*100):0;return`<td><span class="pill ${mg>30?'pill-green':mg>0?'pill-amber':'pill-red'}">${mg}%</span></td>`;}).join('')}<td></td></tr>
+    <tr><td style="color:var(--muted)">ROAS</td>${tableMonths.map(mm=>{const r=revForMonth(mm);const a=DATA.expenses.filter(x=>monthMatch(x,'Month',mm)&&(x['Category']||'').trim()==='Meta Ads').reduce((s,x)=>s+parseNum(x['Amount']),0);return`<td>${a>0?(r/a).toFixed(1)+'×':'—'}</td>`;}).join('')}<td></td></tr>
+  </tbody>`;
+}
+
+function renderPnL(){
+  const months=allMonths().slice(0,6);
+  const totalRev=months.reduce((s,m)=>s+revForMonth(m),0);
+  const totalExp=months.reduce((s,m)=>s+expForMonth(m),0);
+  const cats=['Meta Ads','Zoom','Domain/Hosting','Tools','Salary','Merchandise','Other'];
+  document.getElementById('pnlFullTable').innerHTML=`<thead><tr><th>Line item</th>${months.map(m=>`<th>${m}</th>`).join('')}<th>Total</th></tr></thead><tbody>
+    <tr><td colspan="${months.length+2}" style="color:var(--sky);font-weight:700;padding-top:12px">REVENUE</td></tr>
+    <tr><td style="padding-left:16px">Fees collected</td>${months.map(m=>`<td style="color:#10B981">${inrFull(revForMonth(m))}</td>`).join('')}<td style="color:#10B981;font-weight:700">${inrFull(totalRev)}</td></tr>
+    <tr><td colspan="${months.length+2}" style="color:var(--sky);font-weight:700;padding-top:12px">EXPENSES BY CATEGORY</td></tr>
+    ${cats.map(cat=>{const vals=months.map(m=>DATA.expenses.filter(r=>monthMatch(r,'Month',m)&&(r['Category']||'').trim()===cat).reduce((s,r)=>s+parseNum(r['Amount']),0));const tot=vals.reduce((s,v)=>s+v,0);if(tot===0)return'';return`<tr><td style="padding-left:16px">${cat}</td>${vals.map(v=>`<td>${v>0?inrFull(v):'—'}</td>`).join('')}<td>${inrFull(tot)}</td></tr>`;}).join('')}
+    <tr style="font-weight:700"><td>Total expenses</td>${months.map(m=>`<td>${inrFull(expForMonth(m))}</td>`).join('')}<td>${inrFull(totalExp)}</td></tr>
+    <tr><td colspan="${months.length+2}" style="color:var(--sky);font-weight:700;padding-top:12px">PROFIT</td></tr>
+    ${months.map((m,i)=>{const p=profitForMonth(m);const r=revForMonth(m);return``;}).join('')}
+    <tr style="font-weight:700"><td>Net profit</td>${months.map(m=>{const p=profitForMonth(m);return`<td><span class="pill ${p>=0?'pill-green':'pill-red'}">${inrFull(p)}</span></td>`;}).join('')}<td><span class="pill pill-green">${inrFull(totalRev-totalExp)}</span></td></tr>
+    <tr><td>Margin %</td>${months.map(m=>{const r=revForMonth(m);const p=profitForMonth(m);const mg=r>0?Math.round(p/r*100):0;return`<td>${mg}%</td>`;}).join('')}<td>${totalRev>0?Math.round((totalRev-totalExp)/totalRev*100):0}%</td></tr>
+  </tbody>`;
+
+  makeChart('cRevRamp',{type:'bar',data:{labels:allMonths(),datasets:[{label:'Revenue',data:allMonths().map(m=>revForMonth(m)),backgroundColor:allMonths().map((_,i)=>i<3?'rgba(16,185,129,0.85)':'rgba(16,185,129,0.3)'),borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false,maxRotation:30}},y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+}
+
+function renderFunnel(){
+  const m=selMonth();
+  const adsM=DATA.ads.filter(r=>monthMatch(r,'Month',m));
+  const leads=adsM.reduce((s,r)=>s+parseNum(r['Leads']),0)||200;
+  const booked=adsM.reduce((s,r)=>s+parseNum(r['Demos Booked']),0)||100;
+  const shown=adsM.reduce((s,r)=>s+parseNum(r['Demos Shown']),0)||50;
+  const conv=adsM.reduce((s,r)=>s+parseNum(r['Conversions (Paid)']),0)||20;
+  const spend=adsM.reduce((s,r)=>s+parseNum(r['Spend']),0);
+  const cpl=leads>0&&spend>0?(spend/leads):75;
+  const cpa=conv>0&&spend>0?(spend/conv):750;
+
+  document.getElementById('funnelKpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Leads/month</div><div class="kpi-val" style="color:#38BDF8">${leads}</div></div>
+    <div class="kpi"><div class="kpi-label">Demos booked</div><div class="kpi-val" style="color:#06B6D4">${booked}</div><div class="kpi-sub">${leads>0?Math.round(booked/leads*100):0}% of leads</div></div>
+    <div class="kpi"><div class="kpi-label">Demos shown</div><div class="kpi-val" style="color:#F59E0B">${shown}</div><div class="kpi-sub">${booked>0?Math.round(shown/booked*100):0}% show rate</div></div>
+    <div class="kpi"><div class="kpi-label">Paid</div><div class="kpi-val" style="color:#10B981">${conv}</div><div class="kpi-sub">${shown>0?Math.round(conv/shown*100):0}% of shown</div></div>
+    <div class="kpi"><div class="kpi-label">CPL</div><div class="kpi-val">${inr(cpl)}</div></div>
+    <div class="kpi"><div class="kpi-label">CPA</div><div class="kpi-val">${inr(cpa)}</div></div>
+  `;
+
+  const funnel=[{n:'Leads',v:leads,pct:100,c:'#1D6FA5'},{n:'Demo booked',v:booked,pct:leads>0?Math.round(booked/leads*100):0,c:'#06B6D4'},{n:'Demo shown',v:shown,pct:leads>0?Math.round(shown/leads*100):0,c:'#F59E0B'},{n:'Paid student',v:conv,pct:leads>0?Math.round(conv/leads*100):0,c:'#10B981'}];
+  document.getElementById('funnelBars').innerHTML=funnel.map(f=>`<div class="funnel-row"><div class="funnel-header"><span class="funnel-name">${f.n}</span><span class="funnel-val">${f.v} · ${f.pct}%</span></div><div class="funnel-track"><div class="funnel-fill" style="width:${f.pct}%;background:${f.c}"></div></div></div>`).join('');
+
+  const allAds=DATA.ads;
+  document.getElementById('adsTable').innerHTML=`<thead><tr><th>Campaign</th><th>Month</th><th>Spend</th><th>Leads</th><th>Shown</th><th>Paid</th><th>CPL</th><th>CPA</th></tr></thead><tbody>${allAds.map(r=>`<tr><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r['Campaign/Ad Set']||'—'}</td><td>${r['Month']||'—'}</td><td>${inrFull(parseNum(r['Spend']))}</td><td>${r['Leads']||0}</td><td>${r['Demos Shown']||0}</td><td>${r['Conversions (Paid)']||0}</td><td>${inrFull(parseNum(r['CPL']))}</td><td>${inrFull(parseNum(r['CPA']))}</td></tr>`).join('')}</tbody>`;
+
+  const convRates=[10,15,20,25,30];
+  const avgFee=DATA.students.length>0?DATA.students.reduce((s,r)=>s+parseNum(r['Net Monthly Fee']),0)/DATA.students.length:3000;
+  makeChart('cWhatIf',{type:'bar',data:{labels:convRates.map(r=>r+'% conv'),datasets:[{label:'Monthly revenue',data:convRates.map(r=>Math.round(leads*(r/100)*avgFee)),backgroundColor:convRates.map((r,i)=>i===0?'#888780':i===2?'#10B981':'#1D6FA5'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x},y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>'₹'+(v/1000).toFixed(0)+'K'}}}}});
+  document.getElementById('whatIfGrid').innerHTML=convRates.map((r,i)=>`<div class="what-if-card" style="${i===2?'border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.08)':''}"><div style="font-size:10px;color:var(--muted);margin-bottom:4px">${r}% conv${i===0?' (now)':i===2?' ★':''}</div><div style="font-size:18px;font-weight:800;color:${i===2?'#10B981':'var(--white)'}">${inr(leads*(r/100)*avgFee)}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">/month</div></div>`).join('');
+}
+
+function renderGrowth(){
+  const activeNow=DATA.students.filter(r=>(r['Status']||'').trim()==='Active').length;
+  document.getElementById('growthKpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Students now</div><div class="kpi-val" style="color:#38BDF8">${activeNow}</div><div class="kpi-sub">Jun 2026</div></div>
+    <div class="kpi"><div class="kpi-label">3-month target</div><div class="kpi-val" style="color:#F59E0B">100</div><div class="kpi-sub">Sep 2026</div></div>
+    <div class="kpi"><div class="kpi-label">12-month target</div><div class="kpi-val" style="color:#10B981">2,000</div><div class="kpi-sub">Mar 2027</div></div>
+    <div class="kpi"><div class="kpi-label">Gap to 100</div><div class="kpi-val" style="color:#EF4444">${100-activeNow}</div><div class="kpi-sub">students needed</div></div>
+  `;
+
+  const projMonths=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const actualData=[20,20,activeNow,null,null,null,null,null,null,null,null,null];
+  const projData=[null,null,activeNow,35,50,70,100,140,190,260,360,490];
+
+  makeChart('cGrowth',{type:'line',data:{labels:projMonths,datasets:[
+    {label:'Actual',data:actualData,borderColor:'#10B981',pointBackgroundColor:'#10B981',pointRadius:5,tension:0.3,spanGaps:false},
+    {label:'Projected',data:projData,borderColor:'#38BDF8',borderDash:[6,4],pointBackgroundColor:'#38BDF8',pointRadius:3,tension:0.4,spanGaps:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false}},y:{...baseScales.y}}}});
+
+  const milestones=[
+    {phase:'Now',period:'Jun 2026',students:activeNow,rev:'₹40K',action:'Chase unpaid Jun students',color:'#38BDF8',border:'rgba(56,189,248,0.3)',bg:'rgba(56,189,248,0.06)'},
+    {phase:'Phase 2',period:'Sep 2026',students:90,rev:'₹2.7L',action:'Add 2 more coaches, scale Meta ads',color:'#1D6FA5',border:'rgba(29,111,165,0.3)',bg:'rgba(29,111,165,0.06)'},
+    {phase:'Phase 3',period:'Dec 2026',students:210,rev:'₹6.3L',action:'International expansion begins',color:'#06B6D4',border:'rgba(6,182,212,0.3)',bg:'rgba(6,182,212,0.06)'},
+    {phase:'Target',period:'Mar 2027',students:490,rev:'₹14.7L',action:'5-7 coaches, Middle East live',color:'#10B981',border:'rgba(16,185,129,0.3)',bg:'rgba(16,185,129,0.06)'},
+  ];
+  document.getElementById('milestoneGrid').innerHTML=milestones.map(ms=>`<div class="milestone" style="background:${ms.bg};border-color:${ms.border}"><div style="font-size:10px;color:${ms.color};font-weight:700;letter-spacing:.5px;margin-bottom:4px">${ms.phase}</div><div style="font-size:11px;color:var(--muted);margin-bottom:10px">${ms.period}</div><div style="font-size:22px;font-weight:800;color:var(--white)">${ms.students} <span style="font-size:12px;font-weight:400;color:var(--muted)">students</span></div><div style="font-size:15px;font-weight:700;color:${ms.color};margin:4px 0 8px">${ms.rev}/mo</div><div style="font-size:11px;color:var(--muted)">${ms.action}</div></div>`).join('');
+}
+
+function renderStudents(){
+  const active=DATA.students.filter(r=>(r['Status']||'').trim()==='Active');
+  const group=active.filter(r=>(r['Type']||'').trim()==='Group');
+  const oneOne=active.filter(r=>(r['Type']||'').trim()==='1-on-1');
+  const mrr=active.reduce((s,r)=>s+parseNum(r['Net Monthly Fee']),0);
+  const avg=active.length>0?mrr/active.length:0;
+
+  document.getElementById('studentKpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Total active</div><div class="kpi-val" style="color:#38BDF8">${active.length}</div></div>
+    <div class="kpi"><div class="kpi-label">Group</div><div class="kpi-val">${group.length}</div><div class="kpi-sub">₹750–₹3,000/mo</div></div>
+    <div class="kpi"><div class="kpi-label">1-on-1</div><div class="kpi-val">${oneOne.length}</div><div class="kpi-sub">₹5,000–₹12,000/mo</div></div>
+    <div class="kpi"><div class="kpi-label">MRR potential</div><div class="kpi-val" style="color:#10B981">${inr(mrr)}</div><div class="kpi-sub">if all pay this month</div></div>
+    <div class="kpi"><div class="kpi-label">Avg fee</div><div class="kpi-val">${inr(avg)}</div><div class="kpi-sub">per student</div></div>
+  `;
+
+  const sorted=[...active].sort((a,b)=>parseNum(b['Net Monthly Fee'])-parseNum(a['Net Monthly Fee']));
+  const feeBuckets={};
+  sorted.forEach(s=>{ const f=Math.round(parseNum(s['Net Monthly Fee'])/500)*500; feeBuckets[f]=(feeBuckets[f]||0)+1; });
+  const bucketLabels=Object.keys(feeBuckets).sort((a,b)=>a-b).map(k=>'₹'+Number(k).toLocaleString('en-IN'));
+  const bucketVals=Object.keys(feeBuckets).sort((a,b)=>a-b).map(k=>feeBuckets[k]);
+  makeChart('cFees',{type:'bar',data:{labels:bucketLabels,datasets:[{label:'Students',data:bucketVals,backgroundColor:'#1D6FA5',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false,maxRotation:45}},y:{...baseScales.y,ticks:{...baseScales.y.ticks,stepSize:1}}}}});
+
+  document.getElementById('studentListSub').textContent=`${active.length} active students`;
+  document.getElementById('studentList').innerHTML=sorted.map(s=>`<div class="student-row"><span>${s['Student Name']||'—'} <span style="color:var(--muted);font-size:10px">${s['Type']||''}</span></span><span style="color:${parseNum(s['Net Monthly Fee'])>=5000?'#10B981':'var(--white)'}">₹${parseNum(s['Net Monthly Fee']).toLocaleString('en-IN')}</span></div>`).join('');
+
+  const m=selMonth();
+  const pays=DATA.payments.filter(r=>monthMatch(r,'Month',m));
+  document.getElementById('paymentsSub').textContent=`${pays.length} payments logged in ${m}`;
+  document.getElementById('paymentsTable').innerHTML=`<thead><tr><th>Date</th><th>Student</th><th>Received</th><th>Status</th></tr></thead><tbody>${pays.map(r=>`<tr><td>${r['Payment Date']||'—'}</td><td>${r['Student Name']||'—'}</td><td style="color:#10B981">${inrFull(parseNum(r['Received']))}</td><td><span class="pill ${r['Status']==='Paid'?'pill-green':r['Status']==='Overdue'?'pill-red':'pill-amber'}">${r['Status']||'—'}</span></td></tr>`).join('')}</tbody>`;
+}
+
+function renderCoaches(){
+  const months=allMonths().filter(m=>DATA.coaches.some(r=>monthMatch(r,'Month',m)));
+  const coachNames=[...new Set(DATA.coaches.map(r=>r['Coach Name']).filter(Boolean))];
+  const totalClasses=DATA.coaches.reduce((s,r)=>s+parseNum(r['Classes This Month']),0);
+  const totalEst=DATA.coaches.reduce((s,r)=>s+parseNum(r['Estimated Pay (Rs.)']),0);
+  const totalActual=DATA.coaches.reduce((s,r)=>s+parseNum(r['Actual Pay (Rs.)']),0);
+
+  document.getElementById('coachKpis').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Coaches</div><div class="kpi-val" style="color:#38BDF8">${coachNames.length||1}</div></div>
+    <div class="kpi"><div class="kpi-label">Total classes</div><div class="kpi-val">${totalClasses}</div><div class="kpi-sub">logged so far</div></div>
+    <div class="kpi"><div class="kpi-label">Estimated pay</div><div class="kpi-val" style="color:#F59E0B">${inr(totalEst)}</div><div class="kpi-sub">all time</div></div>
+    <div class="kpi"><div class="kpi-label">Actual pay</div><div class="kpi-val" style="color:#EF4444">${inr(totalActual)}</div><div class="kpi-sub">all time</div></div>
+  `;
+
+  const coachRevMonths=months.slice(-6);
+  makeChart('cCoachRev',{type:'bar',data:{labels:coachRevMonths,datasets:[
+    {label:'Revenue',data:coachRevMonths.map(m=>revForMonth(m)),backgroundColor:'rgba(16,185,129,0.6)',borderRadius:4},
+    {label:'Coach pay',data:coachRevMonths.map(m=>coachPayForMonth(m)),backgroundColor:'rgba(239,68,68,0.8)',borderRadius:4}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false}},y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+
+  const pctData=coachRevMonths.map(m=>{const r=revForMonth(m);const c=coachPayForMonth(m);return r>0?Math.round(c/r*100):0;});
+  makeChart('cCoachPct',{type:'line',data:{labels:coachRevMonths,datasets:[
+    {label:'Coach %',data:pctData,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,0.1)',fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:pctData.map(v=>v>40?'#EF4444':'#10B981')},
+    {label:'40% target',data:coachRevMonths.map(()=>40),borderColor:'rgba(239,68,68,0.5)',borderDash:[5,3],pointRadius:0,borderWidth:1.5}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false}},y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>v+'%'},min:0,max:Math.max(100,...pctData)+10}}}});
+
+  document.getElementById('coachTable').innerHTML=`<thead><tr><th>Month</th><th>Coach</th><th>Classes</th><th>Rate</th><th>Estimated</th><th>Actual</th><th>Diff</th></tr></thead><tbody>${DATA.coaches.filter(r=>r['Month']).map(r=>{const diff=parseNum(r['Actual Pay (Rs.)'])-parseNum(r['Estimated Pay (Rs.)']);return`<tr><td>${r['Month']}</td><td>${r['Coach Name']||'—'}</td><td>${r['Classes This Month']||'—'}</td><td>${inrFull(parseNum(r['Rate Per Class (Rs.)']))}</td><td>${inrFull(parseNum(r['Estimated Pay (Rs.)']))}</td><td style="color:${parseNum(r['Actual Pay (Rs.)'])>0?'#EF4444':'var(--muted)'}">${parseNum(r['Actual Pay (Rs.)'])>0?inrFull(parseNum(r['Actual Pay (Rs.)'])):'Not logged'}</td><td style="color:${diff<0?'#10B981':diff>0?'#EF4444':'var(--muted)'}">${parseNum(r['Actual Pay (Rs.)'])>0?(diff<0?'Saved '+inrFull(Math.abs(diff)):diff>0?'Extra '+inrFull(diff):'Exact'):'—'}</td></tr>`}).join('')}</tbody>`;
+}
+
+function renderHealth(){
+  const m=selMonth();
+  const rev=revForMonth(m);
+  const coach=coachPayForMonth(m);
+  const coachPct=rev>0?(coach/rev*100):0;
+  const overdue=DATA.payments.filter(r=>(r['Status']||'').trim()==='Overdue').length;
+  const activeCount=DATA.students.filter(r=>(r['Status']||'').trim()==='Active').length;
+  const mrr=DATA.students.filter(r=>(r['Status']||'').trim()==='Active').reduce((s,r)=>s+parseNum(r['Net Monthly Fee']),0);
+  const collected=revForMonth(m);
+  const missing=mrr-collected;
+  const adSpend=DATA.expenses.filter(r=>monthMatch(r,'Month',m)&&(r['Category']||'').trim()==='Meta Ads').reduce((s,r)=>s+parseNum(r['Amount']),0);
+  const roas=adSpend>0?(rev/adSpend):0;
+
+  const checks=[
+    {ok:coachPct<=40||coachPct===0, warn:coachPct===0, msg: coachPct===0?`⚡ Log Sanyam's pay for ${m} in the Coaches sheet to see real coach cost %.`:coachPct>40?`⚠️ Coach cost ${coachPct.toFixed(1)}% in ${m} — above 40% target. Add students to groups to fix.`:`✅ Coach cost ${coachPct.toFixed(1)}% in ${m} — within 40% target.`},
+    {ok:overdue===0, warn:false, msg:overdue>0?`⚠️ ${overdue} overdue payment(s) — chase these today.`:`✅ No overdue payments.`},
+    {ok:roas>=3||adSpend===0, warn:adSpend===0, msg:adSpend===0?`⚡ No Meta Ads expense logged for ${m} yet.`:roas>=3?`✅ ROAS ${roas.toFixed(1)}× — healthy (target 3×).`:`⚠️ ROAS ${roas.toFixed(1)}× — below 3× target. Review ad creatives.`},
+    {ok:activeCount>=10, warn:false, msg:activeCount>=10?`✅ ${activeCount} active students — above break-even (~8 students).`:`⚠️ Only ${activeCount} active students — below break-even. Push demos hard.`},
+    {ok:missing<=0||missing<mrr*0.3, warn:missing>0&&missing<mrr*0.5, msg:missing<=0?`✅ All students paid for ${m}.`:missing<mrr*0.5?`⚡ ${inrFull(missing)} not yet collected in ${m}. ${Math.round(missing/3000)} students haven't paid.`:`🔴 ${inrFull(missing)} uncollected in ${m} — ${Math.round(missing/3000)} students haven't paid. Chase them now.`},
+    {ok:activeCount>=50, warn:activeCount>=20, msg:activeCount<50?`⚡ ${activeCount} students vs 3-month target of 100. Need ${100-activeCount} more. At ~10 new/month, you're ${Math.ceil((100-activeCount)/10)} months away.`:`✅ On track for 100-student target.`},
+  ];
+
+  document.getElementById('healthChecks').innerHTML=checks.map(c=>`<div class="warn-item" style="background:${c.ok&&!c.warn?'rgba(16,185,129,0.1)':c.warn?'rgba(245,158,11,0.1)':'rgba(239,68,68,0.1)'};border:1px solid ${c.ok&&!c.warn?'rgba(16,185,129,0.25)':c.warn?'rgba(245,158,11,0.25)':'rgba(239,68,68,0.25)'};color:${c.ok&&!c.warn?'#10B981':c.warn?'#F59E0B':'#EF4444'}">${c.msg}</div>`).join('');
+}
+
+function switchTab(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+fetchAll();
+setInterval(fetchAll, 5*60*1000);
+</script>
+</body>
+</html>
