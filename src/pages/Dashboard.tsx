@@ -252,7 +252,10 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
     const coachRows = rowsFor(coaches);
     const adRows = rowsFor(ads);
 
-    const activeStudents = students.filter((r) => String(get(r, "Status")).trim().toLowerCase() === "active").length;
+    const activeStudents = students.filter((r) => {
+      const status = String(get(r, "Status")).trim().toLowerCase();
+      return !status || status === "active" || status === "paid" || status === "ongoing";
+    }).length;
     const revenue = payRows.reduce((sum, r) => sum + toNumber(get(r, "Received")), 0);
     const sheetExpenses = expenseRows.reduce((sum, r) => sum + toNumber(get(r, "Amount")), 0);
     const coachPay = coachRows.reduce((sum, r) => sum + toNumber(get(r, "Actual Pay")), 0);
@@ -289,7 +292,7 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
         profit: mProfit,
         margin: percent(mProfit, mRevenue),
         coachCost: percent(mCoach, mRevenue),
-        activeStudents: uniquePaidStudents,
+        activeStudents: uniquePaidStudents || students.filter((r) => getRowMonth(r) === month).length,
         adsSpend: a.reduce((sum, r) => sum + toNumber(get(r, "Spend")), 0),
         conversions: a.reduce((sum, r) => sum + toNumber(get(r, "Conversions")), 0),
       };
@@ -339,14 +342,14 @@ const useDashboardModel = (payload: Payload | null, selectedMonth: string) => {
       coachPay,
       totalExpenses,
       profit,
-      roas: ratio(revenue, metaAdsSpend),
+      roas: ratio(revenue, adsSpend || metaAdsSpend),
       cac: ratio(adsSpend, adsConversions),
       coachCostPct,
       overduePayments,
       monthly,
       expenseBreakdown,
       funnel: { leads, demosBooked, demosShown, conversions: adsConversions, spend: adsSpend, cpl: ratio(adsSpend, leads), cpa: ratio(adsSpend, adsConversions) },
-      avgFee,
+      avgFee: avgFee || ratio(revenue, Math.max(activeStudents, 1)),
       ltv: [3, 6, 12].map((monthsCount) => ({ label: `${monthsCount}mo`, value: avgFee * monthsCount })),
       breakEvenStudents: netContributionPerStudent > 0 ? Math.ceil(fixedCosts / netContributionPerStudent) : 0,
       fixedCosts,
