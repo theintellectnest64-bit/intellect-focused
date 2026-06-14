@@ -52,7 +52,7 @@ const AppShell = () => {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    if (isZoom) return;
+    if (isolated) return;
     const w = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
     const id = w.requestIdleCallback
       ? w.requestIdleCallback(() => setShowPopup(true), { timeout: 4000 })
