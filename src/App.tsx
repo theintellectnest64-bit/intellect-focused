@@ -33,6 +33,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Zoom = lazy(() => import("./pages/Zoom"));
 const Careers = lazy(() => import("./pages/Careers"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -46,10 +47,12 @@ const PageLoader = () => (
 const AppShell = () => {
   const location = useLocation();
   const isZoom = location.pathname === "/zoom";
+  const isDashboard = location.pathname === "/dashboard";
+  const isolated = isZoom || isDashboard;
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    if (isZoom) return;
+    if (isolated) return;
     const w = window as Window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number };
     const id = w.requestIdleCallback
       ? w.requestIdleCallback(() => setShowPopup(true), { timeout: 4000 })
@@ -57,13 +60,13 @@ const AppShell = () => {
     return () => {
       if (typeof id === "number") clearTimeout(id);
     };
-  }, [isZoom]);
+  }, [isolated]);
 
   return (
     <>
-      {!isZoom && <ScrollProgressBar />}
-      {!isZoom && <Header />}
-      {!isZoom && <Breadcrumb />}
+      {!isolated && <ScrollProgressBar />}
+      {!isolated && <Header />}
+      {!isolated && <Breadcrumb />}
       <main>
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -78,6 +81,7 @@ const AppShell = () => {
             <Route path="/book-demo" element={<BookDemo />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/zoom" element={<Zoom />} />
@@ -86,12 +90,12 @@ const AppShell = () => {
           </Routes>
         </Suspense>
       </main>
-      {!isZoom && <LocationsStrip />}
-      {!isZoom && <Footer />}
-      {!isZoom && <WhatsAppButton />}
-      {!isZoom && <BackToTop />}
-      {!isZoom && <StickyMobileCTA />}
-      {!isZoom && showPopup && (
+      {!isolated && <LocationsStrip />}
+      {!isolated && <Footer />}
+      {!isolated && <WhatsAppButton />}
+      {!isolated && <BackToTop />}
+      {!isolated && <StickyMobileCTA />}
+      {!isolated && showPopup && (
         <Suspense fallback={null}>
           <LogoPopup />
         </Suspense>
