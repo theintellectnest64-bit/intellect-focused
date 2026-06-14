@@ -60,7 +60,7 @@ const AppShell = () => {
     return () => {
       if (typeof id === "number") clearTimeout(id);
     };
-  }, [isZoom]);
+  }, [isolated]);
 
   return (
     <>
