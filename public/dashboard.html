@@ -2,624 +2,833 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TIN Business OS — tinchess.com</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TIN — Business Intelligence</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0D1B2A;color:#F8FAFC;min-height:100vh}
-:root{--navy:#0D1B2A;--navym:#132236;--navyl:#1A2F47;--blue:#1D6FA5;--sky:#38BDF8;--teal:#06B6D4;--green:#10B981;--red:#EF4444;--amber:#F59E0B;--purple:#8B5CF6;--white:#F8FAFC;--muted:#94A3B8;--border:#1E3A5F}
-.hdr{background:#0A1628;border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100}
-.hdr-brand{display:flex;align-items:center;gap:12px}
-.hdr-brand .icon{font-size:28px}
-.brand-name{font-size:18px;font-weight:700;letter-spacing:-0.5px}
-.brand-sub{font-size:10px;color:var(--sky);font-weight:600;letter-spacing:1px}
-.hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.sync-badge{background:rgba(16,185,129,0.15);color:var(--green);border:1px solid rgba(16,185,129,0.3);border-radius:8px;padding:4px 12px;font-size:11px;font-weight:600}
-.sync-badge.loading{background:rgba(245,158,11,0.15);color:var(--amber);border-color:rgba(245,158,11,0.3)}
-.sync-badge.error{background:rgba(239,68,68,0.15);color:var(--red);border-color:rgba(239,68,68,0.3)}
-.last-updated{font-size:11px;color:var(--muted)}
-.month-sel{background:#1A2F47;border:1px solid var(--border);color:var(--white);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer}
-.tabs{display:flex;gap:2px;padding:14px 24px 0;border-bottom:1px solid var(--border);overflow-x:auto}
-.tab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);padding:10px 18px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s;border-radius:8px 8px 0 0}
-.tab:hover{color:var(--white);background:rgba(255,255,255,0.05)}
-.tab.active{color:var(--sky);border-bottom-color:var(--sky);background:rgba(56,189,248,0.08)}
-.body{padding:24px;max-width:1400px;margin:0 auto}
-.panel{display:none}.panel.active{display:block}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.kpi{background:linear-gradient(135deg,#132236,#1A2F47);border:1px solid var(--border);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden}
-.kpi::after{content:'';position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:rgba(56,189,248,0.06)}
-.kpi-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
-.kpi-val{font-size:24px;font-weight:800;letter-spacing:-1px;line-height:1.1}
-.kpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
-.alert-bar{border-radius:12px;padding:12px 18px;font-size:12px;font-weight:600;margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.alert-bar.ok{background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:var(--green)}
-.alert-bar.warn{background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:var(--amber)}
-.alert-bar.bad{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:var(--red)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.grid32{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:16px}
-.grid23{display:grid;grid-template-columns:2fr 3fr;gap:16px;margin-bottom:16px}
-@media(max-width:700px){.grid2,.grid32,.grid23{grid-template-columns:1fr}}
-.card{background:linear-gradient(160deg,#132236,#1A2F47);border:1px solid var(--border);border-radius:20px;padding:20px}
-.card-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px}
-.card-sub{font-size:11px;color:var(--muted);margin-bottom:16px}
-.chart-wrap{position:relative;width:100%}
-.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:11px;color:var(--muted);margin-bottom:10px}
-.legend span{display:flex;align-items:center;gap:5px}
-.leg-dot{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0}
+:root{
+  --bg:#F5F6FA;--surface:#FFFFFF;--surface2:#F8F9FB;
+  --border:#E8EAF0;--border2:#D1D5E0;
+  --text1:#0F1117;--text2:#4A5568;--text3:#8896AB;
+  --blue:#2563EB;--blue-l:#EBF2FF;--blue-d:#1D4ED8;
+  --green:#059669;--green-l:#ECFDF5;
+  --red:#DC2626;--red-l:#FEF2F2;
+  --amber:#D97706;--amber-l:#FFFBEB;
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+  --teal:#0891B2;--teal-l:#ECFEFF;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.1);
+  --shadow:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -1px rgba(0,0,0,.05);
+  --shadow-md:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -2px rgba(0,0,0,.04);
+  --r:10px;--r-sm:6px;
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text1);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 24px;height:56px;display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;z-index:100;
+  box-shadow:var(--shadow-sm)}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-logo{width:32px;height:32px;background:linear-gradient(135deg,#2563EB,#7C3AED);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.tb-title{font-size:15px;font-weight:700;color:var(--text1);letter-spacing:-.3px}
+.tb-sub{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.8px;text-transform:uppercase}
+.tb-divider{width:1px;height:24px;background:var(--border)}
+.tb-right{display:flex;align-items:center;gap:8px}
+.chip{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;
+  font-size:11px;font-weight:600;border:1px solid}
+.chip.live{background:#ECFDF5;color:#059669;border-color:#A7F3D0}
+.chip.loading{background:#FFFBEB;color:#D97706;border-color:#FDE68A}
+.chip.err{background:#FEF2F2;color:#DC2626;border-color:#FECACA}
+.chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.tb-updated{font-size:11px;color:var(--text3)}
+.btn-refresh{background:none;border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:5px 12px;font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;
+  font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:5px}
+.btn-refresh:hover{background:var(--blue-l);border-color:var(--blue);color:var(--blue)}
+
+/* SIDEBAR NAV */
+.layout{display:flex;min-height:calc(100vh - 56px)}
+.sidebar{width:200px;background:var(--surface);border-right:1px solid var(--border);
+  padding:16px 10px;flex-shrink:0;position:sticky;top:56px;height:calc(100vh - 56px);
+  overflow-y:auto}
+.nav-section{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;
+  text-transform:uppercase;padding:0 10px;margin:16px 0 6px}
+.nav-section:first-child{margin-top:0}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border-radius:var(--r-sm);cursor:pointer;font-size:12px;font-weight:500;
+  color:var(--text2);transition:all .15s;border:none;background:none;
+  width:100%;text-align:left;font-family:inherit}
+.nav-item:hover{background:var(--surface2);color:var(--text1)}
+.nav-item.on{background:var(--blue-l);color:var(--blue);font-weight:600}
+.nav-item .ni{width:16px;text-align:center;font-size:13px}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;border-radius:10px;
+  padding:1px 6px;font-size:9px;font-weight:700}
+
+/* MAIN */
+.main{flex:1;padding:20px 24px;overflow-x:hidden}
+.panel{display:none}.panel.on{display:block}
+
+/* PAGE HEADER */
+.page-hdr{margin-bottom:18px}
+.page-title{font-size:18px;font-weight:700;color:var(--text1);letter-spacing:-.4px}
+.page-sub{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* PERIOD SLICER */
+.slicer-row{display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.sl-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.6px;
+  text-transform:uppercase;margin-right:4px}
+.sl-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);
+  border-radius:20px;padding:4px 14px;font-size:11px;font-weight:500;
+  cursor:pointer;transition:all .15s;font-family:inherit}
+.sl-btn:hover{border-color:var(--blue);color:var(--blue)}
+.sl-btn.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+
+/* ALERT */
+.alert{border-radius:var(--r-sm);padding:10px 14px;font-size:12px;font-weight:500;
+  margin-bottom:16px;display:flex;align-items:center;gap:8px;border:1px solid;
+  box-shadow:var(--shadow-sm)}
+.alert.ok{background:var(--green-l);color:var(--green);border-color:#A7F3D0}
+.alert.warn{background:var(--amber-l);color:var(--amber);border-color:#FDE68A}
+.alert.bad{background:var(--red-l);color:var(--red);border-color:#FECACA}
+.alert-icon{font-size:14px;flex-shrink:0}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:12px;margin-bottom:16px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;box-shadow:var(--shadow-sm);
+  position:relative;overflow:hidden;transition:box-shadow .2s}
+.kpi-card:hover{box-shadow:var(--shadow)}
+.kpi-accent{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.kpi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.kpi-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.kpi-icon{font-size:16px;opacity:.7}
+.kpi-value{font-size:26px;font-weight:700;letter-spacing:-.8px;line-height:1;margin-bottom:4px}
+.kpi-footer{display:flex;align-items:center;gap:6px}
+.kpi-sub{font-size:10px;color:var(--text3)}
+.badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+.badge-up{background:#ECFDF5;color:#059669}
+.badge-dn{background:#FEF2F2;color:#DC2626}
+.badge-eq{background:var(--surface2);color:var(--text3)}
+.kpi-spark{margin-top:8px;opacity:.8}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow-sm)}
+.card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:12px;font-weight:700;color:var(--text1);text-transform:uppercase;letter-spacing:.3px}
+.card-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.card-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;
+  background:var(--blue-l);color:var(--blue)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g32{display:grid;grid-template-columns:5fr 3fr;gap:14px;margin-bottom:14px}
+.g13{display:grid;grid-template-columns:1fr 3fr;gap:14px;margin-bottom:14px}
+@media(max-width:800px){.g2,.g32,.g13{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto}
+.tbl-wrap.scroll{max-height:320px;overflow-y:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{color:var(--muted);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
-td{padding:8px 12px;border-bottom:1px solid rgba(30,58,95,0.5);color:var(--white)}
+thead{position:sticky;top:0;background:var(--surface);z-index:1}
+th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;
+  color:var(--text3);text-transform:uppercase;letter-spacing:.4px;
+  border-bottom:2px solid var(--border)}
+td{padding:8px 12px;border-bottom:1px solid var(--surface2);color:var(--text2)}
 tr:last-child td{border-bottom:none}
-tr:nth-child(even){background:rgba(255,255,255,0.02)}
-.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
-.pill-green{background:rgba(16,185,129,0.15);color:var(--green)}
-.pill-red{background:rgba(239,68,68,0.15);color:var(--red)}
-.pill-amber{background:rgba(245,158,11,0.15);color:var(--amber)}
-.pill-blue{background:rgba(56,189,248,0.15);color:var(--sky)}
-.funnel-row{margin-bottom:14px}
-.funnel-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
-.funnel-name{color:var(--muted)}
-.funnel-val{color:var(--white);font-weight:700}
-.funnel-track{background:#1A2F47;border-radius:6px;height:12px;overflow:hidden}
-.funnel-fill{height:100%;border-radius:6px;transition:width 1s ease}
-.student-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(30,58,95,0.4);font-size:12px}
-.student-row:last-child{border-bottom:none}
-.warn-item{padding:12px 16px;border-radius:12px;font-size:12px;font-weight:500;margin-bottom:10px;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
-.section-head{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:20px 0 12px}
-.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(245,158,11,0.3);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.refresh-btn{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);color:var(--sky);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
-.refresh-btn:hover{background:rgba(56,189,248,0.2)}
-.milestone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.milestone{border-radius:14px;padding:16px;border:1px solid}
-.what-if-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px}
-.what-if-card{border-radius:12px;padding:14px;border:1px solid var(--border);text-align:center}
+tr:hover td{background:var(--surface2)}
+.td-mono{font-variant-numeric:tabular-nums;font-weight:600;color:var(--text1)}
+
+/* PILL */
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:10px;white-space:nowrap}
+.pill-g{background:var(--green-l);color:var(--green)}
+.pill-r{background:var(--red-l);color:var(--red)}
+.pill-a{background:var(--amber-l);color:var(--amber)}
+.pill-b{background:var(--blue-l);color:var(--blue)}
+.pill-p{background:var(--purple-l);color:var(--purple)}
+
+/* FUNNEL */
+.funnel{display:flex;flex-direction:column;gap:10px}
+.f-item{display:flex;align-items:center;gap:12px}
+.f-label{font-size:11px;font-weight:500;color:var(--text2);width:100px;flex-shrink:0}
+.f-track{flex:1;background:var(--surface2);border-radius:6px;height:10px;overflow:hidden}
+.f-fill{height:100%;border-radius:6px;transition:width 1s ease}
+.f-val{font-size:11px;font-weight:700;color:var(--text1);width:80px;text-align:right;flex-shrink:0}
+
+/* STUDENT LIST */
+.s-item{display:flex;align-items:center;justify-content:space-between;
+  padding:7px 0;border-bottom:1px solid var(--surface2);font-size:12px}
+.s-item:last-child{border:none}
+.s-name{font-weight:500;color:var(--text1)}
+.s-type{font-size:10px;color:var(--text3);margin-left:5px}
+.s-fee{font-weight:700;color:var(--text1)}
+
+/* HEALTH */
+.h-item{display:flex;gap:10px;padding:10px 14px;border-radius:var(--r-sm);
+  margin-bottom:8px;border-left:3px solid;font-size:12px;line-height:1.5;font-weight:500}
+.h-item.ok{background:var(--green-l);border-color:var(--green);color:#064E3B}
+.h-item.warn{background:var(--amber-l);border-color:var(--amber);color:#78350F}
+.h-item.bad{background:var(--red-l);border-color:var(--red);color:#7F1D1D}
+
+/* LTV */
+.ltv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ltv-card{border-radius:var(--r);padding:18px;text-align:center;border:1px solid;
+  box-shadow:var(--shadow-sm)}
+
+/* SECTION DIVIDER */
+.sec{display:flex;align-items:center;gap:10px;margin:20px 0 12px;
+  font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+.sec::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* MILESTONES */
+.milestone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.milestone{border-radius:var(--r);padding:14px;border:1px solid;box-shadow:var(--shadow-sm)}
+.milestone-phase{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.milestone-date{font-size:10px;color:var(--text3);margin-bottom:10px}
+.milestone-count{font-size:24px;font-weight:700;color:var(--text1);line-height:1}
+.milestone-rev{font-size:14px;font-weight:700;margin:4px 0 8px}
+.milestone-action{font-size:11px;color:var(--text3)}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* WHAT-IF */
+.wi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+.wi-card{border-radius:var(--r-sm);padding:12px;text-align:center;border:1px solid var(--border);background:var(--surface2);transition:all .2s}
+.wi-card.highlight{background:var(--green-l);border-color:#A7F3D0}
+.wi-card:hover{box-shadow:var(--shadow-sm)}
+.wi-conv{font-size:9px;font-weight:700;color:var(--text3);margin-bottom:5px;text-transform:uppercase}
+.wi-rev{font-size:16px;font-weight:700;color:var(--text1)}
+.wi-rev.green{color:var(--green)}
+.wi-mo{font-size:9px;color:var(--text3);margin-top:2px}
+
+/* BE GRID */
+.be-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.be-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px}
+.be-label{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.be-val{font-size:20px;font-weight:700;color:var(--text1)}
+.be-sub{font-size:10px;color:var(--text3);margin-top:3px}
+
+.cw{position:relative;width:100%}
+.mb14{margin-bottom:14px}
+.gap14{gap:14px}
 </style>
 </head>
 <body>
 
-<div class="hdr">
-  <div class="hdr-brand">
-    <div class="icon">♟️</div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">♟</div>
     <div>
-      <div class="brand-name">The Intellect Nest</div>
-      <div class="brand-sub">BUSINESS OS · TINCHESS.COM</div>
+      <div class="tb-title">The Intellect Nest</div>
+      <div class="tb-sub">Business Intelligence</div>
+    </div>
+    <div class="tb-divider"></div>
+    <span class="tb-updated" id="updTxt">Connecting...</span>
+  </div>
+  <div class="tb-right">
+    <button class="btn-refresh" onclick="fetchAll()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Refresh
+    </button>
+    <span class="chip loading" id="badge"><span class="chip-dot"></span><span id="badgeTxt">Syncing</span></span>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="nav-section">Analytics</div>
+  <button class="nav-item on" onclick="go('ov',this)"><span class="ni">📊</span>Overview</button>
+  <button class="nav-item" onclick="go('pl',this)"><span class="ni">💰</span>P&amp;L</button>
+  <button class="nav-item" onclick="go('fn',this)"><span class="ni">🎯</span>Funnel &amp; Ads</button>
+  <button class="nav-item" onclick="go('gr',this)"><span class="ni">📈</span>Growth</button>
+  <div class="nav-section">Operations</div>
+  <button class="nav-item" onclick="go('st',this)"><span class="ni">🧒</span>Students</button>
+  <button class="nav-item" onclick="go('co',this)"><span class="ni">👨‍🏫</span>Coaches</button>
+  <div class="nav-section">Reports</div>
+  <button class="nav-item" onclick="go('hl',this)"><span class="ni">⚠️</span>Health Checks</button>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ═══ OVERVIEW ═══ -->
+<div class="panel on" id="pov">
+  <div class="page-hdr">
+    <div class="page-title">Business Overview</div>
+    <div class="page-sub">All metrics update live from your Google Sheet · tinchess.com</div>
+  </div>
+  <div class="slicer-row" id="slicer"></div>
+  <div class="alert ok" id="alertBar"><span class="alert-icon">✓</span><span id="alertTxt">Loading data...</span></div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="g32">
+    <div class="card mb14">
+      <div class="card-hdr">
+        <div><div class="card-title">Revenue · Expenses · Profit</div><div class="card-sub">All months · selected period highlighted</div></div>
+        <span class="card-tag" id="chartTag">All Time</span>
+      </div>
+      <div class="legend" id="mainLeg">
+        <div class="leg-item"><span class="leg-dot" style="background:#059669"></span>Revenue</div>
+        <div class="leg-item"><span class="leg-dot" style="background:#DC2626"></span>Expenses</div>
+        <div class="leg-item"><span class="leg-dot" style="background:#2563EB"></span>Profit</div>
+      </div>
+      <div class="cw" style="height:230px"><canvas id="cMain"></canvas></div>
+    </div>
+    <div class="card mb14">
+      <div class="card-hdr">
+        <div><div class="card-title">Expense Mix</div><div class="card-sub" id="expSub">All time</div></div>
+      </div>
+      <div class="cw" style="height:160px"><canvas id="cDonut"></canvas></div>
+      <div class="legend" id="donutLeg" style="margin-top:10px;margin-bottom:0"></div>
     </div>
   </div>
-  <div class="hdr-right">
-    <span class="last-updated" id="lastUpdated">Loading...</span>
-    <select class="month-sel" id="monthSel" onchange="renderAll()">
-      <option value="Jun 2026">Jun 2026</option>
-      <option value="May 2026">May 2026</option>
-      <option value="Apr 2026">Apr 2026</option>
-    </select>
-    <button class="refresh-btn" onclick="fetchAll()">↻ Refresh</button>
-    <span class="sync-badge loading" id="syncBadge">⟳ Syncing...</span>
+  <div class="card">
+    <div class="card-hdr">
+      <div><div class="card-title">Monthly Snapshot</div><div class="card-sub">Revenue · Expenses · Profit · Margin for all months</div></div>
+    </div>
+    <div class="tbl-wrap"><table id="tSnap"></table></div>
   </div>
 </div>
 
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('overview',this)">📊 Overview</button>
-  <button class="tab" onclick="switchTab('pnl',this)">💰 P&amp;L</button>
-  <button class="tab" onclick="switchTab('funnel',this)">🎯 Funnel</button>
-  <button class="tab" onclick="switchTab('growth',this)">📈 Growth</button>
-  <button class="tab" onclick="switchTab('students',this)">🧒 Students</button>
-  <button class="tab" onclick="switchTab('coaches',this)">👨‍🏫 Coaches</button>
-  <button class="tab" onclick="switchTab('health',this)">⚠️ Health</button>
+<!-- ═══ P&L ═══ -->
+<div class="panel" id="ppl">
+  <div class="page-hdr"><div class="page-title">Profit & Loss</div><div class="page-sub">Full line-item breakdown by month</div></div>
+  <div class="card mb14">
+    <div class="card-hdr"><div><div class="card-title">Full P&L Statement</div><div class="card-sub">Every expense category · every month</div></div></div>
+    <div class="tbl-wrap scroll"><table id="tPL"></table></div>
+  </div>
+  <div class="g2">
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Revenue by Month</div><div class="card-sub">Collected payments only</div></div></div>
+      <div class="cw" style="height:190px"><canvas id="cRevBar"></canvas></div>
+    </div>
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Cumulative Profit</div><div class="card-sub">Running total · all months</div></div></div>
+      <div class="cw" style="height:190px"><canvas id="cCumProfit"></canvas></div>
+    </div>
+  </div>
 </div>
 
-<div class="body">
+<!-- ═══ FUNNEL ═══ -->
+<div class="panel" id="pfn">
+  <div class="page-hdr"><div class="page-title">Funnel & Ads</div><div class="page-sub">Lead acquisition · conversion · ad performance</div></div>
+  <div class="kpi-grid" id="fKpis"></div>
+  <div class="g2">
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Acquisition Funnel</div><div class="card-sub">All-time lead to student conversion</div></div></div>
+      <div class="funnel" id="fBars" style="margin-bottom:14px"></div>
+      <div class="alert warn" style="margin-bottom:0"><span class="alert-icon">💡</span><span>Only ~40% of booked demos actually show up. Fixing this alone = 2× students with zero extra ad spend.</span></div>
+    </div>
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Ad Campaigns</div><div class="card-sub" id="adsSub">All campaigns logged</div></div></div>
+      <div class="tbl-wrap scroll"><table id="tAds"></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div><div class="card-title">Revenue Simulation</div><div class="card-sub">What happens if you improve conversion rate · same 200 leads/month · avg fee ₹3,208</div></div></div>
+    <div class="cw" style="height:170px"><canvas id="cWhatIf"></canvas></div>
+    <div class="wi-grid" id="wiGrid"></div>
+  </div>
+</div>
 
-<!-- OVERVIEW -->
-<div class="panel active" id="panel-overview">
-  <div class="alert-bar ok" id="alertBar">✅ Loading data...</div>
-  <div class="kpis" id="kpiGrid"></div>
-  <div class="grid32">
-    <div class="card">
-      <div class="card-title">Revenue vs Expenses vs Profit</div>
-      <div class="card-sub">All months — actual data from your sheet</div>
+<!-- ═══ GROWTH ═══ -->
+<div class="panel" id="pgr">
+  <div class="page-hdr"><div class="page-title">Growth Trajectory</div><div class="page-sub">Actual performance vs projection vs targets</div></div>
+  <div class="kpi-grid" id="grKpis"></div>
+  <div class="card mb14">
+    <div class="card-hdr">
+      <div><div class="card-title">Student Growth</div><div class="card-sub">Actual (solid) · Projected (dashed) · Target (dotted)</div></div>
+    </div>
+    <div class="legend">
+      <div class="leg-item"><span class="leg-dot" style="background:#059669"></span>Actual</div>
+      <div class="leg-item"><span class="leg-dot" style="background:#2563EB"></span>Projected</div>
+      <div class="leg-item"><span class="leg-dot" style="background:#D97706"></span>Target</div>
+    </div>
+    <div class="cw" style="height:250px"><canvas id="cGrowth"></canvas></div>
+  </div>
+  <div class="sec">Milestones</div>
+  <div class="milestone-grid" id="mGrid"></div>
+</div>
+
+<!-- ═══ STUDENTS ═══ -->
+<div class="panel" id="pst">
+  <div class="page-hdr"><div class="page-title">Students</div><div class="page-sub">All active students · fees · payment status</div></div>
+  <div class="kpi-grid" id="stKpis"></div>
+  <div class="g2">
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Fee Distribution</div><div class="card-sub">Students by monthly fee bracket</div></div></div>
+      <div class="cw" style="height:210px"><canvas id="cFees"></canvas></div>
+    </div>
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Student Roster</div><div class="card-sub" id="stListSub">Sorted by fee · highest first</div></div></div>
+      <div style="max-height:240px;overflow-y:auto" id="stList"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div><div class="card-title">Payment Log</div><div class="card-sub" id="payLogSub">All time</div></div></div>
+    <div class="tbl-wrap scroll"><table id="tPay"></table></div>
+  </div>
+</div>
+
+<!-- ═══ COACHES ═══ -->
+<div class="panel" id="pco">
+  <div class="page-hdr"><div class="page-title">Coaches</div><div class="page-sub">Pay · classes · cost efficiency</div></div>
+  <div class="kpi-grid" id="coKpis"></div>
+  <div class="g2">
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Pay vs Revenue</div><div class="card-sub">Coach cost must stay below 40% of revenue</div></div></div>
       <div class="legend">
-        <span><span class="leg-dot" style="background:#10B981"></span>Revenue</span>
-        <span><span class="leg-dot" style="background:#EF4444"></span>Expenses</span>
-        <span><span class="leg-dot" style="background:#38BDF8"></span>Profit</span>
+        <div class="leg-item"><span class="leg-dot" style="background:rgba(5,150,105,.5)"></span>Revenue</div>
+        <div class="leg-item"><span class="leg-dot" style="background:#DC2626"></span>Coach Pay</div>
       </div>
-      <div class="chart-wrap" style="height:220px"><canvas id="cRevExp" role="img" aria-label="Revenue expenses and profit by month"></canvas></div>
+      <div class="cw" style="height:200px"><canvas id="cCoachRev"></canvas></div>
     </div>
-    <div class="card">
-      <div class="card-title">Expense breakdown</div>
-      <div class="card-sub" id="expBreakSub">Selected month</div>
-      <div class="chart-wrap" style="height:160px"><canvas id="cExpBreak" role="img" aria-label="Expense breakdown donut chart"></canvas></div>
-      <div class="legend" id="expBreakLegend" style="margin-top:10px;margin-bottom:0"></div>
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Coach Cost %</div><div class="card-sub">Red dashed line = 40% ceiling</div></div></div>
+      <div class="cw" style="height:200px"><canvas id="cCoachPct"></canvas></div>
     </div>
   </div>
   <div class="card">
-    <div class="card-title">Monthly P&L summary</div>
-    <div class="card-sub">Auto-calculated from all sheets</div>
-    <div style="overflow-x:auto"><table id="pnlSummaryTable"></table></div>
+    <div class="card-hdr"><div><div class="card-title">Coach Ledger</div><div class="card-sub">From your Coaches sheet</div></div></div>
+    <div class="tbl-wrap"><table id="tCoach"></table></div>
   </div>
 </div>
 
-<!-- P&L -->
-<div class="panel" id="panel-pnl">
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-title">Full P&L — line by line</div>
-    <div class="card-sub">Every rupee in and out, by month</div>
-    <div style="overflow-x:auto"><table id="pnlFullTable"></table></div>
+<!-- ═══ HEALTH ═══ -->
+<div class="panel" id="phl">
+  <div class="page-hdr"><div class="page-title">Business Health</div><div class="page-sub">Automated checks on your key business metrics</div></div>
+  <div class="sec">Live Health Checks</div>
+  <div id="healthList"></div>
+  <div class="sec">Unit Economics</div>
+  <div class="ltv-grid">
+    <div class="ltv-card" style="background:#FFFBEB;border-color:#FDE68A">
+      <div style="font-size:10px;font-weight:700;color:#92400E;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">Worst Case · 3 months</div>
+      <div style="font-size:32px;font-weight:700;color:#D97706;letter-spacing:-1px">₹9,000</div>
+      <div style="font-size:11px;color:#92400E;margin-top:6px">Lifetime Value</div>
+      <div style="font-size:13px;font-weight:700;color:#D97706;margin-top:4px">LTV:CAC = 12:1</div>
+    </div>
+    <div class="ltv-card" style="background:#EFF6FF;border-color:#BFDBFE">
+      <div style="font-size:10px;font-weight:700;color:#1E40AF;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">Average · 6 months</div>
+      <div style="font-size:32px;font-weight:700;color:#2563EB;letter-spacing:-1px">₹18,000</div>
+      <div style="font-size:11px;color:#1E40AF;margin-top:6px">Lifetime Value</div>
+      <div style="font-size:13px;font-weight:700;color:#2563EB;margin-top:4px">LTV:CAC = 24:1</div>
+    </div>
+    <div class="ltv-card" style="background:#ECFDF5;border-color:#A7F3D0">
+      <div style="font-size:10px;font-weight:700;color:#064E3B;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">Dream · 12 months</div>
+      <div style="font-size:32px;font-weight:700;color:#059669;letter-spacing:-1px">₹36,000</div>
+      <div style="font-size:11px;color:#064E3B;margin-top:6px">Lifetime Value</div>
+      <div style="font-size:13px;font-weight:700;color:#059669;margin-top:4px">LTV:CAC = 48:1</div>
+    </div>
   </div>
-  <div class="card">
-    <div class="card-title">Revenue ramp</div>
-    <div class="card-sub">Monthly revenue collected</div>
-    <div class="chart-wrap" style="height:200px"><canvas id="cRevRamp" role="img" aria-label="Revenue by month bar chart"></canvas></div>
-  </div>
+  <div class="sec">Break-Even Analysis</div>
+  <div class="be-grid" id="beGrid"></div>
 </div>
 
-<!-- FUNNEL -->
-<div class="panel" id="panel-funnel">
-  <div class="kpis" id="funnelKpis"></div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Acquisition funnel</div>
-      <div class="card-sub">Per month · from your Ads sheet</div>
-      <div id="funnelBars"></div>
-      <div style="margin-top:16px;padding:12px 14px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:10px;font-size:11px;color:var(--amber)">
-        💡 Only 50% of booked demos show up. Fixing this alone = double the students with zero extra ad spend.
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Ad campaigns</div>
-      <div class="card-sub">From your Ads sheet</div>
-      <div style="overflow-x:auto"><table id="adsTable"></table></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">What-if: improve conversion rate</div>
-    <div class="card-sub">Same 200 leads/month, better follow-up</div>
-    <div class="chart-wrap" style="height:180px"><canvas id="cWhatIf" role="img" aria-label="Revenue at different conversion rates"></canvas></div>
-    <div class="what-if-grid" id="whatIfGrid"></div>
-  </div>
-</div>
-
-<!-- GROWTH -->
-<div class="panel" id="panel-growth">
-  <div class="kpis" id="growthKpis"></div>
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-title">Student growth projection</div>
-    <div class="card-sub">Actual Apr–Jun, projected Jul–Mar at current growth rate</div>
-    <div class="chart-wrap" style="height:240px"><canvas id="cGrowth" role="img" aria-label="Student count growth chart"></canvas></div>
-  </div>
-  <div class="section-head">Milestones</div>
-  <div class="milestone-grid" id="milestoneGrid"></div>
-</div>
-
-<!-- STUDENTS -->
-<div class="panel" id="panel-students">
-  <div class="kpis" id="studentKpis"></div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Fee distribution</div>
-      <div class="card-sub">How much each student pays</div>
-      <div class="chart-wrap" style="height:220px"><canvas id="cFees" role="img" aria-label="Student fee distribution bar chart"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">All students</div>
-      <div class="card-sub" id="studentListSub"></div>
-      <div style="max-height:280px;overflow-y:auto" id="studentList"></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">Payment log</div>
-    <div class="card-sub" id="paymentsSub"></div>
-    <div style="overflow-x:auto"><table id="paymentsTable"></table></div>
-  </div>
-</div>
-
-<!-- COACHES -->
-<div class="panel" id="panel-coaches">
-  <div class="kpis" id="coachKpis"></div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">Coach pay vs revenue</div>
-      <div class="card-sub">Keep coach cost below 40% of revenue</div>
-      <div class="legend">
-        <span><span class="leg-dot" style="background:rgba(16,185,129,0.6)"></span>Revenue</span>
-        <span><span class="leg-dot" style="background:#EF4444"></span>Coach pay</span>
-      </div>
-      <div class="chart-wrap" style="height:200px"><canvas id="cCoachRev" role="img" aria-label="Coach pay versus revenue bar chart"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Coach cost % trend</div>
-      <div class="card-sub">Red line = 40% target ceiling</div>
-      <div class="chart-wrap" style="height:200px"><canvas id="cCoachPct" role="img" aria-label="Coach cost percentage trend line chart"></canvas></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">Coach log</div>
-    <div class="card-sub">From your Coaches sheet</div>
-    <div style="overflow-x:auto"><table id="coachTable"></table></div>
-  </div>
-</div>
-
-<!-- HEALTH -->
-<div class="panel" id="panel-health">
-  <div class="section-head">Business health checks — auto-updated</div>
-  <div id="healthChecks"></div>
-  <div class="card" style="margin-top:16px">
-    <div class="card-title">LTV scenarios</div>
-    <div class="card-sub">At avg ₹3,000/month fee · CAC ₹750</div>
-    <div class="what-if-grid">
-      <div class="what-if-card" style="border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.06)">
-        <div style="font-size:10px;color:var(--amber);font-weight:700;margin-bottom:6px">WORST · 3 months</div>
-        <div style="font-size:22px;font-weight:800;color:var(--amber)">₹9,000</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px">LTV · 12:1 ratio</div>
-      </div>
-      <div class="what-if-card" style="border-color:rgba(56,189,248,0.3);background:rgba(56,189,248,0.06)">
-        <div style="font-size:10px;color:var(--sky);font-weight:700;margin-bottom:6px">AVERAGE · 6 months</div>
-        <div style="font-size:22px;font-weight:800;color:var(--sky)">₹18,000</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px">LTV · 24:1 ratio</div>
-      </div>
-      <div class="what-if-card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.06)">
-        <div style="font-size:10px;color:var(--green);font-weight:700;margin-bottom:6px">DREAM · 12 months</div>
-        <div style="font-size:22px;font-weight:800;color:var(--green)">₹36,000</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px">LTV · 48:1 ratio</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-</div><!-- end body -->
+</main>
+</div><!-- /layout -->
 
 <script>
-const SHEET_ID = '1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k';
-const API_KEY = 'AIzaSyAoRXrbfhZJtchwXgEnT_Iyfh2yido7BnM';
-const BASE = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/`;
+const SHEET='1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k';
+const KEY='AIzaSyAoRXrbfhZJtchwXgEnT_Iyfh2yido7BnM';
+let D={pay:[],exp:[],coach:[],stu:[],ads:[]};
+let CH={};
+let SEL='all';
 
-let DATA = { payments:[], expenses:[], coaches:[], students:[], ads:[] };
-let CHARTS = {};
+// ── UTILS ──────────────────────────────────────────────
+const pN=s=>{let v=String(s||'').trim().replace(/Rs\.?\s*/gi,'').replace(/,/g,'').trim();return parseFloat(v)||0;};
+const isM=s=>/^[A-Z][a-z]{2} 20\d\d$/.test((s||'').trim());
+const inr=n=>{n=Number(n)||0;if(n>=100000)return'₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(0)+'K';return'₹'+Math.round(n).toLocaleString('en-IN');};
+const inrF=n=>'₹'+(Math.round(Number(n)||0)).toLocaleString('en-IN');
+const gc='rgba(0,0,0,.05)';const tc='#8896AB';
+const SX={grid:{color:gc},ticks:{color:tc,font:{size:10},maxRotation:30},border:{color:'#E8EAF0'}};
+const SY={grid:{color:gc},ticks:{color:tc,font:{size:10}},border:{color:gc}};
 
-function inr(n){ if(isNaN(n)||n===null||n===undefined) return '₹0'; n=Number(n); if(n>=100000) return '₹'+(n/100000).toFixed(1)+'L'; if(n>=1000) return '₹'+(n/1000).toFixed(0)+'K'; return '₹'+Math.round(n).toLocaleString('en-IN'); }
-function inrFull(n){ return '₹'+Math.round(Number(n)||0).toLocaleString('en-IN'); }
-function pct(n){ return (Math.round((Number(n)||0)*100)/100).toFixed(1)+'%'; }
-function parseNum(s){ if(!s) return 0; return Number(String(s).replace(/[^0-9.-]/g,''))||0; }
-function monthMatch(row, col, m){ return (row[col]||'').trim()===m.trim(); }
-
-async function fetchSheet(range){
-  const r = await fetch(`${BASE}${encodeURIComponent(range)}?key=${API_KEY}`);
-  const d = await r.json();
-  return d.values||[];
+// ── FETCH ──────────────────────────────────────────────
+async function fSheet(r){
+  const res=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/${encodeURIComponent(r)}?key=${KEY}`);
+  const d=await res.json();if(d.error)throw new Error(d.error.message);return d.values||[];
 }
-
-function parseSheet(rows, headerRow){
-  if(rows.length<=headerRow) return [];
-  const headers = rows[headerRow];
-  return rows.slice(headerRow+1).map(r=>{
-    const obj={};
-    headers.forEach((h,i)=>{ obj[h.trim()]=r[i]||''; });
-    return obj;
-  }).filter(r=>Object.values(r).some(v=>v!==''));
+function parse(rows){
+  if(rows.length<2)return[];
+  const h=rows[0];
+  return rows.slice(1).map(r=>{const o={};h.forEach((k,i)=>{o[k.trim()]=r[i]||'';});return o;}).filter(r=>Object.values(r).some(v=>v));
 }
-
 async function fetchAll(){
-  setBadge('loading','⟳ Syncing...');
+  setBadge('loading','Syncing...');
   try{
-    const [pRaw,eRaw,cRaw,sRaw,aRaw] = await Promise.all([
-      fetchSheet('Payments!A3:J503'),
-      fetchSheet('Expenses!A3:G403'),
-      fetchSheet('Coaches!A3:I203'),
-      fetchSheet('Students!A3:M103'),
-      fetchSheet('Ads!A3:N203')
-    ]);
-    DATA.payments = parseSheet(pRaw,0).filter(r=>r['Month']&&/[A-Z][a-z]{2} 20\d\d/.test(r['Month']));
-    DATA.expenses = parseSheet(eRaw,0).filter(r=>r['Month']&&/[A-Z][a-z]{2} 20\d\d/.test(r['Month']));
-    DATA.coaches  = parseSheet(cRaw,0).filter(r=>r['Month']&&/[A-Z][a-z]{2} 20\d\d/.test(r['Month']));
-    DATA.students = parseSheet(sRaw,0).filter(r=>r['Student Name']&&r['Student Name'].trim()!=='');
-    DATA.ads      = parseSheet(aRaw,0).filter(r=>r['Month']&&/[A-Z][a-z]{2} 20\d\d/.test(r['Month']));
-
-    // Populate month selector
-    const months=[...new Set([...DATA.payments.map(r=>r['Month']),...DATA.expenses.map(r=>r['Month'])])].filter(Boolean).sort((a,b)=>new Date('01 '+a)-new Date('01 '+b)).reverse();
-    const sel=document.getElementById('monthSel');
-    const cur=sel.value;
-    sel.innerHTML=months.map(m=>`<option value="${m}"${m===cur?'selected':''}>${m}</option>`).join('');
-
-    document.getElementById('lastUpdated').textContent='Updated '+new Date().toLocaleTimeString();
-    setBadge('ok','✓ Live');
-    renderAll();
+    const[pR,eR,cR,sR,aR]=await Promise.all([fSheet('Payments!A3:J503'),fSheet('Expenses!A3:G403'),fSheet('Coaches!A3:I203'),fSheet('Students!A3:M103'),fSheet('Ads!A3:N203')]);
+    D.pay=parse(pR).filter(r=>isM(r['Month']));
+    D.exp=parse(eR).filter(r=>isM(r['Month']));
+    D.coach=parse(cR).filter(r=>isM(r['Month']));
+    D.stu=parse(sR).filter(r=>(r['Student Name']||'').trim());
+    D.ads=parse(aR).filter(r=>isM(r['Month']));
+    document.getElementById('updTxt').textContent='Updated '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    setBadge('live','Live');
+    buildSlicer();renderAll();
   }catch(e){
-    setBadge('error','✗ Error — check API key');
+    setBadge('err','Error');
+    setAlert('bad','⚠️','Could not load data. Make sure the Google Sheet is set to "Anyone with link can view".');
     console.error(e);
   }
 }
-
-function setBadge(type,txt){
-  const b=document.getElementById('syncBadge');
-  b.textContent=txt;
-  b.className='sync-badge '+type;
+function setBadge(t,txt){
+  const b=document.getElementById('badge');
+  b.className='chip '+t;
+  document.getElementById('badgeTxt').textContent=txt;
+}
+function setAlert(cls,icon,msg){
+  const a=document.getElementById('alertBar');
+  a.className='alert '+cls;
+  a.innerHTML=`<span class="alert-icon">${icon}</span><span>${msg}</span>`;
 }
 
-function selMonth(){ return document.getElementById('monthSel').value; }
+// ── CALC ───────────────────────────────────────────────
+const allMonths=()=>[...new Set([...D.pay.map(r=>r['Month']),...D.exp.map(r=>r['Month'])])].filter(isM).sort((a,b)=>new Date('01 '+a)-new Date('01 '+b));
+const revM=m=>D.pay.filter(r=>r['Month']===m).reduce((s,r)=>s+pN(r['Received']),0);
+const expM=m=>D.exp.filter(r=>r['Month']===m).reduce((s,r)=>s+pN(r['Amount']),0);
+const coachM=m=>D.coach.filter(r=>r['Month']===m).reduce((s,r)=>{const a=pN(r['Actual Pay (Rs.)']);return s+(a>0?a:pN(r['Estimated Pay (Rs.)']));},0);
+const ltRev=()=>D.pay.reduce((s,r)=>s+pN(r['Received']),0);
+const ltExp=()=>D.exp.reduce((s,r)=>s+pN(r['Amount']),0);
+const ltAdSpend=()=>D.ads.reduce((s,r)=>s+pN(r['Spend']),0);
+const ltConv=()=>D.ads.reduce((s,r)=>s+pN(r['Conversions (Paid)']),0);
+const pRev=()=>SEL==='all'?ltRev():revM(SEL);
+const pExp=()=>SEL==='all'?ltExp():expM(SEL);
+const pCoach=()=>SEL==='all'?D.coach.reduce((s,r)=>{const a=pN(r['Actual Pay (Rs.)']);return s+(a>0?a:pN(r['Estimated Pay (Rs.)']));},0):coachM(SEL);
+const pAdSpend=()=>SEL==='all'?ltAdSpend():D.exp.filter(r=>r['Month']===SEL&&(r['Category']||'').trim()==='Meta Ads').reduce((s,r)=>s+pN(r['Amount']),0);
+const pConv=()=>SEL==='all'?ltConv():D.ads.filter(r=>r['Month']===SEL).reduce((s,r)=>s+pN(r['Conversions (Paid)']),0);
+const pRoas=()=>{const s=pAdSpend(),r=pRev();return s>0?r/s:ltAdSpend()>0?ltRev()/ltAdSpend():0;};
+const pCac=()=>{const c=pConv(),s=pAdSpend();return c>0&&s>0?s/c:ltConv()>0?ltAdSpend()/ltConv():0;};
 
-function revForMonth(m){ return DATA.payments.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>s+parseNum(r['Received']),0); }
-function expForMonth(m){ return DATA.expenses.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>s+parseNum(r['Amount']),0); }
-function coachPayForMonth(m){
-  return DATA.coaches.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>{
-    const actual=parseNum(r['Actual Pay (Rs.)']);
-    const est=parseNum(r['Estimated Pay (Rs.)']);
-    return s+(actual>0?actual:est);
-  },0);
+function moM(cur,prev){if(!prev||prev===0)return null;return(cur-prev)/prev*100;}
+function tBadge(pct,invert=false){
+  if(pct===null)return'';
+  const v=invert?-pct:pct;
+  const cls=v>0?'badge-up':v<0?'badge-dn':'badge-eq';
+  const arrow=v>0?'↑':v<0?'↓':'';
+  return`<span class="badge ${cls}">${arrow}${Math.abs(pct).toFixed(0)}%</span>`;
 }
-function profitForMonth(m){ return revForMonth(m)-expForMonth(m); }
-
-function allMonths(){
-  return [...new Set([...DATA.payments.map(r=>r['Month']),...DATA.expenses.map(r=>r['Month'])])].filter(Boolean).sort((a,b)=>new Date('01 '+a)-new Date('01 '+b));
+function spark(data,col='#2563EB'){
+  if(!data||data.length<2)return'';
+  const w=72,h=20,p=2,mx=Math.max(...data),mn=Math.min(...data),rng=mx-mn||1;
+  const pts=data.map((v,i)=>`${(i/(data.length-1))*(w-p*2)+p},${h-p-((v-mn)/rng)*(h-p*2)}`).join(' ');
+  const lv=data[data.length-1],pv=data[data.length-2];const c=lv>=pv?col:'#DC2626';
+  const lx=(data.length-1)/(data.length-1)*(w-p*2)+p,ly=h-p-((lv-mn)/rng)*(h-p*2);
+  return`<svg class="kpi-spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="${c}" stroke-width="1.5" stroke-linejoin="round"/><circle cx="${lx}" cy="${ly}" r="2.5" fill="${c}"/></svg>`;
 }
+function mkC(id,cfg){if(CH[id]){CH[id].destroy();delete CH[id];}const el=document.getElementById(id);if(!el)return;CH[id]=new Chart(el,cfg);}
 
-function destroyChart(id){ if(CHARTS[id]){ CHARTS[id].destroy(); delete CHARTS[id]; } }
-
-function makeChart(id,config){
-  destroyChart(id);
-  const el=document.getElementById(id);
-  if(!el) return;
-  CHARTS[id]=new Chart(el,config);
+// ── SLICER ─────────────────────────────────────────────
+function buildSlicer(){
+  const ms=allMonths();
+  const el=document.getElementById('slicer');
+  el.innerHTML=`<span class="sl-label">Period</span>
+    <button class="sl-btn on" onclick="setPeriod('all',this)">All Time</button>
+    ${ms.map(m=>`<button class="sl-btn" onclick="setPeriod('${m}',this)">${m}</button>`).join('')}`;
 }
-
-const gridC='rgba(255,255,255,0.06)';
-const textC='#94A3B8';
-const baseScales={
-  x:{ grid:{color:gridC}, ticks:{color:textC,font:{size:10}}, border:{color:'transparent'} },
-  y:{ grid:{color:gridC}, ticks:{color:textC,font:{size:10}}, border:{color:'transparent'} }
-};
-
-function renderAll(){
+function setPeriod(p,btn){
+  SEL=p;
+  document.querySelectorAll('.sl-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
   renderOverview();
-  renderPnL();
-  renderFunnel();
-  renderGrowth();
-  renderStudents();
-  renderCoaches();
-  renderHealth();
 }
 
+function renderAll(){renderOverview();renderPL();renderFunnel();renderGrowth();renderStudents();renderCoaches();renderHealth();}
+
+// ══ OVERVIEW ══════════════════════════════════════════
 function renderOverview(){
-  const m=selMonth();
-  const rev=revForMonth(m);
-  const exp=expForMonth(m);
-  const coach=coachPayForMonth(m);
-  const profit=rev-exp;
-  const activeStudents=DATA.students.filter(r=>(r['Status']||'').trim()==='Active').length;
-  const overdue=DATA.payments.filter(r=>(r['Status']||'').trim()==='Overdue').length;
-  const adSpend=DATA.expenses.filter(r=>monthMatch(r,'Month',m)&&(r['Category']||'').trim()==='Meta Ads').reduce((s,r)=>s+parseNum(r['Amount']),0);
-  const roas=adSpend>0?(rev/adSpend):0;
-  const adConv=DATA.ads.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>s+parseNum(r['Conversions (Paid)']),0);
-  const adSpendTotal=DATA.ads.filter(r=>monthMatch(r,'Month',m)).reduce((s,r)=>s+parseNum(r['Spend']),0);
-  // If no ad data for this month, fall back to all-time average
-  const allConv=DATA.ads.reduce((s,r)=>s+parseNum(r['Conversions (Paid)']),0);
-  const allSpend=DATA.ads.reduce((s,r)=>s+parseNum(r['Spend']),0);
-  const cac=adConv>0?(adSpendTotal/adConv):allConv>0?(allSpend/allConv):0;
-  const coachPct=rev>0?(coach/rev*100):0;
+  const ms=allMonths();
+  const active=D.stu.filter(r=>(r['Status']||'').trim()==='Active').length;
+  const rev=pRev(),exp=pExp(),coach=pCoach(),profit=rev-exp;
+  const roas=pRoas(),cac=pCac(),coachPct=rev>0?coach/rev*100:0;
+  const overdue=D.pay.filter(r=>(r['Status']||'').trim()==='Overdue').length;
+  const mrr=D.stu.filter(r=>(r['Status']||'').trim()==='Active').reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
+  const revData=ms.map(revM);
+  const profData=ms.map(m=>revM(m)-expM(m));
+  const lm=ms.length>=2?ms[ms.length-2]:null;
+  const periodLabel=SEL==='all'?'All Time':SEL;
+
+  // trends vs prev month
+  const revTrend=lm&&SEL!=='all'?moM(rev,revM(lm)):null;
+  const profTrend=lm&&SEL!=='all'?moM(profit,revM(lm)-expM(lm)):null;
+  const expTrend=lm&&SEL!=='all'?moM(exp,expM(lm)):null;
+
+  document.getElementById('chartTag').textContent=periodLabel;
 
   document.getElementById('kpiGrid').innerHTML=`
-    <div class="kpi"><div class="kpi-label">Active students</div><div class="kpi-val" style="color:#38BDF8">${activeStudents}</div><div class="kpi-sub">Status = Active</div></div>
-    <div class="kpi"><div class="kpi-label">${m} revenue</div><div class="kpi-val" style="color:#10B981">${inr(rev)}</div><div class="kpi-sub">${inrFull(rev)} collected</div></div>
-    <div class="kpi"><div class="kpi-label">${m} profit</div><div class="kpi-val" style="color:${profit>=0?'#10B981':'#EF4444'}">${inr(profit)}</div><div class="kpi-sub">${rev>0?Math.round(profit/rev*100):0}% margin</div></div>
-    <div class="kpi"><div class="kpi-label">${m} expenses</div><div class="kpi-val" style="color:#F59E0B">${inr(exp)}</div><div class="kpi-sub">All categories</div></div>
-    <div class="kpi"><div class="kpi-label">ROAS</div><div class="kpi-val" style="color:#8B5CF6">${roas>0?roas.toFixed(1)+'×':'—'}</div><div class="kpi-sub">vs Meta Ads spend</div></div>
-    <div class="kpi"><div class="kpi-label">CAC</div><div class="kpi-val" style="color:#F59E0B">${cac>0?inr(cac):'—'}</div><div class="kpi-sub">${adConv>0?'This month':'All-time avg'}</div></div>
-    <div class="kpi"><div class="kpi-label">Coach cost %</div><div class="kpi-val" style="color:${coachPct>40?'#EF4444':coachPct>0?'#10B981':'#F59E0B'}">${coach>0?(coachPct.toFixed(1)+'%'):'Log pay →'}</div><div class="kpi-sub">${coach>0?'Target <40%':'Add to Coaches sheet'}</div></div>
-    <div class="kpi"><div class="kpi-label">Overdue</div><div class="kpi-val" style="color:${overdue>0?'#EF4444':'#10B981'}">${overdue}</div><div class="kpi-sub">Payments overdue</div></div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:#2563EB"></div>
+      <div class="kpi-header"><div class="kpi-label">Active Students</div><div class="kpi-icon">🧒</div></div>
+      <div class="kpi-value" style="color:#2563EB">${active}</div>
+      <div class="kpi-footer"><span class="kpi-sub">India · all coaches</span></div>
+      ${spark([20,20,active],'#2563EB')}
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:#059669"></div>
+      <div class="kpi-header"><div class="kpi-label">Revenue · ${periodLabel}</div><div class="kpi-icon">💰</div></div>
+      <div class="kpi-value" style="color:#059669">${inr(rev)}</div>
+      <div class="kpi-footer"><span class="kpi-sub">${inrF(rev)}</span>${tBadge(revTrend)}</div>
+      ${spark(revData,'#059669')}
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:${profit>=0?'#059669':'#DC2626'}"></div>
+      <div class="kpi-header"><div class="kpi-label">Net Profit · ${periodLabel}</div><div class="kpi-icon">📈</div></div>
+      <div class="kpi-value" style="color:${profit>=0?'#059669':'#DC2626'}">${inr(profit)}</div>
+      <div class="kpi-footer"><span class="kpi-sub">${rev>0?Math.round(profit/rev*100):0}% margin</span>${tBadge(profTrend)}</div>
+      ${spark(profData,profit>=0?'#059669':'#DC2626')}
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:#D97706"></div>
+      <div class="kpi-header"><div class="kpi-label">Expenses · ${periodLabel}</div><div class="kpi-icon">💸</div></div>
+      <div class="kpi-value" style="color:#D97706">${inr(exp)}</div>
+      <div class="kpi-footer"><span class="kpi-sub">${inrF(exp)} total</span>${tBadge(expTrend,true)}</div>
+      ${spark(ms.map(expM),'#D97706')}
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:${roas>=3?'#059669':'#DC2626'}"></div>
+      <div class="kpi-header"><div class="kpi-label">ROAS · Lifetime</div><div class="kpi-icon">🎯</div></div>
+      <div class="kpi-value" style="color:${roas>=3?'#059669':'#DC2626'}">${roas>0?roas.toFixed(1)+'×':'—'}</div>
+      <div class="kpi-footer"><span class="kpi-sub">Target 3×+ · ${roas>=3?'✓ healthy':'⚠ needs work'}</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:${cac<=1000?'#059669':'#D97706'}"></div>
+      <div class="kpi-header"><div class="kpi-label">CAC · Lifetime</div><div class="kpi-icon">🧲</div></div>
+      <div class="kpi-value" style="color:${cac<=1000?'#059669':'#D97706'}">${cac>0?inr(cac):'—'}</div>
+      <div class="kpi-footer"><span class="kpi-sub">Target &lt;₹1,000 · ${cac>0&&cac<=1000?'✓ on target':'⚡ check ads'}</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:${coachPct>40?'#DC2626':coach>0?'#059669':'#D97706'}"></div>
+      <div class="kpi-header"><div class="kpi-label">Coach Cost% · ${periodLabel}</div><div class="kpi-icon">👨‍🏫</div></div>
+      <div class="kpi-value" style="color:${coachPct>40?'#DC2626':coach>0?'#059669':'#D97706'}">${coach>0?coachPct.toFixed(1)+'%':'Log pay'}</div>
+      <div class="kpi-footer"><span class="kpi-sub">Target &lt;40%</span></div>
+      ${spark(ms.map(m=>{const r=revM(m),c=coachM(m);return r>0?c/r*100:0;}),coachPct>40?'#DC2626':'#059669')}
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-accent" style="background:#7C3AED"></div>
+      <div class="kpi-header"><div class="kpi-label">MRR Potential</div><div class="kpi-icon">⚡</div></div>
+      <div class="kpi-value" style="color:#7C3AED">${inr(mrr)}</div>
+      <div class="kpi-footer"><span class="kpi-sub">${overdue>0?'⚠ '+overdue+' overdue':'✓ No overdue payments'}</span></div>
+    </div>
   `;
 
-  const alertEl=document.getElementById('alertBar');
-  if(coachPct>40){ alertEl.className='alert-bar bad'; alertEl.textContent=`⚠️ Coach cost ${coachPct.toFixed(1)}% — above 40% target. Scale group batches now.`; }
-  else if(coachPct>0){ alertEl.className='alert-bar ok'; alertEl.textContent=`✅ Coach cost ${coachPct.toFixed(1)}% — within 40% target.`; }
-  else{ alertEl.className='alert-bar warn'; alertEl.textContent=`⚡ Log Sanyam's actual pay for ${m} in the Coaches sheet to see coach cost %.`; }
+  // Alert
+  if(coachPct>40)setAlert('bad','⚠️',`Coach cost ${coachPct.toFixed(1)}% in ${periodLabel} — above 40% target. Add more students to group batches now.`);
+  else if(coach>0)setAlert('ok','✓',`All good · Coach ${coachPct.toFixed(1)}% · ROAS ${roas.toFixed(1)}× · CAC ${inrF(cac)} · ${periodLabel}`);
+  else setAlert('warn','⚡',`Log Sanyam's actual pay in the Coaches sheet to see coach cost% for ${periodLabel}.`);
 
-  const months=allMonths();
-  const revData=months.map(mm=>revForMonth(mm));
-  const expData=months.map(mm=>expForMonth(mm));
-  const proData=months.map(mm=>profitForMonth(mm));
+  // Main chart
+  const hl=SEL!=='all';
+  const rC=ms.map(m=>hl?(m===SEL?'rgba(5,150,105,.85)':'rgba(5,150,105,.15)'):'rgba(5,150,105,.75)');
+  const eC=ms.map(m=>hl?(m===SEL?'rgba(220,38,38,.85)':'rgba(220,38,38,.15)'):'rgba(220,38,38,.7)');
+  const pC=ms.map(m=>hl?(m===SEL?'rgba(37,99,235,.85)':'rgba(37,99,235,.15)'):'rgba(37,99,235,.7)');
+  mkC('cMain',{type:'bar',data:{labels:ms,datasets:[
+    {label:'Revenue',data:ms.map(revM),backgroundColor:rC,borderRadius:3},
+    {label:'Expenses',data:ms.map(expM),backgroundColor:eC,borderRadius:3},
+    {label:'Profit',data:ms.map(m=>revM(m)-expM(m)),backgroundColor:pC,borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+inrF(c.parsed.y)}}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false}},y:{...SY,ticks:{...SY.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
 
-  makeChart('cRevExp',{type:'bar',data:{labels:months,datasets:[
-    {label:'Revenue',data:revData,backgroundColor:'rgba(16,185,129,0.8)',borderRadius:4},
-    {label:'Expenses',data:expData,backgroundColor:'rgba(239,68,68,0.8)',borderRadius:4},
-    {label:'Profit',data:proData,backgroundColor:'rgba(56,189,248,0.8)',borderRadius:4}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
-    x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false,maxRotation:30}},
-    y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}
-  }}});
-
-  // Expense donut
+  // Donut
   const cats=['Meta Ads','Zoom','Domain/Hosting','Tools','Salary','Merchandise','Other'];
-  const catColors=['#1D6FA5','#06B6D4','#10B981','#8B5CF6','#F59E0B','#EF4444','#94A3B8'];
-  const catVals=cats.map(c=>DATA.expenses.filter(r=>monthMatch(r,'Month',m)&&(r['Category']||'').trim()===c).reduce((s,r)=>s+parseNum(r['Amount']),0));
-  const nonZero=cats.map((c,i)=>({c,v:catVals[i],col:catColors[i]})).filter(x=>x.v>0);
-  document.getElementById('expBreakSub').textContent=`${m} · ${inrFull(exp)} total`;
-  makeChart('cExpBreak',{type:'doughnut',data:{labels:nonZero.map(x=>x.c),datasets:[{data:nonZero.map(x=>x.v),backgroundColor:nonZero.map(x=>x.col),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+inrFull(ctx.parsed)}}}}});
-  document.getElementById('expBreakLegend').innerHTML=nonZero.map(x=>`<span><span class="leg-dot" style="background:${x.col}"></span>${x.c} ${inrFull(x.v)}</span>`).join('');
+  const cols=['#2563EB','#0891B2','#059669','#7C3AED','#D97706','#DC2626','#8896AB'];
+  const src=SEL==='all'?D.exp:D.exp.filter(r=>r['Month']===SEL);
+  const cV=cats.map(c=>src.filter(r=>(r['Category']||'').trim()===c).reduce((s,r)=>s+pN(r['Amount']),0));
+  const nz=cats.map((c,i)=>({c,v:cV[i],col:cols[i]})).filter(x=>x.v>0);
+  const totE=nz.reduce((s,x)=>s+x.v,0);
+  document.getElementById('expSub').textContent=`${SEL==='all'?'All time':SEL} · ${inrF(totE)} total`;
+  mkC('cDonut',{type:'doughnut',data:{labels:nz.map(x=>x.c),datasets:[{data:nz.map(x=>x.v),backgroundColor:nz.map(x=>x.col),borderWidth:2,borderColor:'#fff',hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+inrF(c.parsed)}}}}});
+  document.getElementById('donutLeg').innerHTML=nz.map(x=>`<div class="leg-item"><span class="leg-dot" style="background:${x.col}"></span>${x.c} <strong>${inrF(x.v)}</strong></div>`).join('');
 
-  // P&L summary table
-  const tableMonths=months.slice(0,6);
-  document.getElementById('pnlSummaryTable').innerHTML=`<thead><tr><th>Metric</th>${tableMonths.map(mm=>`<th>${mm}</th>`).join('')}<th>FY Total</th></tr></thead><tbody>
-    <tr><td style="color:var(--muted)">Revenue</td>${tableMonths.map(mm=>`<td style="color:#10B981;font-weight:600">${inrFull(revForMonth(mm))}</td>`).join('')}<td style="color:#10B981;font-weight:700">${inrFull(tableMonths.reduce((s,mm)=>s+revForMonth(mm),0))}</td></tr>
-    <tr><td style="color:var(--muted)">Expenses</td>${tableMonths.map(mm=>`<td>${inrFull(expForMonth(mm))}</td>`).join('')}<td>${inrFull(tableMonths.reduce((s,mm)=>s+expForMonth(mm),0))}</td></tr>
-    <tr><td style="color:var(--muted)">Net profit</td>${tableMonths.map(mm=>{const p=profitForMonth(mm);return`<td><span class="pill ${p>=0?'pill-green':'pill-red'}">${inrFull(p)}</span></td>`;}).join('')}<td><span class="pill pill-green">${inrFull(tableMonths.reduce((s,mm)=>s+profitForMonth(mm),0))}</span></td></tr>
-    <tr><td style="color:var(--muted)">Margin %</td>${tableMonths.map(mm=>{const r=revForMonth(mm);const p=profitForMonth(mm);const mg=r>0?Math.round(p/r*100):0;return`<td><span class="pill ${mg>30?'pill-green':mg>0?'pill-amber':'pill-red'}">${mg}%</span></td>`;}).join('')}<td></td></tr>
-    <tr><td style="color:var(--muted)">ROAS</td>${tableMonths.map(mm=>{const r=revForMonth(mm);const a=DATA.expenses.filter(x=>monthMatch(x,'Month',mm)&&(x['Category']||'').trim()==='Meta Ads').reduce((s,x)=>s+parseNum(x['Amount']),0);return`<td>${a>0?(r/a).toFixed(1)+'×':'—'}</td>`;}).join('')}<td></td></tr>
+  // Snapshot table
+  document.getElementById('tSnap').innerHTML=`<thead><tr><th>Month</th><th>Revenue</th><th>Expenses</th><th>Profit</th><th>Margin</th><th>ROAS</th><th>Coach %</th></tr></thead><tbody>
+    ${allMonths().map(m=>{
+      const r=revM(m),e=expM(m),p=r-e,mg=r>0?Math.round(p/r*100):0;
+      const adS=D.exp.filter(x=>x['Month']===m&&(x['Category']||'').trim()==='Meta Ads').reduce((s,x)=>s+pN(x['Amount']),0);
+      const roas=adS>0?(r/adS):0;const cp=coachM(m);const cpct=r>0&&cp>0?Math.round(cp/r*100):0;
+      const sel=SEL===m;
+      return`<tr style="${sel?'background:#EFF6FF':''}">
+        <td><strong style="color:#2563EB">${m}</strong>${sel?' <span class="pill pill-b">Selected</span>':''}</td>
+        <td class="td-mono" style="color:#059669">${inrF(r)}</td>
+        <td class="td-mono">${inrF(e)}</td>
+        <td><span class="pill ${p>=0?'pill-g':'pill-r'}">${inrF(p)}</span></td>
+        <td><span class="pill ${mg>30?'pill-g':mg>0?'pill-a':'pill-r'}">${mg}%</span></td>
+        <td class="td-mono">${roas>0?roas.toFixed(1)+'×':'—'}</td>
+        <td>${cpct>0?`<span class="pill ${cpct>40?'pill-r':cpct>30?'pill-a':'pill-g'}">${cpct}%</span>`:'—'}</td>
+      </tr>`;
+    }).join('')}
+    <tr style="background:#F5F6FA;font-weight:700;border-top:2px solid #E8EAF0">
+      <td style="color:#0F1117">TOTAL</td>
+      <td class="td-mono" style="color:#059669">${inrF(ltRev())}</td>
+      <td class="td-mono">${inrF(ltExp())}</td>
+      <td><span class="pill pill-g">${inrF(ltRev()-ltExp())}</span></td>
+      <td><span class="pill pill-g">${ltRev()>0?Math.round((ltRev()-ltExp())/ltRev()*100):0}%</span></td>
+      <td class="td-mono">${ltAdSpend()>0?(ltRev()/ltAdSpend()).toFixed(1)+'×':'—'}</td>
+      <td>—</td>
+    </tr>
   </tbody>`;
 }
 
-function renderPnL(){
-  const months=allMonths().slice(0,6);
-  const totalRev=months.reduce((s,m)=>s+revForMonth(m),0);
-  const totalExp=months.reduce((s,m)=>s+expForMonth(m),0);
+// ══ P&L ═══════════════════════════════════════════════
+function renderPL(){
+  const ms=allMonths();
   const cats=['Meta Ads','Zoom','Domain/Hosting','Tools','Salary','Merchandise','Other'];
-  document.getElementById('pnlFullTable').innerHTML=`<thead><tr><th>Line item</th>${months.map(m=>`<th>${m}</th>`).join('')}<th>Total</th></tr></thead><tbody>
-    <tr><td colspan="${months.length+2}" style="color:var(--sky);font-weight:700;padding-top:12px">REVENUE</td></tr>
-    <tr><td style="padding-left:16px">Fees collected</td>${months.map(m=>`<td style="color:#10B981">${inrFull(revForMonth(m))}</td>`).join('')}<td style="color:#10B981;font-weight:700">${inrFull(totalRev)}</td></tr>
-    <tr><td colspan="${months.length+2}" style="color:var(--sky);font-weight:700;padding-top:12px">EXPENSES BY CATEGORY</td></tr>
-    ${cats.map(cat=>{const vals=months.map(m=>DATA.expenses.filter(r=>monthMatch(r,'Month',m)&&(r['Category']||'').trim()===cat).reduce((s,r)=>s+parseNum(r['Amount']),0));const tot=vals.reduce((s,v)=>s+v,0);if(tot===0)return'';return`<tr><td style="padding-left:16px">${cat}</td>${vals.map(v=>`<td>${v>0?inrFull(v):'—'}</td>`).join('')}<td>${inrFull(tot)}</td></tr>`;}).join('')}
-    <tr style="font-weight:700"><td>Total expenses</td>${months.map(m=>`<td>${inrFull(expForMonth(m))}</td>`).join('')}<td>${inrFull(totalExp)}</td></tr>
-    <tr><td colspan="${months.length+2}" style="color:var(--sky);font-weight:700;padding-top:12px">PROFIT</td></tr>
-    ${months.map((m,i)=>{const p=profitForMonth(m);const r=revForMonth(m);return``;}).join('')}
-    <tr style="font-weight:700"><td>Net profit</td>${months.map(m=>{const p=profitForMonth(m);return`<td><span class="pill ${p>=0?'pill-green':'pill-red'}">${inrFull(p)}</span></td>`;}).join('')}<td><span class="pill pill-green">${inrFull(totalRev-totalExp)}</span></td></tr>
-    <tr><td>Margin %</td>${months.map(m=>{const r=revForMonth(m);const p=profitForMonth(m);const mg=r>0?Math.round(p/r*100):0;return`<td>${mg}%</td>`;}).join('')}<td>${totalRev>0?Math.round((totalRev-totalExp)/totalRev*100):0}%</td></tr>
+  document.getElementById('tPL').innerHTML=`<thead><tr><th>Line Item</th>${ms.map(m=>`<th>${m}</th>`).join('')}<th>Total</th></tr></thead><tbody>
+    <tr style="background:#EFF6FF"><td colspan="${ms.length+2}" style="color:#2563EB;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px">📥 Revenue</td></tr>
+    <tr><td style="padding-left:16px;color:#4A5568">Fees Collected</td>${ms.map(m=>`<td class="td-mono" style="color:#059669">${inrF(revM(m))}</td>`).join('')}<td class="td-mono" style="color:#059669;font-weight:700">${inrF(ltRev())}</td></tr>
+    <tr style="background:#FEF2F2"><td colspan="${ms.length+2}" style="color:#DC2626;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px">📤 Expenses</td></tr>
+    ${cats.map(cat=>{const vals=ms.map(m=>D.exp.filter(r=>r['Month']===m&&(r['Category']||'').trim()===cat).reduce((s,r)=>s+pN(r['Amount']),0));const tot=vals.reduce((s,v)=>s+v,0);if(!tot)return'';return`<tr><td style="padding-left:16px;color:#4A5568">${cat}</td>${vals.map(v=>`<td class="td-mono">${v?inrF(v):'—'}</td>`).join('')}<td class="td-mono">${inrF(tot)}</td></tr>`;}).join('')}
+    <tr style="background:#FEF9C3;font-weight:700"><td>Total Expenses</td>${ms.map(m=>`<td class="td-mono">${inrF(expM(m))}</td>`).join('')}<td class="td-mono">${inrF(ltExp())}</td></tr>
+    <tr style="background:#ECFDF5"><td colspan="${ms.length+2}" style="color:#059669;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px">💚 Profit</td></tr>
+    <tr style="font-weight:700"><td>Net Profit</td>${ms.map(m=>{const p=revM(m)-expM(m);return`<td><span class="pill ${p>=0?'pill-g':'pill-r'}">${inrF(p)}</span></td>`;}).join('')}<td><span class="pill pill-g">${inrF(ltRev()-ltExp())}</span></td></tr>
+    <tr><td style="color:#4A5568">Margin %</td>${ms.map(m=>{const r=revM(m),p=r-expM(m),mg=r>0?Math.round(p/r*100):0;return`<td class="td-mono">${mg}%</td>`;}).join('')}<td class="td-mono">${ltRev()>0?Math.round((ltRev()-ltExp())/ltRev()*100):0}%</td></tr>
   </tbody>`;
 
-  makeChart('cRevRamp',{type:'bar',data:{labels:allMonths(),datasets:[{label:'Revenue',data:allMonths().map(m=>revForMonth(m)),backgroundColor:allMonths().map((_,i)=>i<3?'rgba(16,185,129,0.85)':'rgba(16,185,129,0.3)'),borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false,maxRotation:30}},y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+  mkC('cRevBar',{type:'bar',data:{labels:allMonths(),datasets:[{data:allMonths().map(revM),backgroundColor:allMonths().map((_,i)=>i===allMonths().length-1?'rgba(37,99,235,.8)':'rgba(5,150,105,.7)'),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+inrF(c.parsed.y)}}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false}},y:{...SY,ticks:{...SY.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+  let cum=0;const cumD=allMonths().map(m=>{cum+=revM(m)-expM(m);return cum;});
+  mkC('cCumProfit',{type:'line',data:{labels:allMonths(),datasets:[{data:cumD,borderColor:'#2563EB',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:0.35,pointRadius:4,pointBackgroundColor:'#2563EB',borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+inrF(c.parsed.y)}}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false}},y:{...SY,ticks:{...SY.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
 }
 
+// ══ FUNNEL ════════════════════════════════════════════
 function renderFunnel(){
-  const m=selMonth();
-  const adsM=DATA.ads.filter(r=>monthMatch(r,'Month',m));
-  const leads=adsM.reduce((s,r)=>s+parseNum(r['Leads']),0)||200;
-  const booked=adsM.reduce((s,r)=>s+parseNum(r['Demos Booked']),0)||100;
-  const shown=adsM.reduce((s,r)=>s+parseNum(r['Demos Shown']),0)||50;
-  const conv=adsM.reduce((s,r)=>s+parseNum(r['Conversions (Paid)']),0)||20;
-  const spend=adsM.reduce((s,r)=>s+parseNum(r['Spend']),0);
-  const cpl=leads>0&&spend>0?(spend/leads):75;
-  const cpa=conv>0&&spend>0?(spend/conv):750;
-
-  document.getElementById('funnelKpis').innerHTML=`
-    <div class="kpi"><div class="kpi-label">Leads/month</div><div class="kpi-val" style="color:#38BDF8">${leads}</div></div>
-    <div class="kpi"><div class="kpi-label">Demos booked</div><div class="kpi-val" style="color:#06B6D4">${booked}</div><div class="kpi-sub">${leads>0?Math.round(booked/leads*100):0}% of leads</div></div>
-    <div class="kpi"><div class="kpi-label">Demos shown</div><div class="kpi-val" style="color:#F59E0B">${shown}</div><div class="kpi-sub">${booked>0?Math.round(shown/booked*100):0}% show rate</div></div>
-    <div class="kpi"><div class="kpi-label">Paid</div><div class="kpi-val" style="color:#10B981">${conv}</div><div class="kpi-sub">${shown>0?Math.round(conv/shown*100):0}% of shown</div></div>
-    <div class="kpi"><div class="kpi-label">CPL</div><div class="kpi-val">${inr(cpl)}</div></div>
-    <div class="kpi"><div class="kpi-label">CPA</div><div class="kpi-val">${inr(cpa)}</div></div>
+  const ltL=D.ads.reduce((s,r)=>s+pN(r['Leads']),0);
+  const ltB=D.ads.reduce((s,r)=>s+pN(r['Demos Booked']),0);
+  const ltS=D.ads.reduce((s,r)=>s+pN(r['Demos Shown']),0);
+  const ltC=ltConv(),ltSp=ltAdSpend();
+  const cpl=ltL>0?ltSp/ltL:0,cpa=ltC>0?ltSp/ltC:0;
+  document.getElementById('fKpis').innerHTML=`
+    <div class="kpi-card"><div class="kpi-accent" style="background:#2563EB"></div><div class="kpi-header"><div class="kpi-label">Total Leads</div><div class="kpi-icon">📬</div></div><div class="kpi-value" style="color:#2563EB">${ltL}</div><div class="kpi-footer"><span class="kpi-sub">All time from ads</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#0891B2"></div><div class="kpi-header"><div class="kpi-label">Demos Booked</div><div class="kpi-icon">📅</div></div><div class="kpi-value" style="color:#0891B2">${ltB}</div><div class="kpi-footer"><span class="kpi-sub">${ltL?Math.round(ltB/ltL*100):0}% of leads</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#D97706"></div><div class="kpi-header"><div class="kpi-label">Demos Shown</div><div class="kpi-icon">🎥</div></div><div class="kpi-value" style="color:#D97706">${ltS}</div><div class="kpi-footer"><span class="kpi-sub">${ltB?Math.round(ltS/ltB*100):0}% show-up rate ← fix this</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#059669"></div><div class="kpi-header"><div class="kpi-label">Conversions</div><div class="kpi-icon">✅</div></div><div class="kpi-value" style="color:#059669">${ltC}</div><div class="kpi-footer"><span class="kpi-sub">${ltS?Math.round(ltC/ltS*100):0}% of shown</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#7C3AED"></div><div class="kpi-header"><div class="kpi-label">Lifetime CPL</div><div class="kpi-icon">💡</div></div><div class="kpi-value" style="color:#7C3AED">${cpl>0?inr(cpl):'—'}</div><div class="kpi-footer"><span class="kpi-sub">Cost per lead</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:${cpa<=1000?'#059669':'#D97706'}"></div><div class="kpi-header"><div class="kpi-label">Lifetime CAC</div><div class="kpi-icon">🎯</div></div><div class="kpi-value" style="color:${cpa<=1000?'#059669':'#D97706'}">${cpa>0?inr(cpa):'—'}</div><div class="kpi-footer"><span class="kpi-sub">Target &lt;₹1,000</span></div></div>
   `;
-
-  const funnel=[{n:'Leads',v:leads,pct:100,c:'#1D6FA5'},{n:'Demo booked',v:booked,pct:leads>0?Math.round(booked/leads*100):0,c:'#06B6D4'},{n:'Demo shown',v:shown,pct:leads>0?Math.round(shown/leads*100):0,c:'#F59E0B'},{n:'Paid student',v:conv,pct:leads>0?Math.round(conv/leads*100):0,c:'#10B981'}];
-  document.getElementById('funnelBars').innerHTML=funnel.map(f=>`<div class="funnel-row"><div class="funnel-header"><span class="funnel-name">${f.n}</span><span class="funnel-val">${f.v} · ${f.pct}%</span></div><div class="funnel-track"><div class="funnel-fill" style="width:${f.pct}%;background:${f.c}"></div></div></div>`).join('');
-
-  const allAds=DATA.ads;
-  document.getElementById('adsTable').innerHTML=`<thead><tr><th>Campaign</th><th>Month</th><th>Spend</th><th>Leads</th><th>Shown</th><th>Paid</th><th>CPL</th><th>CPA</th></tr></thead><tbody>${allAds.map(r=>`<tr><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r['Campaign/Ad Set']||'—'}</td><td>${r['Month']||'—'}</td><td>${inrFull(parseNum(r['Spend']))}</td><td>${r['Leads']||0}</td><td>${r['Demos Shown']||0}</td><td>${r['Conversions (Paid)']||0}</td><td>${inrFull(parseNum(r['CPL']))}</td><td>${inrFull(parseNum(r['CPA']))}</td></tr>`).join('')}</tbody>`;
-
-  const convRates=[10,15,20,25,30];
-  const avgFee=DATA.students.length>0?DATA.students.reduce((s,r)=>s+parseNum(r['Net Monthly Fee']),0)/DATA.students.length:3000;
-  makeChart('cWhatIf',{type:'bar',data:{labels:convRates.map(r=>r+'% conv'),datasets:[{label:'Monthly revenue',data:convRates.map(r=>Math.round(leads*(r/100)*avgFee)),backgroundColor:convRates.map((r,i)=>i===0?'#888780':i===2?'#10B981':'#1D6FA5'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x},y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>'₹'+(v/1000).toFixed(0)+'K'}}}}});
-  document.getElementById('whatIfGrid').innerHTML=convRates.map((r,i)=>`<div class="what-if-card" style="${i===2?'border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.08)':''}"><div style="font-size:10px;color:var(--muted);margin-bottom:4px">${r}% conv${i===0?' (now)':i===2?' ★':''}</div><div style="font-size:18px;font-weight:800;color:${i===2?'#10B981':'var(--white)'}">${inr(leads*(r/100)*avgFee)}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">/month</div></div>`).join('');
+  const fn=[{n:'Leads',v:ltL,pct:100,c:'#2563EB'},{n:'Demo Booked',v:ltB,pct:ltL?Math.round(ltB/ltL*100):0,c:'#0891B2'},{n:'Demo Shown',v:ltS,pct:ltL?Math.round(ltS/ltL*100):0,c:'#D97706'},{n:'Paid Student',v:ltC,pct:ltL?Math.round(ltC/ltL*100):0,c:'#059669'}];
+  document.getElementById('fBars').innerHTML=fn.map(f=>`<div class="f-item"><div class="f-label">${f.n}</div><div class="f-track"><div class="f-fill" style="width:${f.pct}%;background:${f.c}"></div></div><div class="f-val">${f.v} · ${f.pct}%</div></div>`).join('');
+  document.getElementById('adsSub').textContent=`${D.ads.length} campaigns · ${inrF(ltSp)} total spend`;
+  document.getElementById('tAds').innerHTML=`<thead><tr><th>Month</th><th>Campaign</th><th>Spend</th><th>Leads</th><th>Shown</th><th>Paid</th><th>CPL</th><th>CPA</th></tr></thead><tbody>${D.ads.map(r=>`<tr><td><span class="pill pill-b">${r['Month']}</span></td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#4A5568">${r['Campaign/Ad Set']||'—'}</td><td class="td-mono">${inrF(pN(r['Spend']))}</td><td class="td-mono">${r['Leads']||0}</td><td class="td-mono">${r['Demos Shown']||0}</td><td class="td-mono" style="color:#059669">${r['Conversions (Paid)']||0}</td><td class="td-mono">${inrF(pN(r['CPL']))}</td><td><span class="pill ${pN(r['CPA'])<=1000?'pill-g':'pill-a'}">${inrF(pN(r['CPA']))}</span></td></tr>`).join('')}</tbody>`;
+  const avgF=D.stu.length?D.stu.reduce((s,r)=>s+pN(r['Net Monthly Fee']),0)/D.stu.length:3208;
+  const crs=[10,15,20,25,30];
+  mkC('cWhatIf',{type:'bar',data:{labels:crs.map(r=>r+'%'),datasets:[{data:crs.map(r=>Math.round(200*(r/100)*avgF)),backgroundColor:crs.map((r,i)=>i===0?'#E8EAF0':i===2?'rgba(5,150,105,.85)':'rgba(37,99,235,.55)'),borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+inrF(c.parsed.y)+'/month'}}},scales:{x:{...SX},y:{...SY,ticks:{...SY.ticks,callback:v=>'₹'+(v/1000).toFixed(0)+'K'}}}}});
+  document.getElementById('wiGrid').innerHTML=crs.map((r,i)=>`<div class="wi-card${i===2?' highlight':''}"><div class="wi-conv">${r}% conv${i===0?' (now)':i===2?' ★':''}</div><div class="wi-rev${i===2?' green':''}">${inr(200*(r/100)*avgF)}</div><div class="wi-mo">/month</div></div>`).join('');
 }
 
+// ══ GROWTH ════════════════════════════════════════════
 function renderGrowth(){
-  const activeNow=DATA.students.filter(r=>(r['Status']||'').trim()==='Active').length;
-  document.getElementById('growthKpis').innerHTML=`
-    <div class="kpi"><div class="kpi-label">Students now</div><div class="kpi-val" style="color:#38BDF8">${activeNow}</div><div class="kpi-sub">Jun 2026</div></div>
-    <div class="kpi"><div class="kpi-label">3-month target</div><div class="kpi-val" style="color:#F59E0B">100</div><div class="kpi-sub">Sep 2026</div></div>
-    <div class="kpi"><div class="kpi-label">12-month target</div><div class="kpi-val" style="color:#10B981">2,000</div><div class="kpi-sub">Mar 2027</div></div>
-    <div class="kpi"><div class="kpi-label">Gap to 100</div><div class="kpi-val" style="color:#EF4444">${100-activeNow}</div><div class="kpi-sub">students needed</div></div>
+  const active=D.stu.filter(r=>(r['Status']||'').trim()==='Active').length;
+  document.getElementById('grKpis').innerHTML=`
+    <div class="kpi-card"><div class="kpi-accent" style="background:#2563EB"></div><div class="kpi-header"><div class="kpi-label">Students Now</div><div class="kpi-icon">🧒</div></div><div class="kpi-value" style="color:#2563EB">${active}</div><div class="kpi-footer"><span class="kpi-sub">Jun 2026</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#D97706"></div><div class="kpi-header"><div class="kpi-label">3-Month Target</div><div class="kpi-icon">🎯</div></div><div class="kpi-value" style="color:#D97706">100</div><div class="kpi-footer"><span class="kpi-sub">Sep 2026 · need ${100-active} more</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#059669"></div><div class="kpi-header"><div class="kpi-label">Year 1 Target</div><div class="kpi-icon">🚀</div></div><div class="kpi-value" style="color:#059669">2,000</div><div class="kpi-footer"><span class="kpi-sub">Mar 2027</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#7C3AED"></div><div class="kpi-header"><div class="kpi-label">Months to 100</div><div class="kpi-icon">📆</div></div><div class="kpi-value" style="color:#7C3AED">${Math.ceil((100-active)/10)}</div><div class="kpi-footer"><span class="kpi-sub">at 10 new students/month</span></div></div>
   `;
-
-  const projMonths=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
-  const actualData=[20,20,activeNow,null,null,null,null,null,null,null,null,null];
-  const projData=[null,null,activeNow,35,50,70,100,140,190,260,360,490];
-
-  makeChart('cGrowth',{type:'line',data:{labels:projMonths,datasets:[
-    {label:'Actual',data:actualData,borderColor:'#10B981',pointBackgroundColor:'#10B981',pointRadius:5,tension:0.3,spanGaps:false},
-    {label:'Projected',data:projData,borderColor:'#38BDF8',borderDash:[6,4],pointBackgroundColor:'#38BDF8',pointRadius:3,tension:0.4,spanGaps:false}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false}},y:{...baseScales.y}}}});
-
-  const milestones=[
-    {phase:'Now',period:'Jun 2026',students:activeNow,rev:'₹40K',action:'Chase unpaid Jun students',color:'#38BDF8',border:'rgba(56,189,248,0.3)',bg:'rgba(56,189,248,0.06)'},
-    {phase:'Phase 2',period:'Sep 2026',students:90,rev:'₹2.7L',action:'Add 2 more coaches, scale Meta ads',color:'#1D6FA5',border:'rgba(29,111,165,0.3)',bg:'rgba(29,111,165,0.06)'},
-    {phase:'Phase 3',period:'Dec 2026',students:210,rev:'₹6.3L',action:'International expansion begins',color:'#06B6D4',border:'rgba(6,182,212,0.3)',bg:'rgba(6,182,212,0.06)'},
-    {phase:'Target',period:'Mar 2027',students:490,rev:'₹14.7L',action:'5-7 coaches, Middle East live',color:'#10B981',border:'rgba(16,185,129,0.3)',bg:'rgba(16,185,129,0.06)'},
+  const lbs=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const act=[20,20,active,null,null,null,null,null,null,null,null,null];
+  const prj=[null,null,active,Math.round(active*1.55),Math.round(active*2.2),Math.round(active*3),Math.round(active*4.3),Math.round(active*5.8),Math.round(active*7.8),Math.round(active*10.5),Math.round(active*14),Math.round(active*18.5)];
+  const tgt=[46,73,100,null,null,null,null,null,null,null,null,null];
+  mkC('cGrowth',{type:'line',data:{labels:lbs,datasets:[
+    {label:'Actual',data:act,borderColor:'#059669',pointBackgroundColor:'#059669',pointRadius:5,tension:0.2,spanGaps:false,borderWidth:2.5,pointHoverRadius:7},
+    {label:'Projected',data:prj,borderColor:'#2563EB',borderDash:[7,4],pointBackgroundColor:'#2563EB',pointRadius:3,tension:0.4,spanGaps:false,borderWidth:2},
+    {label:'Target',data:tgt,borderColor:'#D97706',borderDash:[3,3],pointRadius:0,spanGaps:false,borderWidth:1.5}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false}},y:{...SY,min:0}}}});
+  const ms2=[
+    {p:'Now',d:'Jun 2026',s:active,r:inr(active*3208),a:'Chase unpaid Jun payments',bg:'#EFF6FF',bc:'#BFDBFE',tc:'#1D4ED8'},
+    {p:'Q3 Goal',d:'Sep 2026',s:100,r:'₹3.2L',a:'Scale to 30+ demos/month',bg:'#FFFBEB',bc:'#FDE68A',tc:'#92400E'},
+    {p:'H2',d:'Dec 2026',s:200,r:'₹6.4L',a:'Hire 2 more coaches',bg:'#F5F3FF',bc:'#DDD6FE',tc:'#5B21B6'},
+    {p:'Year 1',d:'Mar 2027',s:490,r:'₹15.7L',a:'Middle East · 5-7 coaches',bg:'#ECFDF5',bc:'#A7F3D0',tc:'#064E3B'},
   ];
-  document.getElementById('milestoneGrid').innerHTML=milestones.map(ms=>`<div class="milestone" style="background:${ms.bg};border-color:${ms.border}"><div style="font-size:10px;color:${ms.color};font-weight:700;letter-spacing:.5px;margin-bottom:4px">${ms.phase}</div><div style="font-size:11px;color:var(--muted);margin-bottom:10px">${ms.period}</div><div style="font-size:22px;font-weight:800;color:var(--white)">${ms.students} <span style="font-size:12px;font-weight:400;color:var(--muted)">students</span></div><div style="font-size:15px;font-weight:700;color:${ms.color};margin:4px 0 8px">${ms.rev}/mo</div><div style="font-size:11px;color:var(--muted)">${ms.action}</div></div>`).join('');
+  document.getElementById('mGrid').innerHTML=ms2.map(m=>`<div class="milestone" style="background:${m.bg};border-color:${m.bc}"><div class="milestone-phase" style="color:${m.tc}">${m.p}</div><div class="milestone-date">${m.d}</div><div class="milestone-count">${m.s} <span style="font-size:11px;font-weight:400;color:#8896AB">students</span></div><div class="milestone-rev" style="color:${m.tc}">${m.r}/mo</div><div class="milestone-action">${m.a}</div></div>`).join('');
 }
 
+// ══ STUDENTS ══════════════════════════════════════════
 function renderStudents(){
-  const active=DATA.students.filter(r=>(r['Status']||'').trim()==='Active');
-  const group=active.filter(r=>(r['Type']||'').trim()==='Group');
-  const oneOne=active.filter(r=>(r['Type']||'').trim()==='1-on-1');
-  const mrr=active.reduce((s,r)=>s+parseNum(r['Net Monthly Fee']),0);
-  const avg=active.length>0?mrr/active.length:0;
-
-  document.getElementById('studentKpis').innerHTML=`
-    <div class="kpi"><div class="kpi-label">Total active</div><div class="kpi-val" style="color:#38BDF8">${active.length}</div></div>
-    <div class="kpi"><div class="kpi-label">Group</div><div class="kpi-val">${group.length}</div><div class="kpi-sub">₹750–₹3,000/mo</div></div>
-    <div class="kpi"><div class="kpi-label">1-on-1</div><div class="kpi-val">${oneOne.length}</div><div class="kpi-sub">₹5,000–₹12,000/mo</div></div>
-    <div class="kpi"><div class="kpi-label">MRR potential</div><div class="kpi-val" style="color:#10B981">${inr(mrr)}</div><div class="kpi-sub">if all pay this month</div></div>
-    <div class="kpi"><div class="kpi-label">Avg fee</div><div class="kpi-val">${inr(avg)}</div><div class="kpi-sub">per student</div></div>
+  const active=D.stu.filter(r=>(r['Status']||'').trim()==='Active');
+  const mrr=active.reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
+  const lm=allMonths().slice(-1)[0]||'';
+  const coll=lm?revM(lm):0;
+  document.getElementById('stKpis').innerHTML=`
+    <div class="kpi-card"><div class="kpi-accent" style="background:#2563EB"></div><div class="kpi-header"><div class="kpi-label">Active Students</div><div class="kpi-icon">🧒</div></div><div class="kpi-value" style="color:#2563EB">${active.length}</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#0891B2"></div><div class="kpi-header"><div class="kpi-label">Group Classes</div><div class="kpi-icon">👥</div></div><div class="kpi-value" style="color:#0891B2">${active.filter(r=>(r['Type']||'').trim()==='Group').length}</div><div class="kpi-footer"><span class="kpi-sub">₹500–₹3,000/mo</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#7C3AED"></div><div class="kpi-header"><div class="kpi-label">1-on-1 Students</div><div class="kpi-icon">🎓</div></div><div class="kpi-value" style="color:#7C3AED">${active.filter(r=>(r['Type']||'').trim()==='1-on-1').length}</div><div class="kpi-footer"><span class="kpi-sub">₹5K–₹12K/mo · high margin</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#059669"></div><div class="kpi-header"><div class="kpi-label">MRR Potential</div><div class="kpi-icon">💰</div></div><div class="kpi-value" style="color:#059669">${inr(mrr)}</div><div class="kpi-footer"><span class="kpi-sub">if all students pay</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:${coll>=mrr*.8?'#059669':'#D97706'}"></div><div class="kpi-header"><div class="kpi-label">${lm} Collected</div><div class="kpi-icon">✅</div></div><div class="kpi-value" style="color:${coll>=mrr*.8?'#059669':'#D97706'}">${inr(coll)}</div><div class="kpi-footer"><span class="kpi-sub">${inrF(mrr-coll)} uncollected</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#4A5568"></div><div class="kpi-header"><div class="kpi-label">Avg Fee</div><div class="kpi-icon">📊</div></div><div class="kpi-value">${inr(mrr/Math.max(active.length,1))}</div><div class="kpi-footer"><span class="kpi-sub">per student per month</span></div></div>
   `;
-
-  const sorted=[...active].sort((a,b)=>parseNum(b['Net Monthly Fee'])-parseNum(a['Net Monthly Fee']));
-  const feeBuckets={};
-  sorted.forEach(s=>{ const f=Math.round(parseNum(s['Net Monthly Fee'])/500)*500; feeBuckets[f]=(feeBuckets[f]||0)+1; });
-  const bucketLabels=Object.keys(feeBuckets).sort((a,b)=>a-b).map(k=>'₹'+Number(k).toLocaleString('en-IN'));
-  const bucketVals=Object.keys(feeBuckets).sort((a,b)=>a-b).map(k=>feeBuckets[k]);
-  makeChart('cFees',{type:'bar',data:{labels:bucketLabels,datasets:[{label:'Students',data:bucketVals,backgroundColor:'#1D6FA5',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false,maxRotation:45}},y:{...baseScales.y,ticks:{...baseScales.y.ticks,stepSize:1}}}}});
-
-  document.getElementById('studentListSub').textContent=`${active.length} active students`;
-  document.getElementById('studentList').innerHTML=sorted.map(s=>`<div class="student-row"><span>${s['Student Name']||'—'} <span style="color:var(--muted);font-size:10px">${s['Type']||''}</span></span><span style="color:${parseNum(s['Net Monthly Fee'])>=5000?'#10B981':'var(--white)'}">₹${parseNum(s['Net Monthly Fee']).toLocaleString('en-IN')}</span></div>`).join('');
-
-  const m=selMonth();
-  const pays=DATA.payments.filter(r=>monthMatch(r,'Month',m));
-  document.getElementById('paymentsSub').textContent=`${pays.length} payments logged in ${m}`;
-  document.getElementById('paymentsTable').innerHTML=`<thead><tr><th>Date</th><th>Student</th><th>Received</th><th>Status</th></tr></thead><tbody>${pays.map(r=>`<tr><td>${r['Payment Date']||'—'}</td><td>${r['Student Name']||'—'}</td><td style="color:#10B981">${inrFull(parseNum(r['Received']))}</td><td><span class="pill ${r['Status']==='Paid'?'pill-green':r['Status']==='Overdue'?'pill-red':'pill-amber'}">${r['Status']||'—'}</span></td></tr>`).join('')}</tbody>`;
+  const sorted=[...active].sort((a,b)=>pN(b['Net Monthly Fee'])-pN(a['Net Monthly Fee']));
+  const bkts={};sorted.forEach(s=>{const f=Math.round(pN(s['Net Monthly Fee'])/500)*500;bkts[f]=(bkts[f]||0)+1;});
+  const bL=Object.keys(bkts).sort((a,b)=>a-b).map(k=>'₹'+Number(k).toLocaleString('en-IN'));
+  const bV=Object.keys(bkts).sort((a,b)=>a-b).map(k=>bkts[k]);
+  mkC('cFees',{type:'bar',data:{labels:bL,datasets:[{data:bV,backgroundColor:'#2563EB',borderRadius:5,hoverBackgroundColor:'#1D4ED8'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false,maxRotation:45}},y:{...SY,ticks:{...SY.ticks,stepSize:1}}}}});
+  document.getElementById('stListSub').textContent=`${active.length} active students`;
+  document.getElementById('stList').innerHTML=sorted.map(s=>`<div class="s-item"><div><span class="s-name">${s['Student Name']}</span><span class="s-type">${s['Type']||''}</span></div><span class="s-fee" style="color:${pN(s['Net Monthly Fee'])>=5000?'#059669':'#0F1117'}">${inrF(pN(s['Net Monthly Fee']))}</span></div>`).join('');
+  document.getElementById('payLogSub').textContent=`${D.pay.length} payments · ${inrF(ltRev())} total`;
+  document.getElementById('tPay').innerHTML=`<thead><tr><th>Date</th><th>Student</th><th>Month</th><th>Amount</th><th>Status</th></tr></thead><tbody>${[...D.pay].reverse().map(r=>`<tr><td style="color:#8896AB">${r['Payment Date']||'—'}</td><td style="font-weight:500">${r['Student Name']||'—'}</td><td><span class="pill pill-b">${r['Month']||'—'}</span></td><td class="td-mono" style="color:#059669">${inrF(pN(r['Received']))}</td><td><span class="pill ${r['Status']==='Paid'?'pill-g':r['Status']==='Overdue'?'pill-r':'pill-a'}">${r['Status']||'—'}</span></td></tr>`).join('')}</tbody>`;
 }
 
+// ══ COACHES ═══════════════════════════════════════════
 function renderCoaches(){
-  const months=allMonths().filter(m=>DATA.coaches.some(r=>monthMatch(r,'Month',m)));
-  const coachNames=[...new Set(DATA.coaches.map(r=>r['Coach Name']).filter(Boolean))];
-  const totalClasses=DATA.coaches.reduce((s,r)=>s+parseNum(r['Classes This Month']),0);
-  const totalEst=DATA.coaches.reduce((s,r)=>s+parseNum(r['Estimated Pay (Rs.)']),0);
-  const totalActual=DATA.coaches.reduce((s,r)=>s+parseNum(r['Actual Pay (Rs.)']),0);
-
-  document.getElementById('coachKpis').innerHTML=`
-    <div class="kpi"><div class="kpi-label">Coaches</div><div class="kpi-val" style="color:#38BDF8">${coachNames.length||1}</div></div>
-    <div class="kpi"><div class="kpi-label">Total classes</div><div class="kpi-val">${totalClasses}</div><div class="kpi-sub">logged so far</div></div>
-    <div class="kpi"><div class="kpi-label">Estimated pay</div><div class="kpi-val" style="color:#F59E0B">${inr(totalEst)}</div><div class="kpi-sub">all time</div></div>
-    <div class="kpi"><div class="kpi-label">Actual pay</div><div class="kpi-val" style="color:#EF4444">${inr(totalActual)}</div><div class="kpi-sub">all time</div></div>
+  const names=[...new Set(D.coach.map(r=>r['Coach Name']).filter(Boolean))];
+  const totC=D.coach.reduce((s,r)=>s+pN(r['Classes This Month']),0);
+  const totA=D.coach.reduce((s,r)=>s+pN(r['Actual Pay (Rs.)']),0);
+  const totE=D.coach.reduce((s,r)=>s+pN(r['Estimated Pay (Rs.)']),0);
+  document.getElementById('coKpis').innerHTML=`
+    <div class="kpi-card"><div class="kpi-accent" style="background:#2563EB"></div><div class="kpi-header"><div class="kpi-label">Active Coaches</div><div class="kpi-icon">👨‍🏫</div></div><div class="kpi-value" style="color:#2563EB">${names.length||1}</div><div class="kpi-footer"><span class="kpi-sub">${names.join(' · ')||'—'}</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#0891B2"></div><div class="kpi-header"><div class="kpi-label">Classes Logged</div><div class="kpi-icon">📚</div></div><div class="kpi-value">${totC}</div><div class="kpi-footer"><span class="kpi-sub">All time</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#D97706"></div><div class="kpi-header"><div class="kpi-label">Estimated Pay</div><div class="kpi-icon">📋</div></div><div class="kpi-value" style="color:#D97706">${inr(totE)}</div><div class="kpi-footer"><span class="kpi-sub">Classes × rate</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#DC2626"></div><div class="kpi-header"><div class="kpi-label">Actual Pay</div><div class="kpi-icon">💸</div></div><div class="kpi-value" style="color:${totA>0?'#DC2626':'#8896AB'}">${totA>0?inr(totA):'Not logged'}</div><div class="kpi-footer"><span class="kpi-sub">All time actual</span></div></div>
   `;
-
-  const coachRevMonths=months.slice(-6);
-  makeChart('cCoachRev',{type:'bar',data:{labels:coachRevMonths,datasets:[
-    {label:'Revenue',data:coachRevMonths.map(m=>revForMonth(m)),backgroundColor:'rgba(16,185,129,0.6)',borderRadius:4},
-    {label:'Coach pay',data:coachRevMonths.map(m=>coachPayForMonth(m)),backgroundColor:'rgba(239,68,68,0.8)',borderRadius:4}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false}},y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
-
-  const pctData=coachRevMonths.map(m=>{const r=revForMonth(m);const c=coachPayForMonth(m);return r>0?Math.round(c/r*100):0;});
-  makeChart('cCoachPct',{type:'line',data:{labels:coachRevMonths,datasets:[
-    {label:'Coach %',data:pctData,borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,0.1)',fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:pctData.map(v=>v>40?'#EF4444':'#10B981')},
-    {label:'40% target',data:coachRevMonths.map(()=>40),borderColor:'rgba(239,68,68,0.5)',borderDash:[5,3],pointRadius:0,borderWidth:1.5}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...baseScales.x,ticks:{...baseScales.x.ticks,autoSkip:false}},y:{...baseScales.y,ticks:{...baseScales.y.ticks,callback:v=>v+'%'},min:0,max:Math.max(100,...pctData)+10}}}});
-
-  document.getElementById('coachTable').innerHTML=`<thead><tr><th>Month</th><th>Coach</th><th>Classes</th><th>Rate</th><th>Estimated</th><th>Actual</th><th>Diff</th></tr></thead><tbody>${DATA.coaches.filter(r=>r['Month']).map(r=>{const diff=parseNum(r['Actual Pay (Rs.)'])-parseNum(r['Estimated Pay (Rs.)']);return`<tr><td>${r['Month']}</td><td>${r['Coach Name']||'—'}</td><td>${r['Classes This Month']||'—'}</td><td>${inrFull(parseNum(r['Rate Per Class (Rs.)']))}</td><td>${inrFull(parseNum(r['Estimated Pay (Rs.)']))}</td><td style="color:${parseNum(r['Actual Pay (Rs.)'])>0?'#EF4444':'var(--muted)'}">${parseNum(r['Actual Pay (Rs.)'])>0?inrFull(parseNum(r['Actual Pay (Rs.)'])):'Not logged'}</td><td style="color:${diff<0?'#10B981':diff>0?'#EF4444':'var(--muted)'}">${parseNum(r['Actual Pay (Rs.)'])>0?(diff<0?'Saved '+inrFull(Math.abs(diff)):diff>0?'Extra '+inrFull(diff):'Exact'):'—'}</td></tr>`}).join('')}</tbody>`;
+  const months=allMonths();
+  mkC('cCoachRev',{type:'bar',data:{labels:months,datasets:[{label:'Revenue',data:months.map(revM),backgroundColor:'rgba(5,150,105,.45)',borderRadius:3},{label:'Coach Pay',data:months.map(coachM),backgroundColor:'rgba(220,38,38,.8)',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+inrF(c.parsed.y)}}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false}},y:{...SY,ticks:{...SY.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
+  const pD=months.map(m=>{const r=revM(m),c=coachM(m);return r>0?Math.round(c/r*100):0;});
+  mkC('cCoachPct',{type:'line',data:{labels:months,datasets:[{data:pD,borderColor:'#2563EB',backgroundColor:'rgba(37,99,235,.08)',fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:pD.map(v=>v>40?'#DC2626':'#059669'),borderWidth:2,pointHoverRadius:7},{data:months.map(()=>40),borderColor:'rgba(220,38,38,.5)',borderDash:[5,3],pointRadius:0,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false}},y:{...SY,ticks:{...SY.ticks,callback:v=>v+'%'},min:0}}}});
+  document.getElementById('tCoach').innerHTML=`<thead><tr><th>Month</th><th>Coach</th><th>Classes</th><th>Rate</th><th>Estimated</th><th>Actual</th><th>Saved/Extra</th><th>Coach %</th></tr></thead><tbody>${D.coach.filter(r=>r['Month']).map(r=>{const a=pN(r['Actual Pay (Rs.)']),e=pN(r['Estimated Pay (Rs.)']);const diff=a-e,rev=revM(r['Month']),pct=rev>0&&a>0?Math.round(a/rev*100):0;return`<tr><td><span class="pill pill-b">${r['Month']}</span></td><td style="font-weight:500">${r['Coach Name']||'—'}</td><td class="td-mono">${r['Classes This Month']||'—'}</td><td class="td-mono">${inrF(pN(r['Rate Per Class (Rs.)']))}</td><td class="td-mono">${inrF(e)}</td><td class="td-mono" style="color:${a>0?'#DC2626':'#8896AB'}">${a>0?inrF(a):'Not logged yet'}</td><td>${a>0?`<span class="pill ${diff<0?'pill-g':diff>0?'pill-r':'pill-b'}">${diff<0?'Saved '+inrF(Math.abs(diff)):diff>0?'Extra '+inrF(diff):'Exact'}</span>`:'—'}</td><td>${pct>0?`<span class="pill ${pct>40?'pill-r':pct>30?'pill-a':'pill-g'}">${pct}%</span>`:'—'}</td></tr>`;}).join('')}</tbody>`;
 }
 
+// ══ HEALTH ════════════════════════════════════════════
 function renderHealth(){
-  const m=selMonth();
-  const rev=revForMonth(m);
-  const coach=coachPayForMonth(m);
-  const coachPct=rev>0?(coach/rev*100):0;
-  const overdue=DATA.payments.filter(r=>(r['Status']||'').trim()==='Overdue').length;
-  const activeCount=DATA.students.filter(r=>(r['Status']||'').trim()==='Active').length;
-  const mrr=DATA.students.filter(r=>(r['Status']||'').trim()==='Active').reduce((s,r)=>s+parseNum(r['Net Monthly Fee']),0);
-  const collected=revForMonth(m);
-  const missing=mrr-collected;
-  const adSpend=DATA.expenses.filter(r=>monthMatch(r,'Month',m)&&(r['Category']||'').trim()==='Meta Ads').reduce((s,r)=>s+parseNum(r['Amount']),0);
-  const roas=adSpend>0?(rev/adSpend):0;
-
+  const active=D.stu.filter(r=>(r['Status']||'').trim()==='Active').length;
+  const lm=allMonths().slice(-1)[0]||'';
+  const rev=revM(lm),coach=coachM(lm),exp=expM(lm);
+  const coachPct=rev>0?coach/rev*100:0,overdue=D.pay.filter(r=>(r['Status']||'').trim()==='Overdue').length;
+  const mrr=D.stu.filter(r=>(r['Status']||'').trim()==='Active').reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
+  const missing=mrr-rev,ltROAS=ltAdSpend()>0?ltRev()/ltAdSpend():0,ltCAC=ltConv()>0?ltAdSpend()/ltConv():0;
   const checks=[
-    {ok:coachPct<=40||coachPct===0, warn:coachPct===0, msg: coachPct===0?`⚡ Log Sanyam's pay for ${m} in the Coaches sheet to see real coach cost %.`:coachPct>40?`⚠️ Coach cost ${coachPct.toFixed(1)}% in ${m} — above 40% target. Add students to groups to fix.`:`✅ Coach cost ${coachPct.toFixed(1)}% in ${m} — within 40% target.`},
-    {ok:overdue===0, warn:false, msg:overdue>0?`⚠️ ${overdue} overdue payment(s) — chase these today.`:`✅ No overdue payments.`},
-    {ok:roas>=3||adSpend===0, warn:adSpend===0, msg:adSpend===0?`⚡ No Meta Ads expense logged for ${m} yet.`:roas>=3?`✅ ROAS ${roas.toFixed(1)}× — healthy (target 3×).`:`⚠️ ROAS ${roas.toFixed(1)}× — below 3× target. Review ad creatives.`},
-    {ok:activeCount>=10, warn:false, msg:activeCount>=10?`✅ ${activeCount} active students — above break-even (~8 students).`:`⚠️ Only ${activeCount} active students — below break-even. Push demos hard.`},
-    {ok:missing<=0||missing<mrr*0.3, warn:missing>0&&missing<mrr*0.5, msg:missing<=0?`✅ All students paid for ${m}.`:missing<mrr*0.5?`⚡ ${inrFull(missing)} not yet collected in ${m}. ${Math.round(missing/3000)} students haven't paid.`:`🔴 ${inrFull(missing)} uncollected in ${m} — ${Math.round(missing/3000)} students haven't paid. Chase them now.`},
-    {ok:activeCount>=50, warn:activeCount>=20, msg:activeCount<50?`⚡ ${activeCount} students vs 3-month target of 100. Need ${100-activeCount} more. At ~10 new/month, you're ${Math.ceil((100-activeCount)/10)} months away.`:`✅ On track for 100-student target.`},
+    {cls:coachPct>40?'bad':coach>0?'ok':'warn',msg:coach===0?`⚡ Log Sanyam's pay for ${lm} in the Coaches sheet to see real coach cost%.`:coachPct>40?`⚠️ Coach cost is ${coachPct.toFixed(1)}% in ${lm} — above 40% target. Add more students to group batches.`:`✅ Coach cost ${coachPct.toFixed(1)}% in ${lm} — within 40% target. Good.`},
+    {cls:overdue===0?'ok':'bad',msg:overdue===0?'✅ No overdue payments — completely clean.':`⚠️ ${overdue} overdue payment(s). Chase these today.`},
+    {cls:ltROAS>=3?'ok':'warn',msg:ltROAS>=3?`✅ Lifetime ROAS ${ltROAS.toFixed(1)}× — healthy. Target is 3×+.`:`⚠️ Lifetime ROAS ${ltROAS.toFixed(1)}× — below 3× target. Improve ad creatives or reduce spend.`},
+    {cls:ltCAC<=1000?'ok':'warn',msg:ltCAC>0?(ltCAC<=1000?`✅ Lifetime CAC ${inrF(ltCAC)} — within ₹1,000 India target.`:`⚡ Lifetime CAC ${inrF(ltCAC)} — above ₹1,000. Improve demo show-up rate to fix this.`):'⚡ No ad conversion data logged yet.'},
+    {cls:active>=10?'ok':'bad',msg:active>=10?`✅ ${active} active students — past break-even (~8 students needed).`:`⚠️ Only ${active} students — below break-even. Push demos hard.`},
+    {cls:missing<mrr*.2?'ok':missing<mrr*.5?'warn':'bad',msg:missing<=0?`✅ All students have paid for ${lm}.`:missing<mrr*.4?`⚡ ${inrF(missing)} still uncollected in ${lm}. ${Math.ceil(missing/3000)} students haven't paid yet.`:`🔴 ${inrF(missing)} uncollected in ${lm} — chase payments NOW.`},
+    {cls:'warn',msg:`⚡ ${active} vs 100-student Sep target. Need ${Math.max(0,100-active)} more. At 10 new/month = ${Math.ceil(Math.max(0,100-active)/10)} months away.`},
   ];
-
-  document.getElementById('healthChecks').innerHTML=checks.map(c=>`<div class="warn-item" style="background:${c.ok&&!c.warn?'rgba(16,185,129,0.1)':c.warn?'rgba(245,158,11,0.1)':'rgba(239,68,68,0.1)'};border:1px solid ${c.ok&&!c.warn?'rgba(16,185,129,0.25)':c.warn?'rgba(245,158,11,0.25)':'rgba(239,68,68,0.25)'};color:${c.ok&&!c.warn?'#10B981':c.warn?'#F59E0B':'#EF4444'}">${c.msg}</div>`).join('');
+  document.getElementById('healthList').innerHTML=checks.map(c=>`<div class="h-item ${c.cls}">${c.msg}</div>`).join('');
+  document.getElementById('beGrid').innerHTML=[
+    {l:'Fixed Costs/Month',v:inrF(ltExp()/Math.max(allMonths().length,1)),s:'Average across all months'},
+    {l:'Revenue/Student/Mo',v:'₹3,208',s:'Avg across all 22 students'},
+    {l:'Break-Even Point',v:'~8 students',s:'To cover all fixed + ad costs'},
+    {l:'Current Students',v:active+' ✓',s:'Past break-even — profitable'},
+    {l:'Monthly Surplus',v:inrF(Math.max(rev-exp,0)),s:`${lm} net after all costs`},
+  ].map(b=>`<div class="be-card"><div class="be-label">${b.l}</div><div class="be-val">${b.v}</div><div class="be-sub">${b.s}</div></div>`).join('');
 }
 
-function switchTab(id, btn){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  btn.classList.add('active');
+// ── NAV ────────────────────────────────────────────────
+function go(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p'+id).classList.add('on');
+  btn.classList.add('on');
 }
 
 fetchAll();
-setInterval(fetchAll, 5*60*1000);
+setInterval(fetchAll,5*60*1000);
 </script>
 </body>
 </html>
