@@ -558,7 +558,7 @@ tr:hover td{background:var(--surface2)}
 </div><!-- /layout -->
 
 <script>
-const SHEET='1yLQKN0blaFlqWQdRXYu9mQK6zmXJEtcbT6m_qlbbaOM';
+const SHEET='1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k';
 const KEY='AIzaSyAoRXrbfhZJtchwXgEnT_Iyfh2yido7BnM';
 let D={pay:[],exp:[],coach:[],stu:[],ads:[],payouts:[]};
 let CH={};
@@ -1332,8 +1332,7 @@ LOW-FEE STUDENTS (Rs.500-750/mo): ${lowFeeCount} students — barely covering th
 UNCOLLECTED THIS MONTH: ${unpaid.length} students owe Rs.${unpaidAmt.toLocaleString('en-IN')}
 
 MONTHLY PERFORMANCE:
-${ms.map(m=>`${m}: Revenue Rs.${revM(m).toLocaleString('en-IN')} | Expenses Rs.${expM(m).toLocaleString('en-IN')} | Coach pay Rs.${coachM(m).toLocaleString('en-IN')} (${revM(m)>0?Math.round(coachM(m)/revM(m)*100):0}%) | Profit Rs.${(revM(m)-expM(m)).toLocaleString('en-IN')}`).join('
-')}
+${ms.map(m=>`${m}: Revenue Rs.${revM(m).toLocaleString('en-IN')} | Expenses Rs.${expM(m).toLocaleString('en-IN')} | Coach pay Rs.${coachM(m).toLocaleString('en-IN')} (${revM(m)>0?Math.round(coachM(m)/revM(m)*100):0}%) | Profit Rs.${(revM(m)-expM(m)).toLocaleString('en-IN')}`).join('\n')}
 
 IMPORTANT NOTE ON ${prevM}: Revenue looked high because Vaasvi paid Rs.15,500 advance (real monthly fee Rs.2,583 — so ~Rs.12,917 was future months). Real recurring revenue that month was closer to Rs.${Math.round(prevRev-12917).toLocaleString('en-IN')}.
 
@@ -1406,8 +1405,7 @@ Keep each section under 5 sentences. Direct. No fluff. Real numbers.`;
     // Try to split by section headers and style them
     const card=document.getElementById('aiCard');
     // Simple rendering — preserve formatting, just style the emoji headers
-    const lines=text.split('
-');
+    const lines=text.split('\n');
     let htmlOut='';
     let inSection=false;let sectionClass='';let sectionContent='';let sectionTitle='';
     for(const line of lines){
