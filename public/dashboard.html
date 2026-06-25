@@ -151,6 +151,7 @@ tr:hover td{background:var(--surface2)}
 .pill-a{background:var(--amber-l);color:var(--amber)}
 .pill-b{background:var(--blue-l);color:var(--blue)}
 .pill-p{background:var(--purple-l);color:var(--purple)}
+.owner-box{background:linear-gradient(135deg,#F5F3FF 0%,#EFF6FF 100%);border:1px solid #DDD6FE;border-radius:var(--r);padding:18px 20px;margin-bottom:14px}
 
 /* FUNNEL */
 .funnel{display:flex;flex-direction:column;gap:10px}
@@ -254,9 +255,12 @@ tr:hover td{background:var(--surface2)}
   <button class="nav-item" onclick="go('gr',this)"><span class="ni">📈</span>Growth</button>
   <div class="nav-section">Operations</div>
   <button class="nav-item" onclick="go('st',this)"><span class="ni">🧒</span>Students</button>
+  <button class="nav-item" onclick="go('bt',this)"><span class="ni">👥</span>Batches</button>
+  <button class="nav-item" onclick="go('cp',this)"><span class="ni">💳</span>Coach Payouts</button>
   <button class="nav-item" onclick="go('co',this)"><span class="ni">👨‍🏫</span>Coaches</button>
   <div class="nav-section">Reports</div>
   <button class="nav-item" onclick="go('hl',this)"><span class="ni">⚠️</span>Health Checks</button>
+  <button class="nav-item" onclick="go('ai',this)"><span class="ni">🧠</span>AI Advisor</button>
 </nav>
 
 <!-- MAIN CONTENT -->
@@ -374,15 +378,58 @@ tr:hover td{background:var(--surface2)}
       <div style="max-height:240px;overflow-y:auto" id="stList"></div>
     </div>
   </div>
+  <div class="card mb14">
+    <div class="card-hdr"><div><div class="card-title">Who Owes Money — <span id="recvMonth"></span></div><div class="card-sub" id="recvSub">Active students who haven't paid this month yet</div></div></div>
+    <div id="receivablesList"></div>
+  </div>
   <div class="card">
-    <div class="card-hdr"><div><div class="card-title">Payment Log</div><div class="card-sub" id="payLogSub">All time</div></div></div>
+    <div class="card-hdr"><div><div class="card-title">Payment Log</div><div class="card-sub" id="payLogSub">All time · 🔵 badge = advance payment covering multiple months</div></div></div>
     <div class="tbl-wrap scroll"><table id="tPay"></table></div>
+  </div>
+</div>
+
+
+<!-- ═══ COACH PAYOUTS ═══ -->
+<div class="panel" id="pcp">
+  <div class="page-hdr">
+    <div class="page-title">Coach Payouts</div>
+    <div class="page-sub">Track installment payments to coaches · earned vs paid vs outstanding</div>
+  </div>
+
+  <div class="alert warn" style="margin-bottom:14px">
+    <span class="alert-icon">📝</span>
+    <span><strong>Setup needed once:</strong> Add a new sheet tab called <strong>CoachPayouts</strong> in your Google Sheet with columns: Date Paid | Month Earned | Coach Name | Amount Paid | Notes — then log every partial payment there.</span>
+  </div>
+
+  <div class="kpi-grid" id="cpKpis"></div>
+
+  <div class="g2">
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">Outstanding Balance Per Coach</div><div class="card-sub">Earned (Coaches sheet) minus paid (CoachPayouts sheet)</div></div></div>
+      <div id="cpBalances"></div>
+    </div>
+    <div class="card mb14">
+      <div class="card-hdr"><div><div class="card-title">How to Use This</div><div class="card-sub">Log every partial payment as a separate row</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="cpHowTo">
+        <div class="h-item ok">✅ Sanyam earns ₹31,000 in June → log in Coaches sheet as usual</div>
+        <div class="h-item warn">💳 You pay ₹10,000 on Jul 1 → add row in CoachPayouts: "01-Jul-2026 | Jun 2026 | Sanyam | 10000"</div>
+        <div class="h-item warn">💳 Pay ₹8,000 on Jul 10 → another row: "10-Jul-2026 | Jun 2026 | Sanyam | 8000"</div>
+        <div class="h-item warn">💳 Pay ₹13,000 on Jul 20 → "20-Jul-2026 | Jun 2026 | Sanyam | 13000"</div>
+        <div class="h-item ok">✅ Dashboard auto-shows: Jun 2026 Sanyam → Earned ₹31,000 | Paid ₹31,000 | Balance ₹0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div><div class="card-title">All Payout Transactions</div><div class="card-sub">From CoachPayouts sheet</div></div></div>
+    <div class="tbl-wrap"><table id="tPayouts"></table></div>
   </div>
 </div>
 
 <!-- ═══ COACHES ═══ -->
 <div class="panel" id="pco">
   <div class="page-hdr"><div class="page-title">Coaches</div><div class="page-sub">Pay · classes · cost efficiency</div></div>
+  <div class="owner-box" id="ownerBox"></div>
   <div class="kpi-grid" id="coKpis"></div>
   <div class="g2">
     <div class="card mb14">
@@ -434,13 +481,86 @@ tr:hover td{background:var(--surface2)}
   <div class="be-grid" id="beGrid"></div>
 </div>
 
+
+
+<!-- ═══ BATCHES ═══ -->
+<div class="panel" id="pbt">
+  <div class="page-hdr">
+    <div class="page-title">Batch Analysis</div>
+    <div class="page-sub">Group profitability · each batch's revenue vs coach cost · minimum 3 students to be profitable</div>
+  </div>
+
+  <div class="alert warn" style="margin-bottom:14px">
+    <span class="alert-icon">📝</span>
+    <span><strong>To use this:</strong> Open your Google Sheet → Students tab → Column N (Notes) → type the batch name for each student e.g. "Alpha", "Beta", "Delta", "1on1". Dashboard will auto-group them here.</span>
+  </div>
+
+  <div class="kpi-grid" id="btKpis"></div>
+
+  <div class="card mb14">
+    <div class="card-hdr">
+      <div><div class="card-title">Batch Profitability</div><div class="card-sub">Coach cost = classes/month × ₹450 per batch | Min 3 students = break-even</div></div>
+    </div>
+    <div class="tbl-wrap"><table id="tBatch"></table></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">
+      <div><div class="card-title">The Group Leverage Math</div><div class="card-sub">Why filling batches is the most important thing you can do</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px" id="batchMathGrid"></div>
+  </div>
+</div>
+
+<!-- ═══ AI ADVISOR ═══ -->
+<div class="panel" id="pai">
+  <div class="page-hdr">
+    <div class="page-title">AI Business Advisor</div>
+    <div class="page-sub">Powered by Claude · reads your live Google Sheet data · generates specific advice for TIN</div>
+  </div>
+  <div class="alert warn" style="margin-bottom:16px"><span class="alert-icon">💡</span><span>Analyses your actual revenue, costs, students, ad performance right now. Takes ~10 seconds. Click whenever you want a fresh take.</span></div>
+
+  <div id="aiPromptArea" style="text-align:center;padding:30px 0 20px">
+    <button onclick="generateAdvice()" id="genBtn" style="background:linear-gradient(135deg,#2563EB,#7C3AED);color:#fff;border:none;border-radius:12px;padding:16px 40px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(37,99,235,.35);transition:all .2s">
+      🧠 Generate Business Advice
+    </button>
+    <div style="font-size:11px;color:#8896AB;margin-top:10px">Sends your live data to Claude · never stores anything</div>
+  </div>
+
+  <div id="aiLoading" style="display:none;text-align:center;padding:50px 0">
+    <div style="font-size:40px;margin-bottom:16px;animation:spin 2s linear infinite;display:inline-block">🧠</div>
+    <div style="font-size:15px;font-weight:600;color:#2563EB;margin-bottom:8px">Analysing your business data...</div>
+    <div style="font-size:12px;color:#8896AB" id="aiLoadTxt">Reading revenue, costs, students, ads...</div>
+  </div>
+
+  <div id="aiOutput" style="display:none">
+    <div style="background:#F5F3FF;border:1px solid #DDD6FE;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:11px;color:#5B21B6;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span>📊 <strong>Data snapshot:</strong> <span id="aiSnap"></span></span>
+      <button onclick="generateAdvice()" style="background:none;border:1px solid #DDD6FE;color:#7C3AED;border-radius:6px;padding:4px 12px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit">↻ Refresh</button>
+    </div>
+    <div class="card" id="aiCard" style="font-size:13px;line-height:1.8;color:#252423"></div>
+  </div>
+</div>
+<style>
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.ai-section{margin-bottom:16px;padding:14px 16px;border-radius:8px;border-left:3px solid}
+.ai-red{background:#FEF2F2;border-color:#DC2626}
+.ai-amber{background:#FFFBEB;border-color:#D97706}
+.ai-blue{background:#EFF6FF;border-color:#2563EB}
+.ai-green{background:#ECFDF5;border-color:#059669}
+.ai-purple{background:#F5F3FF;border-color:#7C3AED}
+.ai-h{font-size:13px;font-weight:700;color:#0F1117;margin-bottom:8px}
+.ai-p{font-size:12px;color:#4A5568;line-height:1.7}
+.ai-num{font-weight:700;color:#0F1117}
+</style>
+
 </main>
 </div><!-- /layout -->
 
 <script>
-const SHEET='1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k';
+const SHEET='1yLQKN0blaFlqWQdRXYu9mQK6zmXJEtcbT6m_qlbbaOM';
 const KEY='AIzaSyAoRXrbfhZJtchwXgEnT_Iyfh2yido7BnM';
-let D={pay:[],exp:[],coach:[],stu:[],ads:[]};
+let D={pay:[],exp:[],coach:[],stu:[],ads:[],payouts:[]};
 let CH={};
 let SEL='all';
 
@@ -464,21 +584,60 @@ function parse(rows){
   return rows.slice(1).map(r=>{const o={};h.forEach((k,i)=>{o[k.trim()]=r[i]||'';});return o;}).filter(r=>Object.values(r).some(v=>v));
 }
 async function fetchAll(){
-  setBadge('loading','Syncing...');
+  setBadge('loading','⟳ Syncing...');
+  // Timeout helper
+  const tout=(ms)=>new Promise((_,rej)=>setTimeout(()=>rej(new Error('TIMEOUT')),ms));
+  // Safe fetch — never throws, returns [[]] on error
+  async function sf(range){
+    try{ return await Promise.race([fSheet(range),tout(12000)]); }
+    catch(e){ console.warn('Could not fetch',range,e.message); return [[]]; }
+  }
   try{
-    const[pR,eR,cR,sR,aR]=await Promise.all([fSheet('Payments!A3:J503'),fSheet('Expenses!A3:G403'),fSheet('Coaches!A3:I203'),fSheet('Students!A3:M103'),fSheet('Ads!A3:N203')]);
-    D.pay=parse(pR).filter(r=>isM(r['Month']));
-    D.exp=parse(eR).filter(r=>isM(r['Month']));
-    D.coach=parse(cR).filter(r=>isM(r['Month']));
-    D.stu=parse(sR).filter(r=>(r['Student Name']||'').trim());
-    D.ads=parse(aR).filter(r=>isM(r['Month']));
+    // Quick test to catch 403/400 before full fetch
+    const testUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/${encodeURIComponent('Students!A3:A4')}?key=${KEY}`;
+    let testResp;
+    try{
+      testResp=await Promise.race([fetch(testUrl),tout(10000)]);
+    }catch(netErr){
+      throw new Error(netErr.message==='TIMEOUT'?'TIMEOUT':'NETWORK');
+    }
+    if(!testResp.ok){
+      const b=await testResp.json().catch(()=>({}));
+      throw new Error('HTTP_'+testResp.status+'_'+(b.error?.message||''));
+    }
+    // All good — fetch everything
+    const[pR,eR,cR,sR,aR,coR]=await Promise.all([
+      sf('Payments!A3:J503'),
+      sf('Expenses!A3:G403'),
+      sf('Coaches!A3:I203'),
+      sf('Students!A3:N103'),
+      sf('Ads!A3:N203'),
+      sf('CoachPayouts!A3:E203'),
+    ]);
+    D.pay   = parse(pR).filter(r=>isM(r['Month']));
+    D.exp   = parse(eR).filter(r=>isM(r['Month']));
+    D.coach = parse(cR).filter(r=>isM(r['Month']));
+    D.stu   = parse(sR).filter(r=>(r['Student Name']||'').trim());
+    D.ads   = parse(aR).filter(r=>isM(r['Month']));
+    D.payouts = parse(coR).filter(r=>r['Coach Name']&&r['Month Earned']);
+    buildFeeMap();
     document.getElementById('updTxt').textContent='Updated '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    setBadge('live','Live');
-    buildSlicer();renderAll();
-  }catch(e){
-    setBadge('err','Error');
-    setAlert('bad','⚠️','Could not load data. Make sure the Google Sheet is set to "Anyone with link can view".');
-    console.error(e);
+    setBadge('live','✓ Live');
+    buildSlicer();
+    renderAll();
+  }catch(err){
+    const m=err.message||'';
+    let txt='';
+    if(m==='TIMEOUT')       txt='⏱ Timed out after 10s. Check internet and refresh.';
+    else if(m==='NETWORK')  txt='📡 Cannot reach Google. Check internet connection.';
+    else if(m.includes('HTTP_403')) txt='🔑 403 Forbidden — either: (1) API key is restricted to a domain — go to Google Cloud Console and remove HTTP referrer restrictions, OR (2) The sheet is not set to "Anyone with link can view". Fix either one.';
+    else if(m.includes('HTTP_400')) txt='📄 Sheet not found (400) — Sheet ID may be wrong or sheet is private. Check it is shared publicly.';
+    else txt='❌ '+m+' — open browser console (F12) for details.';
+    setBadge('err','✗ Error');
+    const ab=document.getElementById('alertBar');
+    ab.className='alert bad';
+    ab.innerHTML='<span class="alert-icon">⚠️</span><span>'+txt+'</span>';
+    console.error('TIN Dashboard error:',err);
   }
 }
 function setBadge(t,txt){
@@ -495,10 +654,17 @@ function setAlert(cls,icon,msg){
 // ── CALC ───────────────────────────────────────────────
 const allMonths=()=>[...new Set([...D.pay.map(r=>r['Month']),...D.exp.map(r=>r['Month'])])].filter(isM).sort((a,b)=>new Date('01 '+a)-new Date('01 '+b));
 const revM=m=>D.pay.filter(r=>r['Month']===m).reduce((s,r)=>s+pN(r['Received']),0);
-const expM=m=>D.exp.filter(r=>r['Month']===m).reduce((s,r)=>s+pN(r['Amount']),0);
+// IMPORTANT: 'Salary' category in Expenses sheet duplicates Coaches sheet actual pay 1:1.
+// True expenses = all non-Salary categories + actual coach pay from Coaches sheet (avoids double-count).
+const expM=m=>D.exp.filter(r=>r['Month']===m&&(r['Category']||'').trim()!=='Salary').reduce((s,r)=>s+pN(r['Amount']),0)+coachM(m);
+const expRawM=m=>D.exp.filter(r=>r['Month']===m).reduce((s,r)=>s+pN(r['Amount']),0); // raw, for reference only
 const coachM=m=>D.coach.filter(r=>r['Month']===m).reduce((s,r)=>{const a=pN(r['Actual Pay (Rs.)']);return s+(a>0?a:pN(r['Estimated Pay (Rs.)']));},0);
+const harshitPayM=m=>D.coach.filter(r=>r['Month']===m&&(r['Coach Name']||'').trim()==='Harshit').reduce((s,r)=>{const a=pN(r['Actual Pay (Rs.)']);return s+(a>0?a:pN(r['Estimated Pay (Rs.)']));},0);
+const feeByName={};
+function buildFeeMap(){D.stu.forEach(s=>{feeByName[(s['Student Name']||'').trim()]=pN(s['Net Monthly Fee']);});}
 const ltRev=()=>D.pay.reduce((s,r)=>s+pN(r['Received']),0);
-const ltExp=()=>D.exp.reduce((s,r)=>s+pN(r['Amount']),0);
+const ltExp=()=>D.exp.filter(r=>(r['Category']||'').trim()!=='Salary').reduce((s,r)=>s+pN(r['Amount']),0)+D.coach.reduce((s,r)=>{const a=pN(r['Actual Pay (Rs.)']);return s+(a>0?a:pN(r['Estimated Pay (Rs.)']));},0);
+const ltHarshitPay=()=>D.coach.filter(r=>(r['Coach Name']||'').trim()==='Harshit').reduce((s,r)=>{const a=pN(r['Actual Pay (Rs.)']);return s+(a>0?a:pN(r['Estimated Pay (Rs.)']));},0);
 const ltAdSpend=()=>D.ads.reduce((s,r)=>s+pN(r['Spend']),0);
 const ltConv=()=>D.ads.reduce((s,r)=>s+pN(r['Conversions (Paid)']),0);
 const pRev=()=>SEL==='all'?ltRev():revM(SEL);
@@ -542,7 +708,7 @@ function setPeriod(p,btn){
   renderOverview();
 }
 
-function renderAll(){renderOverview();renderPL();renderFunnel();renderGrowth();renderStudents();renderCoaches();renderHealth();}
+function renderAll(){renderOverview();renderPL();renderFunnel();renderGrowth();renderStudents();renderBatches();renderCoachPayouts();renderCoaches();renderHealth();}
 
 // ══ OVERVIEW ══════════════════════════════════════════
 function renderOverview(){
@@ -583,7 +749,7 @@ function renderOverview(){
       <div class="kpi-accent" style="background:${profit>=0?'#059669':'#DC2626'}"></div>
       <div class="kpi-header"><div class="kpi-label">Net Profit · ${periodLabel}</div><div class="kpi-icon">📈</div></div>
       <div class="kpi-value" style="color:${profit>=0?'#059669':'#DC2626'}">${inr(profit)}</div>
-      <div class="kpi-footer"><span class="kpi-sub">${rev>0?Math.round(profit/rev*100):0}% margin</span>${tBadge(profTrend)}</div>
+      <div class="kpi-footer"><span class="kpi-sub">${rev>0?Math.round(profit/rev*100):0}% margin · excl. your coaching pay</span>${tBadge(profTrend)}</div>
       ${spark(profData,profit>=0?'#059669':'#DC2626')}
     </div>
     <div class="kpi-card">
@@ -606,10 +772,10 @@ function renderOverview(){
       <div class="kpi-footer"><span class="kpi-sub">Target &lt;₹1,000 · ${cac>0&&cac<=1000?'✓ on target':'⚡ check ads'}</span></div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-accent" style="background:${coachPct>40?'#DC2626':coach>0?'#059669':'#D97706'}"></div>
+      <div class="kpi-accent" style="background:${coachPct>40?'#DC2626':coachPct>30?'#D97706':coach>0?'#059669':'#D97706'}"></div>
       <div class="kpi-header"><div class="kpi-label">Coach Cost% · ${periodLabel}</div><div class="kpi-icon">👨‍🏫</div></div>
-      <div class="kpi-value" style="color:${coachPct>40?'#DC2626':coach>0?'#059669':'#D97706'}">${coach>0?coachPct.toFixed(1)+'%':'Log pay'}</div>
-      <div class="kpi-footer"><span class="kpi-sub">Target &lt;40%</span></div>
+      <div class="kpi-value" style="color:${coachPct>40?'#DC2626':coachPct>30?'#D97706':coach>0?'#059669':'#D97706'}">${coach>0?coachPct.toFixed(1)+'%':'Log pay'}</div>
+      <div class="kpi-footer"><span class="kpi-sub">Mudit rule: max 40% · ${coachPct>40?'🔴 BREACH':coachPct>30?'⚠️ close':'✅ ok'}</span></div>
       ${spark(ms.map(m=>{const r=revM(m),c=coachM(m);return r>0?c/r*100:0;}),coachPct>40?'#DC2626':'#059669')}
     </div>
     <div class="kpi-card">
@@ -637,10 +803,12 @@ function renderOverview(){
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+inrF(c.parsed.y)}}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false}},y:{...SY,ticks:{...SY.ticks,callback:v=>'₹'+(v>=1000?(v/1000).toFixed(0)+'K':v)}}}}});
 
   // Donut
-  const cats=['Meta Ads','Zoom','Domain/Hosting','Tools','Salary','Merchandise','Other'];
-  const cols=['#2563EB','#0891B2','#059669','#7C3AED','#D97706','#DC2626','#8896AB'];
+  const cats=['Meta Ads','Zoom','Domain/Hosting','Tools','Merchandise','Other'];
+  const cols=['#2563EB','#0891B2','#059669','#7C3AED','#DC2626','#8896AB'];
   const src=SEL==='all'?D.exp:D.exp.filter(r=>r['Month']===SEL);
   const cV=cats.map(c=>src.filter(r=>(r['Category']||'').trim()===c).reduce((s,r)=>s+pN(r['Amount']),0));
+  const coachWedge=SEL==='all'?D.coach.reduce((s,r)=>{const a=pN(r['Actual Pay (Rs.)']);return s+(a>0?a:pN(r['Estimated Pay (Rs.)']));},0):coachM(SEL);
+  cats.push('Coach Pay');cols.push('#D97706');cV.push(coachWedge);
   const nz=cats.map((c,i)=>({c,v:cV[i],col:cols[i]})).filter(x=>x.v>0);
   const totE=nz.reduce((s,x)=>s+x.v,0);
   document.getElementById('expSub').textContent=`${SEL==='all'?'All time':SEL} · ${inrF(totE)} total`;
@@ -684,7 +852,8 @@ function renderPL(){
     <tr style="background:#EFF6FF"><td colspan="${ms.length+2}" style="color:#2563EB;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px">📥 Revenue</td></tr>
     <tr><td style="padding-left:16px;color:#4A5568">Fees Collected</td>${ms.map(m=>`<td class="td-mono" style="color:#059669">${inrF(revM(m))}</td>`).join('')}<td class="td-mono" style="color:#059669;font-weight:700">${inrF(ltRev())}</td></tr>
     <tr style="background:#FEF2F2"><td colspan="${ms.length+2}" style="color:#DC2626;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px">📤 Expenses</td></tr>
-    ${cats.map(cat=>{const vals=ms.map(m=>D.exp.filter(r=>r['Month']===m&&(r['Category']||'').trim()===cat).reduce((s,r)=>s+pN(r['Amount']),0));const tot=vals.reduce((s,v)=>s+v,0);if(!tot)return'';return`<tr><td style="padding-left:16px;color:#4A5568">${cat}</td>${vals.map(v=>`<td class="td-mono">${v?inrF(v):'—'}</td>`).join('')}<td class="td-mono">${inrF(tot)}</td></tr>`;}).join('')}
+    ${cats.filter(c=>c!=='Salary').map(cat=>{const vals=ms.map(m=>D.exp.filter(r=>r['Month']===m&&(r['Category']||'').trim()===cat).reduce((s,r)=>s+pN(r['Amount']),0));const tot=vals.reduce((s,v)=>s+v,0);if(!tot)return'';return`<tr><td style="padding-left:16px;color:#4A5568">${cat}</td>${vals.map(v=>`<td class="td-mono">${v?inrF(v):'—'}</td>`).join('')}<td class="td-mono">${inrF(tot)}</td></tr>`;}).join('')}
+    <tr><td style="padding-left:16px;color:#4A5568">Coach Pay <span class="pill pill-b" style="margin-left:4px">from Coaches sheet</span></td>${ms.map(m=>`<td class="td-mono">${inrF(coachM(m))}</td>`).join('')}<td class="td-mono">${inrF(D.coach.reduce((s,r)=>{const a=pN(r['Actual Pay (Rs.)']);return s+(a>0?a:pN(r['Estimated Pay (Rs.)']));},0))}</td></tr>
     <tr style="background:#FEF9C3;font-weight:700"><td>Total Expenses</td>${ms.map(m=>`<td class="td-mono">${inrF(expM(m))}</td>`).join('')}<td class="td-mono">${inrF(ltExp())}</td></tr>
     <tr style="background:#ECFDF5"><td colspan="${ms.length+2}" style="color:#059669;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px">💚 Profit</td></tr>
     <tr style="font-weight:700"><td>Net Profit</td>${ms.map(m=>{const p=revM(m)-expM(m);return`<td><span class="pill ${p>=0?'pill-g':'pill-r'}">${inrF(p)}</span></td>`;}).join('')}<td><span class="pill pill-g">${inrF(ltRev()-ltExp())}</span></td></tr>
@@ -754,13 +923,21 @@ function renderStudents(){
   const mrr=active.reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
   const lm=allMonths().slice(-1)[0]||'';
   const coll=lm?revM(lm):0;
+  const collRate=mrr>0?Math.round(coll/mrr*100):0;
+  // Advance payment / prepaid credit detection
+  let prepaidTotal=0;
+  D.pay.forEach(r=>{
+    const fee=feeByName[(r['Student Name']||'').trim()]||0;
+    const recv=pN(r['Received']);
+    if(fee>0&&recv>=fee*1.4){prepaidTotal+=recv-fee;}
+  });
   document.getElementById('stKpis').innerHTML=`
     <div class="kpi-card"><div class="kpi-accent" style="background:#2563EB"></div><div class="kpi-header"><div class="kpi-label">Active Students</div><div class="kpi-icon">🧒</div></div><div class="kpi-value" style="color:#2563EB">${active.length}</div></div>
     <div class="kpi-card"><div class="kpi-accent" style="background:#0891B2"></div><div class="kpi-header"><div class="kpi-label">Group Classes</div><div class="kpi-icon">👥</div></div><div class="kpi-value" style="color:#0891B2">${active.filter(r=>(r['Type']||'').trim()==='Group').length}</div><div class="kpi-footer"><span class="kpi-sub">₹500–₹3,000/mo</span></div></div>
     <div class="kpi-card"><div class="kpi-accent" style="background:#7C3AED"></div><div class="kpi-header"><div class="kpi-label">1-on-1 Students</div><div class="kpi-icon">🎓</div></div><div class="kpi-value" style="color:#7C3AED">${active.filter(r=>(r['Type']||'').trim()==='1-on-1').length}</div><div class="kpi-footer"><span class="kpi-sub">₹5K–₹12K/mo · high margin</span></div></div>
-    <div class="kpi-card"><div class="kpi-accent" style="background:#059669"></div><div class="kpi-header"><div class="kpi-label">MRR Potential</div><div class="kpi-icon">💰</div></div><div class="kpi-value" style="color:#059669">${inr(mrr)}</div><div class="kpi-footer"><span class="kpi-sub">if all students pay</span></div></div>
-    <div class="kpi-card"><div class="kpi-accent" style="background:${coll>=mrr*.8?'#059669':'#D97706'}"></div><div class="kpi-header"><div class="kpi-label">${lm} Collected</div><div class="kpi-icon">✅</div></div><div class="kpi-value" style="color:${coll>=mrr*.8?'#059669':'#D97706'}">${inr(coll)}</div><div class="kpi-footer"><span class="kpi-sub">${inrF(mrr-coll)} uncollected</span></div></div>
-    <div class="kpi-card"><div class="kpi-accent" style="background:#4A5568"></div><div class="kpi-header"><div class="kpi-label">Avg Fee</div><div class="kpi-icon">📊</div></div><div class="kpi-value">${inr(mrr/Math.max(active.length,1))}</div><div class="kpi-footer"><span class="kpi-sub">per student per month</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#059669"></div><div class="kpi-header"><div class="kpi-label">MRR Potential</div><div class="kpi-icon">💰</div></div><div class="kpi-value" style="color:#059669">${inr(mrr)}</div><div class="kpi-footer"><span class="kpi-sub">if every student pays on time</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:${collRate>=85?'#059669':collRate>=60?'#D97706':'#DC2626'}"></div><div class="kpi-header"><div class="kpi-label">Collection Rate · ${lm}</div><div class="kpi-icon">📥</div></div><div class="kpi-value" style="color:${collRate>=85?'#059669':collRate>=60?'#D97706':'#DC2626'}">${collRate}%</div><div class="kpi-footer"><span class="kpi-sub">${inrF(coll)} of ${inrF(mrr)} potential</span></div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#8896AB"></div><div class="kpi-header"><div class="kpi-label">Prepaid Credit</div><div class="kpi-icon">🏦</div></div><div class="kpi-value" style="color:#8896AB">${prepaidTotal>0?inr(prepaidTotal):'₹0'}</div><div class="kpi-footer"><span class="kpi-sub">${prepaidTotal>0?'Already collected, covers future months':'No advance payments'}</span></div></div>
   `;
   const sorted=[...active].sort((a,b)=>pN(b['Net Monthly Fee'])-pN(a['Net Monthly Fee']));
   const bkts={};sorted.forEach(s=>{const f=Math.round(pN(s['Net Monthly Fee'])/500)*500;bkts[f]=(bkts[f]||0)+1;});
@@ -769,8 +946,100 @@ function renderStudents(){
   mkC('cFees',{type:'bar',data:{labels:bL,datasets:[{data:bV,backgroundColor:'#2563EB',borderRadius:5,hoverBackgroundColor:'#1D4ED8'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...SX,ticks:{...SX.ticks,autoSkip:false,maxRotation:45}},y:{...SY,ticks:{...SY.ticks,stepSize:1}}}}});
   document.getElementById('stListSub').textContent=`${active.length} active students`;
   document.getElementById('stList').innerHTML=sorted.map(s=>`<div class="s-item"><div><span class="s-name">${s['Student Name']}</span><span class="s-type">${s['Type']||''}</span></div><span class="s-fee" style="color:${pN(s['Net Monthly Fee'])>=5000?'#059669':'#0F1117'}">${inrF(pN(s['Net Monthly Fee']))}</span></div>`).join('');
-  document.getElementById('payLogSub').textContent=`${D.pay.length} payments · ${inrF(ltRev())} total`;
-  document.getElementById('tPay').innerHTML=`<thead><tr><th>Date</th><th>Student</th><th>Month</th><th>Amount</th><th>Status</th></tr></thead><tbody>${[...D.pay].reverse().map(r=>`<tr><td style="color:#8896AB">${r['Payment Date']||'—'}</td><td style="font-weight:500">${r['Student Name']||'—'}</td><td><span class="pill pill-b">${r['Month']||'—'}</span></td><td class="td-mono" style="color:#059669">${inrF(pN(r['Received']))}</td><td><span class="pill ${r['Status']==='Paid'?'pill-g':r['Status']==='Overdue'?'pill-r':'pill-a'}">${r['Status']||'—'}</span></td></tr>`).join('')}</tbody>`;
+
+  // Receivables: active students with no Paid/non-zero payment logged in the latest month
+  document.getElementById('recvMonth').textContent=lm;
+  const paidNamesThisMonth=new Set(D.pay.filter(r=>r['Month']===lm&&pN(r['Received'])>0).map(r=>(r['Student Name']||'').trim()));
+  // ADV tag detection: Students sheet Notes/Batch column can have "ADV-Oct2026" to mark advance paid
+  function isAdvanceCovered(s){
+    const notes=(s['Notes']||s['Batch']||'').trim().toUpperCase();
+    const m=notes.match(/ADV-([A-Z]{3})(\d{4})/);
+    if(!m)return false;
+    const monthNames={JAN:1,FEB:2,MAR:3,APR:4,MAY:5,JUN:6,JUL:7,AUG:8,SEP:9,OCT:10,NOV:11,DEC:12};
+    const endMonth=new Date(parseInt(m[2]),( monthNames[m[1]]||1)-1,1);
+    const curMonthDate=new Date('01 '+(lm||'Jun 2026'));
+    return endMonth>=curMonthDate;
+  }
+  const unpaid=active.filter(s=>!paidNamesThisMonth.has((s['Student Name']||'').trim())&&!isAdvanceCovered(s)).sort((a,b)=>pN(b['Net Monthly Fee'])-pN(a['Net Monthly Fee']));
+  const outstandingTotal=unpaid.reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
+  document.getElementById('recvSub').textContent=unpaid.length===0?`Everyone has paid for ${lm} 🎉`:`${unpaid.length} student(s) haven't paid · ${inrF(outstandingTotal)} outstanding`;
+  document.getElementById('receivablesList').innerHTML=unpaid.length===0?
+    `<div class="alert ok" style="margin-bottom:0"><span class="alert-icon">✓</span>All active students have paid for ${lm}.</div>` :
+    unpaid.map(s=>`<div class="s-item"><div><span class="s-name">${s['Student Name']}</span><span class="s-type">${s['Type']||''} · ${s['Coach']||''}</span></div><span class="pill pill-r">${inrF(pN(s['Net Monthly Fee']))} due</span></div>`).join('');
+
+  // Parent Reliability Score
+  const parentScores=active.map(s=>{
+    const name=(s['Student Name']||'').trim();
+    const fee=pN(s['Net Monthly Fee']);
+    const payments=D.pay.filter(r=>(r['Student Name']||'').trim()===name);
+    if(!payments.length)return{name,score:'F',label:'No payments',color:'#DC2626',detail:'Never paid'};
+    // avg days from 1st of month to payment
+    const days=payments.map(p=>{
+      const d=new Date(p['Payment Date']||'');
+      if(isNaN(d))return 15;
+      const monthStart=new Date(d.getFullYear(),d.getMonth(),1);
+      return Math.round((d-monthStart)/(1000*60*60*24));
+    });
+    const avgDays=days.reduce((s,d)=>s+d,0)/days.length;
+    const partials=payments.filter(p=>pN(p['Received'])<pN(p['Expected']||fee)*0.9).length;
+    const advances=payments.filter(p=>fee>0&&pN(p['Received'])>=fee*1.4).length;
+    // Score
+    let score,label,color;
+    if(advances>0&&avgDays<=5&&!partials){score='A+';label='Perfect';color='#059669';}
+    else if(avgDays<=7&&partials===0){score='A';label='Excellent';color='#059669';}
+    else if(avgDays<=12&&partials<=1){score='B';label='Good';color='#2563EB';}
+    else if(avgDays<=20&&partials<=2){score='C';label='Average';color='#D97706';}
+    else if(avgDays<=30){score='D';label='Late payer';color='#EA580C';}
+    else{score='F';label='Problem parent';color='#DC2626';}
+    const detail=`Avg ${Math.round(avgDays)}d to pay${advances>0?\` · ${advances} advance(s)`:''}${partials>0?\` · ${partials} partial(s)`:''}`;
+    return{name,score,label,color,detail,avgDays:Math.round(avgDays),payments:payments.length,advances,partials};
+  }).sort((a,b)=>{const o={'A+':0,'A':1,'B':2,'C':3,'D':4,'F':5};return(o[a.score]||9)-(o[b.score]||9);});
+
+  document.getElementById('tParentScore').innerHTML=`
+    <thead>
+      <tr>
+        <th>Student</th><th>Score</th><th>Label</th><th>Monthly Fee</th>
+        <th>Fee Tier</th><th>Pay Speed</th><th>Avg Days</th>
+        <th>Months</th><th>Advances</th><th>Partials</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>${parentScores.map(p=>`<tr>
+      <td style="font-weight:600">${p.name}</td>
+      <td>
+        <span style="font-size:18px;font-weight:800;color:${p.color}">${p.score}</span>
+        <div style="font-size:9px;color:#8896AB">${p.totalScore}/100</div>
+      </td>
+      <td><span class="pill" style="background:${p.color}18;color:${p.color}">${p.label}</span></td>
+      <td class="td-mono" style="color:${p.fee>=5000?'#059669':p.fee>=3000?'#2563EB':p.fee>=1000?'#D97706':'#DC2626'};font-weight:700">${inrF(p.fee)}</td>
+      <td><span class="pill ${p.feeTier==='Premium'?'pill-g':p.feeTier==='Standard'?'pill-b':p.feeTier==='Budget'?'pill-a':'pill-r'}">${p.feeTier}</span></td>
+      <td>
+        <div style="background:#F5F6FA;border-radius:4px;height:5px;width:60px;overflow:hidden;display:inline-block;vertical-align:middle">
+          <div style="height:100%;width:${p.behavPts}%;background:${p.behavPts>=70?'#059669':p.behavPts>=40?'#D97706':'#DC2626'}"></div>
+        </div>
+        <span style="font-size:10px;color:#8896AB;margin-left:4px">${p.behavPts}/100</span>
+      </td>
+      <td class="td-mono" style="color:${!p.avgDays?'#8896AB':p.avgDays<=7?'#059669':p.avgDays<=15?'#D97706':'#DC2626'}">${p.avgDays!=null?p.avgDays+'d':'—'}</td>
+      <td class="td-mono">${p.payments}</td>
+      <td class="td-mono" style="color:${p.advances>0?'#059669':'#8896AB'}">${p.advances||0}</td>
+      <td class="td-mono" style="color:${p.partials>0?'#DC2626':'#059669'}">${p.partials||0}</td>
+      <td style="font-size:10px;color:#4A5568;max-width:130px">
+        ${p.score==='A+'?'⭐ Offer 6-month deal':
+          p.score==='A'?'⭐ Ask for referral':
+          p.score==='B'?'💬 Remind by 5th':
+          p.score==='C'?'📞 Call on 1st':
+          p.score==='D'?'⚠️ Consider price talk':
+          p.score==='F'?'🔴 Escalate now':'—'}
+      </td>
+    </tr>`).join('')}</tbody>`;
+
+  document.getElementById('payLogSub').textContent=`${D.pay.length} payments · ${inrF(ltRev())} total · 🔵 = advance payment`;
+  document.getElementById('tPay').innerHTML=`<thead><tr><th>Date</th><th>Student</th><th>Month</th><th>Amount</th><th>Status</th></tr></thead><tbody>${[...D.pay].reverse().map(r=>{
+    const fee=feeByName[(r['Student Name']||'').trim()]||0;
+    const recv=pN(r['Received']);
+    const isAdv=fee>0&&recv>=fee*1.4;
+    const monthsCov=isAdv?Math.round(recv/fee):1;
+    return`<tr><td style="color:#8896AB">${r['Payment Date']||'—'}</td><td style="font-weight:500">${r['Student Name']||'—'}</td><td><span class="pill pill-b">${r['Month']||'—'}</span></td><td class="td-mono" style="color:#059669">${inrF(recv)}${isAdv?` <span class="pill pill-p" title="Advance payment — covers ~${monthsCov} months">~${monthsCov}mo advance</span>`:''}</td><td><span class="pill ${r['Status']==='Paid'?'pill-g':r['Status']==='Overdue'?'pill-r':'pill-a'}">${r['Status']||'—'}</span></td></tr>`;
+  }).join('')}</tbody>`;
 }
 
 // ══ COACHES ═══════════════════════════════════════════
@@ -779,6 +1048,20 @@ function renderCoaches(){
   const totC=D.coach.reduce((s,r)=>s+pN(r['Classes This Month']),0);
   const totA=D.coach.reduce((s,r)=>s+pN(r['Actual Pay (Rs.)']),0);
   const totE=D.coach.reduce((s,r)=>s+pN(r['Estimated Pay (Rs.)']),0);
+
+  // Owner income breakdown — Harshit coaches Naresh & Sreyangsu personally
+  const harshitLifetime=ltHarshitPay();
+  const businessProfitLifetime=ltRev()-ltExp();
+  const ownerTotalTake=businessProfitLifetime+harshitLifetime;
+  document.getElementById('ownerBox').innerHTML=`
+    <div style="font-size:11px;font-weight:700;color:#5B21B6;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">👤 Harshit's Total Income Breakdown · Lifetime</div>
+    <div style="font-size:11px;color:#6B5B95;margin-bottom:14px">You're both the owner AND a coach (Naresh + Sreyangsu, ₹14,000/mo combined). These two income streams are tracked separately below.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px">
+      <div><div style="font-size:10px;color:#6B5B95;font-weight:600;margin-bottom:4px">BUSINESS PROFIT</div><div style="font-size:22px;font-weight:700;color:${businessProfitLifetime>=0?'#059669':'#DC2626'}">${inr(businessProfitLifetime)}</div><div style="font-size:10px;color:#8896AB;margin-top:2px">After ALL costs incl. coach pay</div></div>
+      <div><div style="font-size:10px;color:#6B5B95;font-weight:600;margin-bottom:4px">YOUR COACHING INCOME</div><div style="font-size:22px;font-weight:700;color:#7C3AED">${inr(harshitLifetime)}</div><div style="font-size:10px;color:#8896AB;margin-top:2px">Teaching Naresh + Sreyangsu yourself</div></div>
+      <div><div style="font-size:10px;color:#6B5B95;font-weight:600;margin-bottom:4px">TOTAL TO YOU</div><div style="font-size:24px;font-weight:800;color:#5B21B6">${inr(ownerTotalTake)}</div><div style="font-size:10px;color:#8896AB;margin-top:2px">Profit + your own coaching pay</div></div>
+    </div>`;
+
   document.getElementById('coKpis').innerHTML=`
     <div class="kpi-card"><div class="kpi-accent" style="background:#2563EB"></div><div class="kpi-header"><div class="kpi-label">Active Coaches</div><div class="kpi-icon">👨‍🏫</div></div><div class="kpi-value" style="color:#2563EB">${names.length||1}</div><div class="kpi-footer"><span class="kpi-sub">${names.join(' · ')||'—'}</span></div></div>
     <div class="kpi-card"><div class="kpi-accent" style="background:#0891B2"></div><div class="kpi-header"><div class="kpi-label">Classes Logged</div><div class="kpi-icon">📚</div></div><div class="kpi-value">${totC}</div><div class="kpi-footer"><span class="kpi-sub">All time</span></div></div>
@@ -800,6 +1083,16 @@ function renderHealth(){
   const coachPct=rev>0?coach/rev*100:0,overdue=D.pay.filter(r=>(r['Status']||'').trim()==='Overdue').length;
   const mrr=D.stu.filter(r=>(r['Status']||'').trim()==='Active').reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
   const missing=mrr-rev,ltROAS=ltAdSpend()>0?ltRev()/ltAdSpend():0,ltCAC=ltConv()>0?ltAdSpend()/ltConv():0;
+  
+  // MENTOR BENCHMARKS (Mudit bhaiya's rules)
+  const mktSpend = D.exp.filter(r=>r['Month']===lm&&(r['Category']||'').trim()==='Meta Ads').reduce((s,r)=>s+pN(r['Amount']),0);
+  const mktPct = rev>0?mktSpend/rev*100:0;
+  // Sanyam forward cost
+  const sanyamFwd = Math.round(20*4.33*450); // 20 classes/week
+  const harshitFwd = 14000;
+  const totalCoachFwd = sanyamFwd + harshitFwd;
+  const studentsForCoach40 = Math.ceil(totalCoachFwd/0.40/(mrr/Math.max(active,1)));
+  const studentsForMkt25 = Math.ceil(15000/0.25/(mrr/Math.max(active,1)));
   const checks=[
     {cls:coachPct>40?'bad':coach>0?'ok':'warn',msg:coach===0?`⚡ Log Sanyam's pay for ${lm} in the Coaches sheet to see real coach cost%.`:coachPct>40?`⚠️ Coach cost is ${coachPct.toFixed(1)}% in ${lm} — above 40% target. Add more students to group batches.`:`✅ Coach cost ${coachPct.toFixed(1)}% in ${lm} — within 40% target. Good.`},
     {cls:overdue===0?'ok':'bad',msg:overdue===0?'✅ No overdue payments — completely clean.':`⚠️ ${overdue} overdue payment(s). Chase these today.`},
@@ -827,8 +1120,322 @@ function go(id,btn){
   btn.classList.add('on');
 }
 
+
+// ══ BATCHES ═══════════════════════════════════════════
+function renderBatches(){
+  const active = D.stu.filter(r=>(r['Status']||'').trim()==='Active');
+  const lm = allMonths().slice(-1)[0]||'';
+  const lmRev = revM(lm);
+  const RATE = 450; // Sanyam's rate per class
+  const CLASSES_PER_MONTH = 8.67; // 2/week × 4.33
+
+  // Group by Notes column (batch name) — fall back to "Ungrouped"
+  const batchMap = {};
+  active.forEach(s => {
+    const batch = (s['Notes']||'').trim() || 'Ungrouped';
+    if(!batchMap[batch]) batchMap[batch] = [];
+    batchMap[batch].push(s);
+  });
+
+  const batches = Object.entries(batchMap).map(([name, students]) => {
+    const revenue = students.reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
+    // Coach cost: one group class for all students together = CLASSES_PER_MONTH × RATE
+    // Unless it's 1-on-1 or Harshit's students
+    const isHarshit = students.some(s=>(s['Coach']||'').trim()==='Harshit');
+    const coachRate = isHarshit ? 875 : RATE;
+    const coachCost = CLASSES_PER_MONTH * coachRate;
+    const profit = revenue - coachCost;
+    const margin = revenue > 0 ? Math.round(profit/revenue*100) : 0;
+    const breakEven = coachCost > 0 ? Math.ceil(coachCost / (revenue/Math.max(students.length,1))) : 0;
+    return { name, students, revenue, coachCost, profit, margin, breakEven, count: students.length, isHarshit };
+  }).sort((a,b) => b.revenue - a.revenue);
+
+  const totalBatchRev = batches.reduce((s,b)=>s+b.revenue,0);
+  const totalBatchCost = batches.reduce((s,b)=>s+b.coachCost,0);
+  const profitableBatches = batches.filter(b=>b.profit>0).length;
+
+  document.getElementById('btKpis').innerHTML = `
+    <div class="kpi-card"><div class="kpi-accent" style="background:#2563EB"></div><div class="kpi-header"><div class="kpi-label">Total Batches</div><div class="kpi-icon">👥</div></div><div class="kpi-value" style="color:#2563EB">${batches.length}</div><div class="kpi-sub">${profitableBatches} profitable · ${batches.length-profitableBatches} need more students</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#059669"></div><div class="kpi-header"><div class="kpi-label">Total Batch Revenue</div><div class="kpi-icon">💰</div></div><div class="kpi-value" style="color:#059669">${inr(totalBatchRev)}</div><div class="kpi-sub">All active students combined</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#DC2626"></div><div class="kpi-header"><div class="kpi-label">Total Coach Cost</div><div class="kpi-icon">💸</div></div><div class="kpi-value" style="color:#DC2626">${inr(totalBatchCost)}</div><div class="kpi-sub">At ₹450/class · 8.67 classes/batch/month</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#7C3AED"></div><div class="kpi-header"><div class="kpi-label">Blended Margin</div><div class="kpi-icon">📊</div></div><div class="kpi-value" style="color:#7C3AED">${totalBatchRev>0?Math.round((totalBatchRev-totalBatchCost)/totalBatchRev*100):0}%</div><div class="kpi-sub">After coach costs only</div></div>
+  `;
+
+  document.getElementById('tBatch').innerHTML = `
+    <thead><tr><th>Batch</th><th>Students</th><th>Student Names</th><th>Revenue/mo</th><th>Coach Cost/mo</th><th>Margin</th><th>Margin %</th><th>Min Students Needed</th><th>Status</th></tr></thead>
+    <tbody>${batches.map(b=>`
+      <tr>
+        <td><strong>${b.name}</strong></td>
+        <td><span class="pill ${b.count>=4?'pill-g':b.count>=3?'pill-a':'pill-r'}">${b.count} students</span></td>
+        <td style="font-size:11px;color:#4A5568;max-width:200px">${b.students.map(s=>s['Student Name']).join(', ')}</td>
+        <td class="td-mono" style="color:#059669">${inrF(b.revenue)}</td>
+        <td class="td-mono" style="color:#DC2626">${inrF(Math.round(b.coachCost))}</td>
+        <td><span class="pill ${b.profit>0?'pill-g':'pill-r'}">${inrF(Math.round(b.profit))}</span></td>
+        <td><span class="pill ${b.margin>=60?'pill-g':b.margin>=30?'pill-a':'pill-r'}">${b.margin}%</span></td>
+        <td class="td-mono">${b.breakEven}</td>
+        <td><span class="pill ${b.profit>0?'pill-g':b.profit>-1000?'pill-a':'pill-r'}">${b.profit>0?'✓ Profitable':b.profit>-1000?'⚠ Near break-even':'✗ Loss-making'}</span></td>
+      </tr>
+    `).join('')}</tbody>
+  `;
+
+  // Batch math explainer
+  const scenarios = [
+    {n:1, label:'1 student', color:'#DC2626', bg:'#FEF2F2', bc:'#FECACA'},
+    {n:3, label:'3 students', color:'#D97706', bg:'#FFFBEB', bc:'#FDE68A'},
+    {n:5, label:'5 students', color:'#059669', bg:'#ECFDF5', bc:'#A7F3D0'},
+    {n:6, label:'6 students', color:'#2563EB', bg:'#EFF6FF', bc:'#BFDBFE'},
+  ];
+  document.getElementById('batchMathGrid').innerHTML = scenarios.map(sc => {
+    const rev = sc.n * 3000;
+    const cost = Math.round(CLASSES_PER_MONTH * RATE);
+    const profit = rev - cost;
+    const margin = Math.round(profit/rev*100);
+    return `<div style="background:${sc.bg};border:1px solid ${sc.bc};border-radius:10px;padding:14px;text-align:center">
+      <div style="font-size:10px;font-weight:700;color:${sc.color};text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${sc.label} in batch</div>
+      <div style="font-size:11px;color:#4A5568;margin-bottom:4px">Revenue: <strong>${inrF(rev)}/mo</strong></div>
+      <div style="font-size:11px;color:#4A5568;margin-bottom:4px">Coach cost: <strong>₹3,902/mo</strong></div>
+      <div style="font-size:18px;font-weight:800;color:${sc.color};margin:8px 0">${profit>=0?'+':''}${inrF(profit)}</div>
+      <div style="font-size:11px;font-weight:700;color:${sc.color}">${margin}% margin</div>
+    </div>`;
+  }).join('');
+}
+
+
+// ══ COACH PAYOUTS ═════════════════════════════════════════
+function renderCoachPayouts(){
+  const coachNames=[...new Set(D.coach.map(r=>r['Coach Name']).filter(Boolean))];
+  const months=allMonths();
+
+  // Total earned per coach per month (from Coaches sheet)
+  const earned={};
+  D.coach.forEach(r=>{
+    if(!r['Coach Name']||!r['Month'])return;
+    const key=r['Coach Name']+'|'+r['Month'];
+    const a=pN(r['Actual Pay (Rs.)']);
+    const e=pN(r['Estimated Pay (Rs.)']);
+    earned[key]=(earned[key]||0)+(a>0?a:e);
+  });
+
+  // Total paid per coach per month (from CoachPayouts sheet)
+  const paid={};
+  D.payouts.forEach(r=>{
+    const key=(r['Coach Name']||'').trim()+'|'+(r['Month Earned']||'').trim();
+    paid[key]=(paid[key]||0)+pN(r['Amount Paid']);
+  });
+
+  // Build balance summary
+  const balances=[];
+  Object.keys(earned).forEach(key=>{
+    const[coach,month]=key.split('|');
+    const e=earned[key]||0;
+    const p=paid[key]||0;
+    const balance=e-p;
+    balances.push({coach,month,earned:e,paid:p,balance});
+  });
+  balances.sort((a,b)=>new Date('01 '+b.month)-new Date('01 '+a.month));
+
+  const totalEarned=balances.reduce((s,b)=>s+b.earned,0);
+  const totalPaid=balances.reduce((s,b)=>s+b.paid,0);
+  const totalOutstanding=totalEarned-totalPaid;
+
+  document.getElementById('cpKpis').innerHTML=`
+    <div class="kpi-card"><div class="kpi-accent" style="background:#DC2626"></div><div class="kpi-header"><div class="kpi-label">Total Earned (all time)</div><div class="kpi-icon">📋</div></div><div class="kpi-value" style="color:#DC2626">${inr(totalEarned)}</div><div class="kpi-sub">From Coaches sheet</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#059669"></div><div class="kpi-header"><div class="kpi-label">Total Paid</div><div class="kpi-icon">💸</div></div><div class="kpi-value" style="color:#059669">${inr(totalPaid)}</div><div class="kpi-sub">${D.payouts.length>0?'From CoachPayouts sheet':'Add CoachPayouts sheet to track'}</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:${totalOutstanding>0?'#D97706':'#059669'}"></div><div class="kpi-header"><div class="kpi-label">Outstanding Balance</div><div class="kpi-icon">⚖️</div></div><div class="kpi-value" style="color:${totalOutstanding>0?'#D97706':'#059669'}">${inr(totalOutstanding)}</div><div class="kpi-sub">${totalOutstanding>0?'Still owed to coaches':'All settled'}</div></div>
+    <div class="kpi-card"><div class="kpi-accent" style="background:#7C3AED"></div><div class="kpi-header"><div class="kpi-label">Payout Transactions</div><div class="kpi-icon">🧾</div></div><div class="kpi-value" style="color:#7C3AED">${D.payouts.length}</div><div class="kpi-sub">Logged in CoachPayouts sheet</div></div>
+  `;
+
+  // Per-coach balance cards
+  const byCoach={};
+  balances.forEach(b=>{
+    if(!byCoach[b.coach])byCoach[b.coach]={coach:b.coach,earned:0,paid:0};
+    byCoach[b.coach].earned+=b.earned;
+    byCoach[b.coach].paid+=b.paid;
+  });
+
+  document.getElementById('cpBalances').innerHTML=Object.values(byCoach).length>0?
+    Object.values(byCoach).map(c=>{
+      const bal=c.earned-c.paid;
+      const pct=c.earned>0?Math.round(c.paid/c.earned*100):0;
+      return`<div style="border:1px solid #E8EAF0;border-radius:8px;padding:14px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <strong style="font-size:14px">${c.coach}</strong>
+          <span class="pill ${bal>0?'pill-a':'pill-g'}">${bal>0?'Owes: '+inrF(bal):'Fully settled'}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:12px">
+          <div><div style="color:#8896AB;font-size:10px;font-weight:600;text-transform:uppercase">Earned</div><div style="font-weight:700;color:#DC2626">${inrF(c.earned)}</div></div>
+          <div><div style="color:#8896AB;font-size:10px;font-weight:600;text-transform:uppercase">Paid</div><div style="font-weight:700;color:#059669">${inrF(c.paid)}</div></div>
+          <div><div style="color:#8896AB;font-size:10px;font-weight:600;text-transform:uppercase">Outstanding</div><div style="font-weight:700;color:${bal>0?'#D97706':'#059669'}">${inrF(bal)}</div></div>
+        </div>
+        <div style="background:#F5F6FA;border-radius:4px;height:6px;margin-top:10px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:#059669;border-radius:4px"></div>
+        </div>
+        <div style="font-size:10px;color:#8896AB;margin-top:4px">${pct}% paid</div>
+        <div style="margin-top:10px;font-size:11px">
+          ${balances.filter(b=>b.coach===c.coach).map(b=>`
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #F5F6FA">
+              <span style="color:#4A5568">${b.month}</span>
+              <span>Earned ${inrF(b.earned)}</span>
+              <span style="color:#059669">Paid ${inrF(b.paid)}</span>
+              <span class="pill ${b.balance>0?'pill-a':'pill-g'}" style="font-size:9px">${b.balance>0?inrF(b.balance)+' due':'Done'}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    }).join('')
+    :`<div class="h-item warn">⚡ No CoachPayouts sheet found yet. Create it in Google Sheets with columns: Date Paid | Month Earned | Coach Name | Amount Paid | Notes</div>`;
+
+  // Payouts table
+  document.getElementById('tPayouts').innerHTML=D.payouts.length>0?
+    `<thead><tr><th>Date Paid</th><th>Month Earned</th><th>Coach</th><th>Amount Paid</th><th>Notes</th></tr></thead>
+     <tbody>${D.payouts.map(r=>`<tr>
+       <td style="color:#8896AB">${r['Date Paid']||'—'}</td>
+       <td><span class="pill pill-b">${r['Month Earned']||'—'}</span></td>
+       <td style="font-weight:600">${r['Coach Name']||'—'}</td>
+       <td class="td-mono" style="color:#059669">${inrF(pN(r['Amount Paid']))}</td>
+       <td style="color:#4A5568">${r['Notes']||'—'}</td>
+     </tr>`).join('')}</tbody>`
+    :`<thead><tr><th>Date Paid</th><th>Month Earned</th><th>Coach</th><th>Amount Paid</th><th>Notes</th></tr></thead>
+     <tbody><tr><td colspan="5" style="text-align:center;color:#8896AB;padding:20px">No payout records yet. Create CoachPayouts sheet and start logging.</td></tr></tbody>`;
+}
+
 fetchAll();
 setInterval(fetchAll,5*60*1000);
+
+// ══ AI ADVISOR ══════════════════════════════════════
+async function generateAdvice(){
+  const ms=allMonths();
+  const active=D.stu.filter(r=>(r['Status']||'').trim()==='Active').length;
+  const mrr=D.stu.filter(r=>(r['Status']||'').trim()==='Active').reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
+  const lm=ms.slice(-1)[0]||'Jun 2026';
+  const prevM=ms.length>=2?ms[ms.length-2]:null;
+  const lmRev=revM(lm),lmExp=expM(lm),lmCoach=coachM(lm),lmProfit=lmRev-lmExp;
+  const prevRev=prevM?revM(prevM):0;
+  const prevCoach=prevM?coachM(prevM):0;
+  const ltCAC=ltConv()>0?Math.round(ltAdSpend()/ltConv()):0;
+  const ltROAS=ltAdSpend()>0?(ltRev()/ltAdSpend()).toFixed(1):'0';
+  const ltLeads=D.ads.reduce((s,r)=>s+pN(r['Leads']),0);
+  const ltShown=D.ads.reduce((s,r)=>s+pN(r['Demos Shown']),0);
+  const paidNames=new Set(D.pay.filter(r=>r['Month']===lm&&pN(r['Received'])>0).map(r=>(r['Student Name']||'').trim()));
+  const unpaid=D.stu.filter(r=>(r['Status']||'').trim()==='Active'&&!paidNames.has((r['Student Name']||'').trim()));
+  const unpaidAmt=unpaid.reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
+  const lowFeeCount=D.stu.filter(r=>(r['Status']||'').trim()==='Active'&&pN(r['Net Monthly Fee'])<=750).length;
+  const sanyamJunePay=lmCoach;
+  const sanyamForwardMonthly=Math.round(20*4.33*450);
+  const harshitMonthly=14000;
+  const totalCoachForward=sanyamForwardMonthly+harshitMonthly;
+  
+  const prompt=`You are a tough, direct business mentor for Harshit, a young solo founder of The Intellect Nest (TIN) — online chess + Rubik's Cube classes for kids aged 5-15 in India (tinchess.com). Restarted Apr 2026. Here is his EXACT live data:
+
+STUDENTS: ${active} active | ${D.stu.filter(r=>(r['Status']||'').trim()==='Active'&&(r['Type']||'').trim()==='Group').length} group | ${D.stu.filter(r=>(r['Status']||'').trim()==='Active'&&(r['Type']||'').trim()==='1-on-1').length} one-on-one | MRR potential: Rs.${mrr.toLocaleString('en-IN')}/month
+LOW-FEE STUDENTS (Rs.500-750/mo): ${lowFeeCount} students — barely covering their coach cost
+UNCOLLECTED THIS MONTH: ${unpaid.length} students owe Rs.${unpaidAmt.toLocaleString('en-IN')}
+
+MONTHLY PERFORMANCE:
+${ms.map(m=>`${m}: Revenue Rs.${revM(m).toLocaleString('en-IN')} | Expenses Rs.${expM(m).toLocaleString('en-IN')} | Coach pay Rs.${coachM(m).toLocaleString('en-IN')} (${revM(m)>0?Math.round(coachM(m)/revM(m)*100):0}%) | Profit Rs.${(revM(m)-expM(m)).toLocaleString('en-IN')}`).join('
+')}
+
+IMPORTANT NOTE ON ${prevM}: Revenue looked high because Vaasvi paid Rs.15,500 advance (real monthly fee Rs.2,583 — so ~Rs.12,917 was future months). Real recurring revenue that month was closer to Rs.${Math.round(prevRev-12917).toLocaleString('en-IN')}.
+
+COACH COSTS (THE CRITICAL ISSUE):
+- Sanyam (external): 20 classes/week = ~87/month x Rs.450 = Rs.${sanyamForwardMonthly.toLocaleString('en-IN')}/month GOING FORWARD
+- Harshit (owner, teaches Naresh + Sreyangsu himself): Rs.${harshitMonthly.toLocaleString('en-IN')}/month
+- TOTAL COACH COST GOING FORWARD: Rs.${totalCoachForward.toLocaleString('en-IN')}/month
+- At current revenue Rs.${lmRev.toLocaleString('en-IN')}: coach cost = ${Math.round(totalCoachForward/lmRev*100)}% of revenue — TARGET IS <40%
+
+BREAK-EVEN MATH (very important):
+- Total monthly fixed costs (coach + ads + misc): ~Rs.${(totalCoachForward+15000+2000).toLocaleString('en-IN')}
+- Average revenue per student: Rs.${Math.round(mrr/Math.max(active,1)).toLocaleString('en-IN')}/month
+- Students needed to break even: ~${Math.ceil((totalCoachForward+15000+2000)/Math.round(mrr/Math.max(active,1)))}
+- Students needed for Rs.50,000 profit/month: ~${Math.ceil((totalCoachForward+15000+2000+50000)/Math.round(mrr/Math.max(active,1)))}
+- KEY INSIGHT: Sanyam teaches GROUP classes. Adding more students to his batches costs NOTHING extra. 
+
+ACQUISITION:
+- Lifetime ROAS: ${ltROAS}x | CAC: Rs.${ltCAC.toLocaleString('en-IN')}
+- Total leads: ${ltLeads} | Demos shown: ${ltShown} | Show-up rate: ${ltLeads>0?Math.round(ltShown/ltLeads*100):0}% (should be 70%+)
+- Conversion rate: ~${ltConv()>0&&ltLeads>0?Math.round(ltConv()/ltLeads*100):10}% of leads
+
+TARGETS: 100 students by Sep 2026, Rs.3L/month revenue, Rs.2L/month personal profit
+
+Write advice with these EXACT sections. Be harsh, specific, use numbers from the data:
+
+🔴 WHY PROFIT CRASHED (3-4 sentences with exact rupee amounts — explain May was artificially high AND June had 3 new costs)
+
+⚠️ YOUR ACTUAL MONTHLY BURN RIGHT NOW (show the math: Sanyam Rs.${sanyamForwardMonthly.toLocaleString('en-IN')} + Harshit Rs.${harshitMonthly.toLocaleString('en-IN')} + ads ~Rs.15,000 + misc = total, vs revenue, = real position)
+
+🎯 30-DAY ACTION PLAN (exactly 3 specific actions with expected rupee impact each)
+
+📈 PATH TO 100 STUDENTS BY SEP (realistic numbers — how many new students per week, what that means for profit at each milestone)
+
+💡 THE ONE THING YOU'RE NOT SEEING (one big insight about the business model, the pricing, the coach leverage, or something in the data that Harshit needs to hear)
+
+Keep each section under 5 sentences. Direct. No fluff. Real numbers.`;
+
+  document.getElementById('aiPromptArea').style.display='none';
+  document.getElementById('aiOutput').style.display='none';
+  document.getElementById('aiLoading').style.display='block';
+  
+  const msgs=['Reading your revenue, costs, students, and ads...','Calculating real profit margins and burn rate...','Analysing coach cost sustainability at scale...','Comparing month-on-month performance...','Generating specific advice for TIN...'];
+  let mi=0;
+  const interval=setInterval(()=>{mi=(mi+1)%msgs.length;document.getElementById('aiLoadTxt').textContent=msgs[mi];},2000);
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    clearInterval(interval);
+    document.getElementById('aiLoading').style.display='none';
+    
+    const text=data.content&&data.content[0]?data.content[0].text:'Could not generate advice. Please try again.';
+    
+    // Format the response into styled sections
+    document.getElementById('aiSnap').textContent=`${active} students · Rs.${lmRev.toLocaleString('en-IN')} ${lm} revenue · Rs.${lmProfit.toLocaleString('en-IN')} profit · ${ms.length} months data`;
+    
+    // Parse into sections and style them
+    const sections=[
+      {emoji:'🔴',cls:'ai-red'},
+      {emoji:'⚠️',cls:'ai-amber'},
+      {emoji:'🎯',cls:'ai-blue'},
+      {emoji:'📈',cls:'ai-green'},
+      {emoji:'💡',cls:'ai-purple'},
+    ];
+    let html=text;
+    // Try to split by section headers and style them
+    const card=document.getElementById('aiCard');
+    // Simple rendering — preserve formatting, just style the emoji headers
+    const lines=text.split('
+');
+    let htmlOut='';
+    let inSection=false;let sectionClass='';let sectionContent='';let sectionTitle='';
+    for(const line of lines){
+      const sec=sections.find(s=>line.includes(s.emoji));
+      if(sec){
+        if(inSection){htmlOut+=`<div class="ai-section ${sectionClass}"><div class="ai-h">${sectionTitle}</div><div class="ai-p">${sectionContent.trim()}</div></div>`;}
+        sectionTitle=line.trim();sectionClass=sec.cls;sectionContent='';inSection=true;
+      } else if(inSection){
+        sectionContent+=line+'<br>';
+      }
+    }
+    if(inSection){htmlOut+=`<div class="ai-section ${sectionClass}"><div class="ai-h">${sectionTitle}</div><div class="ai-p">${sectionContent.trim()}</div></div>`;}
+    if(!htmlOut){htmlOut=`<div style="white-space:pre-wrap;font-size:13px;line-height:1.7;color:#252423">${text}</div>`;}
+    
+    card.innerHTML=htmlOut;
+    document.getElementById('aiOutput').style.display='block';
+    document.getElementById('aiPromptArea').style.display='block';
+    document.getElementById('genBtn').textContent='↻ Regenerate Advice';
+  }catch(e){
+    clearInterval(interval);
+    document.getElementById('aiLoading').style.display='none';
+    document.getElementById('aiCard').innerHTML='<div class="alert bad"><span class="alert-icon">⚠️</span><span>Error generating advice. Check internet connection and try again.</span></div>';
+    document.getElementById('aiOutput').style.display='block';
+    document.getElementById('aiPromptArea').style.display='block';
+    console.error(e);
+  }
+}
+
 </script>
 </body>
 </html>
