@@ -260,7 +260,7 @@ tr:hover td{background:var(--surface2)}
   <button class="nav-item" onclick="go('co',this)"><span class="ni">👨‍🏫</span>Coaches</button>
   <div class="nav-section">Reports</div>
   <button class="nav-item" onclick="go('hl',this)"><span class="ni">⚠️</span>Health Checks</button>
-  <button class="nav-item" onclick="go('ai',this)"><span class="ni">🧠</span>AI Advisor</button>
+  <button class="nav-item" onclick="go('ai',this)" style="display:none"><span class="ni">🧠</span>AI Advisor</button>
 </nav>
 
 <!-- MAIN CONTENT -->
@@ -559,7 +559,8 @@ tr:hover td{background:var(--surface2)}
 
 <script>
 const SHEET='1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k';
-const KEY='AIzaSyAoRXrbfhZJtchwXgEnT_Iyfh2yido7BnM';
+const SMOKE_TEST=true;
+let AUTH={token:null,url:null,anonKey:null};
 let D={pay:[],exp:[],coach:[],stu:[],ads:[],payouts:[]};
 let CH={};
 let SEL='all';
@@ -573,73 +574,64 @@ const gc='rgba(0,0,0,.05)';const tc='#8896AB';
 const SX={grid:{color:gc},ticks:{color:tc,font:{size:10},maxRotation:30},border:{color:'#E8EAF0'}};
 const SY={grid:{color:gc},ticks:{color:tc,font:{size:10}},border:{color:gc}};
 
-// ── FETCH ──────────────────────────────────────────────
-async function fSheet(r){
-  const res=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/${encodeURIComponent(r)}?key=${KEY}`);
-  const d=await res.json();if(d.error)throw new Error(d.error.message);return d.values||[];
-}
-function parse(rows){
-  if(rows.length<2)return[];
-  const h=rows[0];
-  return rows.slice(1).map(r=>{const o={};h.forEach((k,i)=>{o[k.trim()]=r[i]||'';});return o;}).filter(r=>Object.values(r).some(v=>v));
-}
+// ── AUTH FROM PARENT ───────────────────────────────────
+window.addEventListener('message',(ev)=>{
+  if(ev.data&&ev.data.type==='tin-auth'&&ev.data.token){
+    AUTH={token:ev.data.token,url:ev.data.url,anonKey:ev.data.anonKey};
+    fetchAll();
+  }
+});
+
+// ── FETCH via backend edge function ────────────────────
 async function fetchAll(){
   setBadge('loading','⟳ Syncing...');
-  // Timeout helper
-  const tout=(ms)=>new Promise((_,rej)=>setTimeout(()=>rej(new Error('TIMEOUT')),ms));
-  // Safe fetch — never throws, returns [[]] on error
-  async function sf(range){
-    try{ return await Promise.race([fSheet(range),tout(12000)]); }
-    catch(e){ console.warn('Could not fetch',range,e.message); return [[]]; }
-  }
+  if(!AUTH.token){ setBadge('err','✗ No auth'); return; }
   try{
-    // Quick test to catch 403/400 before full fetch
-    const testUrl=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/${encodeURIComponent('Students!A3:A4')}?key=${KEY}`;
-    let testResp;
-    try{
-      testResp=await Promise.race([fetch(testUrl),tout(10000)]);
-    }catch(netErr){
-      throw new Error(netErr.message==='TIMEOUT'?'TIMEOUT':'NETWORK');
+    const res=await fetch(`${AUTH.url}/functions/v1/fetch-dashboard-data`,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+AUTH.token,
+        'apikey':AUTH.anonKey,
+      },
+    });
+    if(!res.ok){
+      const t=await res.text();
+      throw new Error('HTTP '+res.status+' '+t);
     }
-    if(!testResp.ok){
-      const b=await testResp.json().catch(()=>({}));
-      throw new Error('HTTP_'+testResp.status+'_'+(b.error?.message||''));
-    }
-    // All good — fetch everything
-    const[pR,eR,cR,sR,aR,coR]=await Promise.all([
-      sf('Payments!A3:J503'),
-      sf('Expenses!A3:G403'),
-      sf('Coaches!A3:I203'),
-      sf('Students!A3:N103'),
-      sf('Ads!A3:N203'),
-      sf('CoachPayouts!A3:E203'),
-    ]);
-    D.pay   = parse(pR).filter(r=>isM(r['Month']));
-    D.exp   = parse(eR).filter(r=>isM(r['Month']));
-    D.coach = parse(cR).filter(r=>isM(r['Month']));
-    D.stu   = parse(sR).filter(r=>(r['Student Name']||'').trim());
-    D.ads   = parse(aR).filter(r=>isM(r['Month']));
-    D.payouts = parse(coR).filter(r=>r['Coach Name']&&r['Month Earned']);
-    buildFeeMap();
+    const j=await res.json();
+    const data=j.data||{};
+    D.pay     = (data.Payments||[]).filter(r=>isM(r['Month']));
+    D.exp     = (data.Expenses||[]).filter(r=>isM(r['Month']));
+    D.coach   = (data.Coaches||[]).filter(r=>isM(r['Month']));
+    D.stu     = (data.Students||[]).filter(r=>(r['Student Name']||'').trim());
+    D.ads     = (data.Ads||[]).filter(r=>isM(r['Month']));
+    D.payouts = (data.CoachPayouts||[]).filter(r=>r['Coach Name']&&r['Month Earned']);
+
     document.getElementById('updTxt').textContent='Updated '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
     setBadge('live','✓ Live');
+
+    if(SMOKE_TEST){
+      const totalRev=D.pay.reduce((s,r)=>s+pN(r['Received']),0);
+      const ab=document.getElementById('alertBar');
+      ab.className='alert';
+      ab.style.background='#E8F5E9';ab.style.color='#1B5E20';ab.style.padding='12px';ab.style.borderRadius='8px';
+      ab.innerHTML='<strong>✓ Smoke test passed</strong><br>'+
+        'Students rows: <b>'+D.stu.length+'</b> · '+
+        'Payments rows: <b>'+D.pay.length+'</b> · '+
+        'Total Revenue (sum of Received): <b>'+inrF(totalRev)+'</b>';
+      return;
+    }
+
+    buildFeeMap();
     buildSlicer();
     renderAll();
   }catch(err){
-    const m=err.message||'';
-    let txt='';
-    if(m==='TIMEOUT')       txt='⏱ Timed out after 10s. Check internet and refresh.';
-    else if(m==='NETWORK')  txt='📡 Cannot reach Google. Check internet connection.';
-    else if(m.includes('HTTP_403')) txt='🔑 403 Forbidden — either: (1) API key is restricted to a domain — go to Google Cloud Console and remove HTTP referrer restrictions, OR (2) The sheet is not set to "Anyone with link can view". Fix either one.';
-    else if(m.includes('HTTP_400')) txt='📄 Sheet not found (400) — Sheet ID may be wrong or sheet is private. Check it is shared publicly.';
-    else txt='❌ '+m+' — open browser console (F12) for details.';
     setBadge('err','✗ Error');
     const ab=document.getElementById('alertBar');
     ab.className='alert bad';
-    ab.innerHTML='<span class="alert-icon">⚠️</span><span>'+txt+'</span>';
+    ab.innerHTML='<span class="alert-icon">⚠️</span><span>'+(err.message||err)+'</span>';
     console.error('TIN Dashboard error:',err);
-  }
-}
 function setBadge(t,txt){
   const b=document.getElementById('badge');
   b.className='chip '+t;
@@ -1299,11 +1291,14 @@ function renderCoachPayouts(){
      <tbody><tr><td colspan="5" style="text-align:center;color:#8896AB;padding:20px">No payout records yet. Create CoachPayouts sheet and start logging.</td></tr></tbody>`;
 }
 
-fetchAll();
-setInterval(fetchAll,5*60*1000);
+// fetchAll() is triggered by parent postMessage with auth token
+setInterval(()=>{ if(AUTH.token) fetchAll(); },5*60*1000);
 
 // ══ AI ADVISOR ══════════════════════════════════════
 async function generateAdvice(){
+  alert('AI Advisor is disabled.');
+  return;
+  // eslint-disable-next-line no-unreachable
   const ms=allMonths();
   const active=D.stu.filter(r=>(r['Status']||'').trim()==='Active').length;
   const mrr=D.stu.filter(r=>(r['Status']||'').trim()==='Active').reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);

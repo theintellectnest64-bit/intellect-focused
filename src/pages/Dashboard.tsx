@@ -61,6 +61,16 @@ const Dashboard = () => {
     <iframe
       src="/dashboard.html"
       title="TIN Business OS Dashboard"
+      onLoad={async (e) => {
+        const { data: { session } } = await supabase.auth.getSession();
+        const iframe = e.currentTarget as HTMLIFrameElement;
+        iframe.contentWindow?.postMessage({
+          type: "tin-auth",
+          token: session?.access_token,
+          url: import.meta.env.VITE_SUPABASE_URL,
+          anonKey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        }, "*");
+      }}
       style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", border: 0 }}
     />
   );
