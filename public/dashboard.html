@@ -1291,8 +1291,8 @@ function renderCoachPayouts(){
      <tbody><tr><td colspan="5" style="text-align:center;color:#8896AB;padding:20px">No payout records yet. Create CoachPayouts sheet and start logging.</td></tr></tbody>`;
 }
 
-fetchAll();
-setInterval(fetchAll,5*60*1000);
+// fetchAll() is triggered by parent postMessage with auth token
+setInterval(()=>{ if(AUTH.token) fetchAll(); },5*60*1000);
 
 // ══ AI ADVISOR ══════════════════════════════════════
 async function generateAdvice(){
