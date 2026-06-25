@@ -95,14 +95,6 @@ serve(async (req) => {
       });
     }
 
-    const { data: claims, error: claimsErr } = await supabase.auth.getClaims(token);
-    if (claimsErr || !claims?.claims?.sub) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     // Read only the exact dashboard ranges requested.
     const tabs = DASHBOARD_RANGES.map((item) => item.tab);
     const ranges = DASHBOARD_RANGES.map((item) => `ranges=${encodeURIComponent(item.range)}`).join("&");
