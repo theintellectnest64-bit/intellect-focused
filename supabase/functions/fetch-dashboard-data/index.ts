@@ -95,12 +95,10 @@ serve(async (req) => {
       });
     }
 
-    const { data: isAdmin, error: adminErr } = await supabase.rpc("is_admin", {
-      _user_id: claims.claims.sub,
-    });
-    if (adminErr || !isAdmin) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403,
+    const { data: claims, error: claimsErr } = await supabase.auth.getClaims(token);
+    if (claimsErr || !claims?.claims?.sub) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
