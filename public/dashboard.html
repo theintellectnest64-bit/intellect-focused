@@ -632,10 +632,6 @@ async function fetchAll(){
     ab.className='alert bad';
     ab.innerHTML='<span class="alert-icon">⚠️</span><span>'+(err.message||err)+'</span>';
     console.error('TIN Dashboard error:',err);
-  }
-}
-  }
-}
 function setBadge(t,txt){
   const b=document.getElementById('badge');
   b.className='chip '+t;
