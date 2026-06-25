@@ -559,7 +559,7 @@ tr:hover td{background:var(--surface2)}
 
 <script>
 const SHEET='1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k';
-const SMOKE_TEST=true;
+const SMOKE_TEST=false;
 let AUTH={token:null,url:null,anonKey:null};
 let D={pay:[],exp:[],coach:[],stu:[],ads:[],payouts:[]};
 let CH={};
@@ -632,6 +632,8 @@ async function fetchAll(){
     ab.className='alert bad';
     ab.innerHTML='<span class="alert-icon">⚠️</span><span>'+(err.message||err)+'</span>';
     console.error('TIN Dashboard error:',err);
+  }
+}
 function setBadge(t,txt){
   const b=document.getElementById('badge');
   b.className='chip '+t;
