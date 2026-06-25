@@ -10,11 +10,12 @@ const corsHeaders = {
 const SHEET_ID = "1GJsSRZnNnXw8Pnjbq_miERgYOBleKHWgnu5ttWuKC5k";
 
 const DASHBOARD_RANGES = [
-  { tab: "Payments", range: "Payments!A4:J503" },
-  { tab: "Expenses", range: "Expenses!A4:G403" },
-  { tab: "Coaches", range: "Coaches!A4:I203" },
-  { tab: "Students", range: "Students!A4:M103" },
-  { tab: "Ads", range: "Ads!A4:N203" },
+  { tab: "Payments", range: "Payments!A3:J503" },
+  { tab: "Expenses", range: "Expenses!A3:G403" },
+  { tab: "Coaches", range: "Coaches!A3:I203" },
+  { tab: "Students", range: "Students!A3:N103" },
+  { tab: "Ads", range: "Ads!A3:N203" },
+  { tab: "CoachPayouts", range: "CoachPayouts!A3:E203" },
 ] as const;
 
 const FIXED_COLUMNS: Record<string, Record<number, string>> = {
