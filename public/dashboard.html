@@ -1296,6 +1296,9 @@ setInterval(()=>{ if(AUTH.token) fetchAll(); },5*60*1000);
 
 // ══ AI ADVISOR ══════════════════════════════════════
 async function generateAdvice(){
+  alert('AI Advisor is disabled.');
+  return;
+  // eslint-disable-next-line no-unreachable
   const ms=allMonths();
   const active=D.stu.filter(r=>(r['Status']||'').trim()==='Active').length;
   const mrr=D.stu.filter(r=>(r['Status']||'').trim()==='Active').reduce((s,r)=>s+pN(r['Net Monthly Fee']),0);
