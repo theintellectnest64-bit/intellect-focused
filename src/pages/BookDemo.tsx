@@ -49,6 +49,10 @@ const BookDemo = () => {
 
   useEffect(() => {
     trackFBEvent("Lead");
+    // Warm the backend client chunk once the page is idle so submit stays instant
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+    if (w.requestIdleCallback) w.requestIdleCallback(() => void loadSupabase(), { timeout: 4000 });
+    else setTimeout(() => void loadSupabase(), 2500);
   }, []);
 
   const form = useForm<BookDemoForm>({
