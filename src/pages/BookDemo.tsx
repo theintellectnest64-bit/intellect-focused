@@ -72,6 +72,7 @@ const BookDemo = () => {
     try {
       // Generate ID client-side so we can reference it for the notification
       const recordId = crypto.randomUUID();
+      const supabase = await loadSupabase();
 
       const { error } = await supabase.from("leads").insert({
         id: recordId,
