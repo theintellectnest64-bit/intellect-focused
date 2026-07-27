@@ -50,7 +50,7 @@ const Header = () => {
             <img
               src="/images/logo.webp"
               alt="The Intellect Nest logo"
-              loading="eager" fetchPriority="high" width={44} height={44}
+              loading="eager" fetchPriority="high"
               className="object-contain transition-all duration-300"
               style={{
                 height: '44px',
