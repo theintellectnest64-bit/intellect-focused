@@ -48,9 +48,9 @@ const Header = () => {
         <div className="container mx-auto flex items-center justify-between h-full px-4 lg:px-8">
           <Link to="/" className="flex items-center gap-3">
             <img
-              src="/images/logo.svg"
+              src="/images/logo.webp"
               alt="The Intellect Nest logo"
-              loading="lazy"
+              loading="eager"
               className="object-contain transition-all duration-300"
               style={{
                 height: '44px',

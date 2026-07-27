@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+const loadSupabase = () => import("@/integrations/supabase/client").then((m) => m.supabase);
 import { toast } from "sonner";
 import JsonLd from "@/components/seo/JsonLd";
 import { breadcrumbSchema } from "@/components/seo/schemas";
@@ -49,6 +49,10 @@ const BookDemo = () => {
 
   useEffect(() => {
     trackFBEvent("Lead");
+    // Warm the backend client chunk once the page is idle so submit stays instant
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+    if (w.requestIdleCallback) w.requestIdleCallback(() => void loadSupabase(), { timeout: 4000 });
+    else setTimeout(() => void loadSupabase(), 2500);
   }, []);
 
   const form = useForm<BookDemoForm>({
@@ -72,6 +76,7 @@ const BookDemo = () => {
     try {
       // Generate ID client-side so we can reference it for the notification
       const recordId = crypto.randomUUID();
+      const supabase = await loadSupabase();
 
       const { error } = await supabase.from("leads").insert({
         id: recordId,
