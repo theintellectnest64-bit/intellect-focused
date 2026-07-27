@@ -139,7 +139,7 @@ const Zoom = () => {
           <FloatingChessPieces variant="light" />
 
           <motion.img
-            src="/images/logo.svg"
+            src="/images/logo.webp"
             alt="The Intellect Nest"
             className="w-20 h-20 mb-8 rounded-full"
             style={{ border: "2px solid rgba(43,125,212,0.4)" }}

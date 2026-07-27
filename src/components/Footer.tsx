@@ -21,7 +21,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <img src="/images/logo.svg" alt="The Intellect Nest logo" className="object-contain" style={{ height: '52px' }} loading="lazy" decoding="async" />
+              <img src="/images/logo.webp" alt="The Intellect Nest logo" className="object-contain" style={{ height: '52px' }} loading="lazy" decoding="async" />
               <span className="font-display text-lg font-bold text-white">The Intellect Nest</span>
             </div>
             <p className="font-body text-sm italic mb-4" style={{ color: "#93C5FD" }}>where knowledge takes flight</p>
