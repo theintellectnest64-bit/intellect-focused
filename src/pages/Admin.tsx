@@ -355,12 +355,14 @@ const Admin = () => {
 
   const fetchData = async () => {
     setRefreshing(true);
-    const [leadsRes, contactsRes] = await Promise.all([
+    const [leadsRes, contactsRes, enrollmentsRes] = await Promise.all([
       supabase.from("leads").select("*").order("created_at", { ascending: false }),
       supabase.from("contacts").select("*").order("created_at", { ascending: false }),
+      supabase.from("enrollments").select("*").order("created_at", { ascending: false }),
     ]);
     if (leadsRes.data) setLeads(leadsRes.data);
     if (contactsRes.data) setContacts(contactsRes.data);
+    if (enrollmentsRes.data) setEnrollments(enrollmentsRes.data);
     setRefreshing(false);
   };
 
