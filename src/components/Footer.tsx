@@ -74,6 +74,7 @@ const Footer = () => {
                 { label: "FAQ", path: "/faq" },
                 { label: "Gallery", path: "/gallery" },
                 { label: "Book Demo", path: "/book-demo" },
+                { label: "Enrollment", path: "/harshit-enrollment" },
                 { label: "Careers", path: "/careers" },
                 { label: "Contact", path: "/contact" },
               ].map((item) => (
