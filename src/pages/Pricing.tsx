@@ -126,6 +126,7 @@ const Pricing = () => {
                 ))}
               </ul>
               <Link to="/book-demo" className="cta-gold w-full justify-center">Book Free Demo</Link>
+              <Link to={`/harshit-enrollment?plan=${currency === "inr" ? "india-group" : "international-group"}`} className="block font-body text-sm text-center mt-3 underline" style={{ color: "#2B7DD4" }}>Enroll Now</Link>
             </motion.div>
 
             <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="bg-card p-8 rounded-xl card-shadow card-hover border border-sky-border">
