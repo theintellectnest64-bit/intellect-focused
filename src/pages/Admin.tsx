@@ -707,7 +707,9 @@ const Admin = () => {
             <SelectTrigger className="w-32 h-9 text-xs"><SelectValue placeholder="All statuses" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
+              {tab === "enrollments"
+                ? ENROLLMENT_STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)
+                : STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm" onClick={exportCSV}>
