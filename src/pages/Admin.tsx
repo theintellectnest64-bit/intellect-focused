@@ -454,6 +454,16 @@ const Admin = () => {
     });
   }, [contacts, searchQuery, sortField, sortDir, statusFilter]);
 
+  const sortedEnrollments = useMemo(() => {
+    const filtered = (statusFilter === "all" ? enrollments : enrollments.filter(e => e.status === statusFilter))
+      .filter(e => !searchQuery || Object.values(e).some(v => String(v).toLowerCase().includes(searchQuery.toLowerCase())));
+    return filtered.sort((a, b) => {
+      const aVal = String((a as Record<string, unknown>)[sortField] ?? "");
+      const bVal = String((b as Record<string, unknown>)[sortField] ?? "");
+      return sortDir === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+    });
+  }, [enrollments, searchQuery, sortField, sortDir, statusFilter]);
+
   const toggleSort = (field: string) => {
     if (sortField === field) setSortDir(d => d === "asc" ? "desc" : "asc");
     else { setSortField(field); setSortDir("desc"); }
