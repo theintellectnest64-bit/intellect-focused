@@ -392,8 +392,15 @@ const Admin = () => {
     toast.success("Status updated");
   };
 
+  const updateEnrollmentStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("enrollments").update({ status }).eq("id", id);
+    if (error) { toast.error("Failed to update"); return; }
+    setEnrollments(prev => prev.map(e => e.id === id ? { ...e, status } : e));
+    toast.success("Status updated");
+  };
+
   const exportCSV = () => {
-    const data = tab === "leads" ? leads : contacts;
+    const data: Record<string, unknown>[] = tab === "leads" ? leads : tab === "contacts" ? contacts : enrollments;
     if (!data.length) return;
     const headers = Object.keys(data[0]);
     const csv = [
