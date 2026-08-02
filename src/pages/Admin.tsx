@@ -534,13 +534,13 @@ const Admin = () => {
         {/* Tabs + Actions */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <div className="flex gap-1 bg-muted rounded-lg p-1">
-            {(["leads", "contacts"] as const).map(t => (
+            {(["leads", "contacts", "enrollments"] as const).map(t => (
               <button
                 key={t}
                 onClick={() => { setTab(t); setSearchQuery(""); setStatusFilter("all"); }}
                 className={`px-4 py-2 rounded-md font-body text-sm font-medium transition-colors ${tab === t ? "bg-card text-navy card-shadow" : "text-secondary hover:text-navy"}`}
               >
-                {t === "leads" ? "Leads" : "Contacts"} ({t === "leads" ? leads.length : contacts.length})
+                {t === "leads" ? "Leads" : t === "contacts" ? "Contacts" : "Enrollments"} ({t === "leads" ? leads.length : t === "contacts" ? contacts.length : enrollments.length})
               </button>
             ))}
           </div>
