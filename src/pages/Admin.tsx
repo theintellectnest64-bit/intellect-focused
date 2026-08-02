@@ -625,6 +625,35 @@ const Admin = () => {
             </table>
           </div>
         )}
+
+        {/* Enrollments Table */}
+        {tab === "enrollments" && (
+          <div className="bg-card rounded-xl card-shadow border border-sky-border overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-sky-border bg-muted/50">
+                  <SortHeader field="created_at" label="Date" />
+                  <SortHeader field="registration_number" label="Reg. No." />
+                  <SortHeader field="student_name" label="Student" />
+                  <SortHeader field="parent_name" label="Parent" />
+                  <SortHeader field="plan" label="Plan" />
+                  <SortHeader field="payment_type" label="Payment" />
+                  <SortHeader field="status" label="Status" />
+                  <th className="px-3 py-3 text-left font-body font-semibold text-navy">Action</th>
+                  <th className="px-3 py-3 w-8" />
+                </tr>
+              </thead>
+              <tbody>
+                {sortedEnrollments.map(enr => (
+                  <EnrollmentRow key={enr.id} enrollment={enr} onStatusChange={updateEnrollmentStatus} />
+                ))}
+                {sortedEnrollments.length === 0 && (
+                  <tr><td colSpan={9} className="px-3 py-8 text-center font-body text-secondary">No enrollments found</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
