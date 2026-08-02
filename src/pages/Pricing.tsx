@@ -154,6 +154,7 @@ const Pricing = () => {
                 For schools, corporate CSR programs, and families enrolling 3 or more children. Custom batch sizes, dedicated coach, school branding, and progress dashboards.
               </p>
               <Link to="/contact" className="cta-secondary w-full justify-center">Contact Us</Link>
+              <Link to="/harshit-enrollment?plan=other" className="font-body text-sm text-center mt-3 underline" style={{ color: "#2B7DD4" }}>Enroll Now</Link>
             </motion.div>
           </div>
 
