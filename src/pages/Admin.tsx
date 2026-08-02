@@ -564,7 +564,7 @@ const Admin = () => {
 
         {/* Results count */}
         <p className="font-body text-xs text-muted-foreground mb-2">
-          Showing {tab === "leads" ? sortedLeads.length : sortedContacts.length} of {tab === "leads" ? leads.length : contacts.length} {tab}
+          Showing {tab === "leads" ? sortedLeads.length : tab === "contacts" ? sortedContacts.length : sortedEnrollments.length} of {tab === "leads" ? leads.length : tab === "contacts" ? contacts.length : enrollments.length} {tab}
         </p>
 
         {/* Leads Table */}
