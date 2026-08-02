@@ -15,6 +15,7 @@ import type { Tables } from "@/integrations/supabase/types";
 
 type Lead = Tables<"leads">;
 type Contact = Tables<"contacts">;
+type Enrollment = Tables<"enrollments">;
 
 interface AdminNote {
   id: string;
