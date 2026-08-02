@@ -87,6 +87,7 @@ const AppShell = () => {
             <Route path="/terms" element={<Terms />} />
             <Route path="/zoom" element={<Zoom />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/harshit-enrollment" element={<Enrollment />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
