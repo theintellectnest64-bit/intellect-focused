@@ -314,7 +314,8 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [tab, setTab] = useState<"leads" | "contacts">("leads");
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [tab, setTab] = useState<"leads" | "contacts" | "enrollments">("leads");
   const [sortField, setSortField] = useState<string>("created_at");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [searchQuery, setSearchQuery] = useState("");
