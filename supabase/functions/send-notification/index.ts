@@ -156,6 +156,56 @@ serve(async (req) => {
           ${eHeard ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee">Heard From</td><td style="padding:8px;border-bottom:1px solid #eee">${eHeard}</td></tr>` : ""}
         </table>
       `;
+    } else if (type === "enrollment") {
+      const { data: enr, error } = await supabaseAdmin
+        .from("enrollments")
+        .select("*")
+        .eq("id", record_id)
+        .single();
+
+      if (error || !enr) {
+        return new Response(JSON.stringify({ success: false, error: "Record not found" }), {
+          status: 404,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const row = (label: string, value: unknown) =>
+        value
+          ? `<tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #eee;vertical-align:top">${label}</td><td style="padding:8px;border-bottom:1px solid #eee;white-space:pre-wrap">${escapeHtml(String(value))}</td></tr>`
+          : "";
+
+      emailSubject = `New Enrollment — ${escapeHtml(enr.registration_number)} — ${escapeHtml(enr.student_name)}`;
+      emailHtml = `
+        <h2>New Student Enrollment</h2>
+        <table style="border-collapse:collapse;width:100%">
+          ${row("Registration No.", enr.registration_number)}
+          ${row("Plan", enr.plan)}
+          ${row("Custom Plan Request", enr.custom_plan_note)}
+          ${row("Rubik's Cube Add-on", enr.rubiks_addon ? "Yes" : "")}
+          ${row("Student Name", enr.student_name)}
+          ${row("Date of Birth", enr.student_dob)}
+          ${row("Parent / Guardian", enr.parent_name)}
+          ${row("Email", enr.email)}
+          ${row("Primary Phone", enr.phone)}
+          ${row("Guardian WhatsApp", enr.guardian_whatsapp)}
+          ${row("Location", [enr.city, enr.state, enr.country].filter(Boolean).join(", "))}
+          ${row("Student WhatsApp", enr.student_whatsapp)}
+          ${row("Alternate Phone", enr.alternate_phone)}
+          ${row("Chess.com / Lichess", enr.chess_id)}
+          ${row("Time Zone", enr.preferred_timezone)}
+          ${row("Preferred Coach", enr.preferred_coach)}
+          ${row("Notes", enr.notes)}
+          ${row("Student Counsellor", enr.student_counsellor)}
+          ${row("Payment Type", enr.payment_type)}
+          ${row("Balance To Be Paid", enr.balance_amount)}
+          ${row("Payment Date", enr.payment_date)}
+          ${row("Transaction ID / UTR", enr.transaction_id)}
+          ${row("Payment Proof File", enr.payment_proof_url)}
+          ${row("Payment Note", enr.payment_note)}
+        </table>
+        <p style="margin-top:16px;font-size:13px;color:#4A5568">View the payment proof in the admin panel at tinchess.com/admin.</p>
+      `;
     } else {
       return new Response(JSON.stringify({ success: false, error: "Invalid type" }), {
         status: 400,
