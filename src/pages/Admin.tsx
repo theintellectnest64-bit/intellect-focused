@@ -53,6 +53,9 @@ const statusColors: Record<string, string> = {
   contacted: "bg-gold/10 text-gold border-gold/30",
   converted: "bg-green-100 text-green-700 border-green-300",
   closed: "bg-muted text-muted-foreground border-border",
+  "Pending Review": "bg-gold/10 text-gold border-gold/30",
+  Verified: "bg-sky/10 text-sky border-sky/30",
+  Active: "bg-green-100 text-green-700 border-green-300",
 };
 
 const StatusBadge = ({ status }: { status: string }) => (
