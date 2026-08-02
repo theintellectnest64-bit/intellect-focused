@@ -15,6 +15,7 @@ import type { Tables } from "@/integrations/supabase/types";
 
 type Lead = Tables<"leads">;
 type Contact = Tables<"contacts">;
+type Enrollment = Tables<"enrollments">;
 
 interface AdminNote {
   id: string;
@@ -52,6 +53,9 @@ const statusColors: Record<string, string> = {
   contacted: "bg-gold/10 text-gold border-gold/30",
   converted: "bg-green-100 text-green-700 border-green-300",
   closed: "bg-muted text-muted-foreground border-border",
+  "Pending Review": "bg-gold/10 text-gold border-gold/30",
+  Verified: "bg-sky/10 text-sky border-sky/30",
+  Active: "bg-green-100 text-green-700 border-green-300",
 };
 
 const StatusBadge = ({ status }: { status: string }) => (
@@ -307,6 +311,135 @@ const ContactRow = ({ contact, onStatusChange }: { contact: Contact; onStatusCha
   );
 };
 
+/* ── Expandable Enrollment Row ── */
+
+const ENROLLMENT_STATUS_OPTIONS = ["Pending Review", "Verified", "Active"] as const;
+
+const EnrollmentRow = ({ enrollment: e, onStatusChange }: { enrollment: Enrollment; onStatusChange: (id: string, status: string) => void }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [proofLoading, setProofLoading] = useState(false);
+
+  const openProof = async () => {
+    if (!e.payment_proof_url) return;
+    setProofLoading(true);
+    const { data, error } = await supabase.storage.from("payment-proofs").createSignedUrl(e.payment_proof_url, 300);
+    setProofLoading(false);
+    if (error || !data) { toast.error("Could not open payment proof"); return; }
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const Detail = ({ label, value }: { label: string; value?: string | null }) =>
+    value ? <p className="font-body text-xs text-secondary"><span className="text-navy font-semibold">{label}:</span> {value}</p> : null;
+
+  return (
+    <>
+      <tr
+        className="border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{formatDate(e.created_at)}</td>
+        <td className="px-3 py-3 font-body text-navy font-semibold whitespace-nowrap">{e.registration_number}</td>
+        <td className="px-3 py-3 font-body text-navy">{e.student_name}</td>
+        <td className="px-3 py-3 font-body text-secondary">{e.parent_name}</td>
+        <td className="px-3 py-3 font-body text-secondary">{e.plan}</td>
+        <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{e.payment_type}</td>
+        <td className="px-3 py-3"><StatusBadge status={e.status} /></td>
+        <td className="px-3 py-3" onClick={ev => ev.stopPropagation()}>
+          <Select value={e.status} onValueChange={v => onStatusChange(e.id, v)}>
+            <SelectTrigger className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {ENROLLMENT_STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </td>
+        <td className="px-3 py-3 text-muted-foreground">
+          {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </td>
+      </tr>
+      <AnimatePresence>
+        {expanded && (
+          <tr>
+            <td colSpan={9} className="px-3 py-0">
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden"
+              >
+                <div className="py-4 px-2 grid grid-cols-1 md:grid-cols-4 gap-4 border-b border-sky-border">
+                  <div className="space-y-1">
+                    <h4 className="font-body text-xs font-semibold text-navy mb-1">Student &amp; Plan</h4>
+                    <Detail label="Date of birth" value={e.student_dob} />
+                    <Detail label="Plan" value={e.plan} />
+                    <Detail label="Custom request" value={e.custom_plan_note} />
+                    <Detail label="Rubik's add-on" value={e.rubiks_addon ? "Yes" : "No"} />
+                    <Detail label="Coach" value={e.preferred_coach} />
+                    <Detail label="Time zone" value={e.preferred_timezone} />
+                    <Detail label="Chess ID" value={e.chess_id} />
+                    <Detail label="Counsellor" value={e.student_counsellor} />
+                    <Detail label="Notes" value={e.notes} />
+                  </div>
+
+                  <div className="space-y-1">
+                    <h4 className="font-body text-xs font-semibold text-navy mb-1">Contact</h4>
+                    <Detail label="Email" value={e.email} />
+                    <Detail label="Phone" value={e.phone} />
+                    <Detail label="Guardian WhatsApp" value={e.guardian_whatsapp} />
+                    <Detail label="Student WhatsApp" value={e.student_whatsapp} />
+                    <Detail label="Alternate" value={e.alternate_phone} />
+                    <Detail label="Location" value={[e.city, e.state, e.country].filter(Boolean).join(", ")} />
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <a
+                        href={whatsAppLink(e.guardian_whatsapp)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-green-50 text-green-700 text-xs font-medium hover:bg-green-100 transition-colors"
+                      >
+                        <Phone size={12} /> WhatsApp
+                      </a>
+                      <a
+                        href={mailtoLink(e.email, e.parent_name)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-sky/10 text-sky text-xs font-medium hover:bg-sky/20 transition-colors"
+                      >
+                        <Mail size={12} /> Email
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h4 className="font-body text-xs font-semibold text-navy mb-1">Payment</h4>
+                    <Detail label="Type" value={e.payment_type} />
+                    <Detail label="Balance" value={e.balance_amount} />
+                    <Detail label="Date" value={e.payment_date} />
+                    <Detail label="Transaction ID" value={e.transaction_id} />
+                    <Detail label="Note" value={e.payment_note} />
+                    {e.payment_proof_url && (
+                      <button
+                        type="button"
+                        onClick={openProof}
+                        disabled={proofLoading}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 mt-2 rounded-md bg-gold/10 text-gold text-xs font-medium hover:bg-gold/20 transition-colors"
+                      >
+                        <ExternalLink size={12} /> {proofLoading ? "Opening..." : "View payment proof"}
+                      </button>
+                    )}
+                    <p className="font-body text-[10px] text-muted-foreground pt-2">Submitted: {formatDateTime(e.created_at)}</p>
+                  </div>
+
+                  <div>
+                    <NotesSection recordType="enrollment" recordId={e.id} />
+                  </div>
+                </div>
+              </motion.div>
+            </td>
+          </tr>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
 /* ── Main Admin Page ── */
 
 const Admin = () => {
@@ -314,7 +447,8 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [tab, setTab] = useState<"leads" | "contacts">("leads");
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+  const [tab, setTab] = useState<"leads" | "contacts" | "enrollments">("leads");
   const [sortField, setSortField] = useState<string>("created_at");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [searchQuery, setSearchQuery] = useState("");
@@ -355,12 +489,14 @@ const Admin = () => {
 
   const fetchData = async () => {
     setRefreshing(true);
-    const [leadsRes, contactsRes] = await Promise.all([
+    const [leadsRes, contactsRes, enrollmentsRes] = await Promise.all([
       supabase.from("leads").select("*").order("created_at", { ascending: false }),
       supabase.from("contacts").select("*").order("created_at", { ascending: false }),
+      supabase.from("enrollments").select("*").order("created_at", { ascending: false }),
     ]);
     if (leadsRes.data) setLeads(leadsRes.data);
     if (contactsRes.data) setContacts(contactsRes.data);
+    if (enrollmentsRes.data) setEnrollments(enrollmentsRes.data);
     setRefreshing(false);
   };
 
@@ -392,8 +528,15 @@ const Admin = () => {
     toast.success("Status updated");
   };
 
+  const updateEnrollmentStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from("enrollments").update({ status }).eq("id", id);
+    if (error) { toast.error("Failed to update"); return; }
+    setEnrollments(prev => prev.map(e => e.id === id ? { ...e, status } : e));
+    toast.success("Status updated");
+  };
+
   const exportCSV = () => {
-    const data = tab === "leads" ? leads : contacts;
+    const data: Record<string, unknown>[] = tab === "leads" ? leads : tab === "contacts" ? contacts : enrollments;
     if (!data.length) return;
     const headers = Object.keys(data[0]);
     const csv = [
@@ -453,6 +596,16 @@ const Admin = () => {
       return sortDir === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
     });
   }, [contacts, searchQuery, sortField, sortDir, statusFilter]);
+
+  const sortedEnrollments = useMemo(() => {
+    const filtered = (statusFilter === "all" ? enrollments : enrollments.filter(e => e.status === statusFilter))
+      .filter(e => !searchQuery || Object.values(e).some(v => String(v).toLowerCase().includes(searchQuery.toLowerCase())));
+    return filtered.sort((a, b) => {
+      const aVal = String((a as Record<string, unknown>)[sortField] ?? "");
+      const bVal = String((b as Record<string, unknown>)[sortField] ?? "");
+      return sortDir === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+    });
+  }, [enrollments, searchQuery, sortField, sortDir, statusFilter]);
 
   const toggleSort = (field: string) => {
     if (sortField === field) setSortDir(d => d === "asc" ? "desc" : "asc");
@@ -534,13 +687,13 @@ const Admin = () => {
         {/* Tabs + Actions */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <div className="flex gap-1 bg-muted rounded-lg p-1">
-            {(["leads", "contacts"] as const).map(t => (
+            {(["leads", "contacts", "enrollments"] as const).map(t => (
               <button
                 key={t}
                 onClick={() => { setTab(t); setSearchQuery(""); setStatusFilter("all"); }}
                 className={`px-4 py-2 rounded-md font-body text-sm font-medium transition-colors ${tab === t ? "bg-card text-navy card-shadow" : "text-secondary hover:text-navy"}`}
               >
-                {t === "leads" ? "Leads" : "Contacts"} ({t === "leads" ? leads.length : contacts.length})
+                {t === "leads" ? "Leads" : t === "contacts" ? "Contacts" : "Enrollments"} ({t === "leads" ? leads.length : t === "contacts" ? contacts.length : enrollments.length})
               </button>
             ))}
           </div>
@@ -554,7 +707,9 @@ const Admin = () => {
             <SelectTrigger className="w-32 h-9 text-xs"><SelectValue placeholder="All statuses" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
+              {tab === "enrollments"
+                ? ENROLLMENT_STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)
+                : STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
             </SelectContent>
           </Select>
           <Button variant="outline" size="sm" onClick={exportCSV}>
@@ -564,7 +719,7 @@ const Admin = () => {
 
         {/* Results count */}
         <p className="font-body text-xs text-muted-foreground mb-2">
-          Showing {tab === "leads" ? sortedLeads.length : sortedContacts.length} of {tab === "leads" ? leads.length : contacts.length} {tab}
+          Showing {tab === "leads" ? sortedLeads.length : tab === "contacts" ? sortedContacts.length : sortedEnrollments.length} of {tab === "leads" ? leads.length : tab === "contacts" ? contacts.length : enrollments.length} {tab}
         </p>
 
         {/* Leads Table */}
@@ -620,6 +775,35 @@ const Admin = () => {
                 ))}
                 {sortedContacts.length === 0 && (
                   <tr><td colSpan={8} className="px-3 py-8 text-center font-body text-secondary">No contacts found</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Enrollments Table */}
+        {tab === "enrollments" && (
+          <div className="bg-card rounded-xl card-shadow border border-sky-border overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-sky-border bg-muted/50">
+                  <SortHeader field="created_at" label="Date" />
+                  <SortHeader field="registration_number" label="Reg. No." />
+                  <SortHeader field="student_name" label="Student" />
+                  <SortHeader field="parent_name" label="Parent" />
+                  <SortHeader field="plan" label="Plan" />
+                  <SortHeader field="payment_type" label="Payment" />
+                  <SortHeader field="status" label="Status" />
+                  <th className="px-3 py-3 text-left font-body font-semibold text-navy">Action</th>
+                  <th className="px-3 py-3 w-8" />
+                </tr>
+              </thead>
+              <tbody>
+                {sortedEnrollments.map(enr => (
+                  <EnrollmentRow key={enr.id} enrollment={enr} onStatusChange={updateEnrollmentStatus} />
+                ))}
+                {sortedEnrollments.length === 0 && (
+                  <tr><td colSpan={9} className="px-3 py-8 text-center font-body text-secondary">No enrollments found</td></tr>
                 )}
               </tbody>
             </table>

@@ -125,6 +125,105 @@ export type Database = {
         }
         Relationships: []
       }
+      enrollments: {
+        Row: {
+          alternate_phone: string | null
+          balance_amount: string | null
+          chess_id: string | null
+          city: string
+          country: string
+          created_at: string
+          custom_plan_note: string | null
+          email: string
+          guardian_whatsapp: string
+          id: string
+          notes: string | null
+          parent_name: string
+          payment_date: string
+          payment_note: string | null
+          payment_proof_url: string | null
+          payment_type: string
+          phone: string
+          plan: string
+          preferred_coach: string
+          preferred_timezone: string | null
+          registration_number: string
+          rubiks_addon: boolean
+          state: string
+          status: string
+          student_counsellor: string
+          student_dob: string
+          student_name: string
+          student_whatsapp: string | null
+          transaction_id: string
+          updated_at: string
+        }
+        Insert: {
+          alternate_phone?: string | null
+          balance_amount?: string | null
+          chess_id?: string | null
+          city: string
+          country: string
+          created_at?: string
+          custom_plan_note?: string | null
+          email: string
+          guardian_whatsapp: string
+          id?: string
+          notes?: string | null
+          parent_name: string
+          payment_date: string
+          payment_note?: string | null
+          payment_proof_url?: string | null
+          payment_type: string
+          phone: string
+          plan: string
+          preferred_coach?: string
+          preferred_timezone?: string | null
+          registration_number: string
+          rubiks_addon?: boolean
+          state: string
+          status?: string
+          student_counsellor?: string
+          student_dob: string
+          student_name: string
+          student_whatsapp?: string | null
+          transaction_id: string
+          updated_at?: string
+        }
+        Update: {
+          alternate_phone?: string | null
+          balance_amount?: string | null
+          chess_id?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          custom_plan_note?: string | null
+          email?: string
+          guardian_whatsapp?: string
+          id?: string
+          notes?: string | null
+          parent_name?: string
+          payment_date?: string
+          payment_note?: string | null
+          payment_proof_url?: string | null
+          payment_type?: string
+          phone?: string
+          plan?: string
+          preferred_coach?: string
+          preferred_timezone?: string | null
+          registration_number?: string
+          rubiks_addon?: boolean
+          state?: string
+          status?: string
+          student_counsellor?: string
+          student_dob?: string
+          student_name?: string
+          student_whatsapp?: string | null
+          transaction_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           child_age: string
