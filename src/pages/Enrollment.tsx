@@ -498,16 +498,8 @@ const Enrollment = () => {
             <div className="space-y-5">
               <h2 className="font-display text-xl font-bold" style={{ color: NAVY }}>Payment</h2>
 
-              <div className="rounded-xl p-5" style={{ border: `1px solid ${BORDER}`, background: "#F0F6FF" }}>
-                <p className="font-body text-sm font-semibold mb-2" style={{ color: NAVY }}>Our account details</p>
-                <div className="font-body text-sm space-y-1" style={{ color: "#4A5568" }}>
-                  <p>Account Name: The Intellect Nest</p>
-                  <p>Bank / Account No.: —</p>
-                  <p>IFSC: —</p>
-                  <p>UPI ID: —</p>
-                  <p className="text-xs italic pt-1">Payment details will be shared/updated here by The Intellect Nest.</p>
-                </div>
-              </div>
+
+
 
               <Field label="Amount paid" required error={errors.payment_type}>
                 <div className="flex flex-wrap gap-3">
