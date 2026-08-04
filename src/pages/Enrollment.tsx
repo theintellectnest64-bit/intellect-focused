@@ -201,7 +201,7 @@ const Enrollment = () => {
         const path = `${recordId}.${ext}`;
         const { error: upErr } = await supabase.storage.from("payment-proofs").upload(path, proofFile, {
           contentType: proofFile.type,
-          upsert: true,
+          upsert: false,
         });
         if (upErr) throw upErr;
         proofPath = path;
