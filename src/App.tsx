@@ -32,6 +32,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Zoom = lazy(() => import("./pages/Zoom"));
+const Demo = lazy(() => import("./pages/Demo"));
 const Careers = lazy(() => import("./pages/Careers"));
 const Enrollment = lazy(() => import("./pages/Enrollment"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -47,7 +48,7 @@ const PageLoader = () => (
 
 const AppShell = () => {
   const location = useLocation();
-  const isZoom = location.pathname === "/zoom";
+  const isZoom = location.pathname === "/zoom" || location.pathname === "/demo";
   const isDashboard = location.pathname === "/dashboard";
   const isolated = isZoom || isDashboard;
   const [showPopup, setShowPopup] = useState(false);
@@ -86,6 +87,7 @@ const AppShell = () => {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/zoom" element={<Zoom />} />
+            <Route path="/demo" element={<Demo />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/harshit-enrollment" element={<Enrollment />} />
             <Route path="*" element={<NotFound />} />
