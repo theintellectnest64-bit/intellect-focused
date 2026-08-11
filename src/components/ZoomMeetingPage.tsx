@@ -445,6 +445,7 @@ const ZoomMeetingPage = (config: ZoomMeetingConfig) => {
         </motion.div>
       </section>
     </div>
+    </MeetingContext.Provider>
   );
 };
 
