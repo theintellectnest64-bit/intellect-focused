@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Mail, TrendingUp, Download, LogIn, LogOut, ArrowUpDown, Search,
   ChevronDown, ChevronUp, MessageSquare, Phone, Globe, Send, Trash2,
-  ExternalLink, RefreshCw,
+  ExternalLink, RefreshCw, Copy, CalendarCheck,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -48,6 +49,44 @@ const mailtoLink = (email: string, name: string) =>
 
 const STATUS_OPTIONS = ["new", "contacted", "converted", "closed"] as const;
 
+const DEMO_STATUS_OPTIONS = [
+  { value: "not_scheduled", label: "Not scheduled" },
+  { value: "scheduled", label: "Scheduled" },
+  { value: "done", label: "Demo done" },
+  { value: "no_show", label: "No show" },
+  { value: "rescheduled", label: "Rescheduled" },
+] as const;
+
+const PRIORITY_OPTIONS = [
+  { value: "hot", label: "🔥 Hot" },
+  { value: "normal", label: "Normal" },
+  { value: "cold", label: "Cold" },
+] as const;
+
+const demoColors: Record<string, string> = {
+  not_scheduled: "bg-muted text-muted-foreground border-border",
+  scheduled: "bg-sky/10 text-sky border-sky/30",
+  done: "bg-green-100 text-green-700 border-green-300",
+  no_show: "bg-red-100 text-red-700 border-red-300",
+  rescheduled: "bg-gold/10 text-gold border-gold/30",
+};
+
+const priorityColors: Record<string, string> = {
+  hot: "bg-red-100 text-red-700 border-red-300",
+  normal: "bg-muted text-muted-foreground border-border",
+  cold: "bg-sky/10 text-sky border-sky/30",
+};
+
+const demoLabel = (v: string) =>
+  DEMO_STATUS_OPTIONS.find(o => o.value === v)?.label ?? v;
+
+const toLocalInput = (iso: string | null) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
 const statusColors: Record<string, string> = {
   new: "bg-sky/10 text-sky border-sky/30",
   contacted: "bg-gold/10 text-gold border-gold/30",
@@ -63,6 +102,13 @@ const StatusBadge = ({ status }: { status: string }) => (
     {status}
   </span>
 );
+
+const DemoBadge = ({ demo }: { demo: string }) => (
+  <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium border whitespace-nowrap ${demoColors[demo] || demoColors.not_scheduled}`}>
+    {demoLabel(demo)}
+  </span>
+);
+
 
 /* ── Notes Component ── */
 
@@ -137,31 +183,88 @@ const NotesSection = ({ recordType, recordId }: { recordType: string; recordId: 
 
 /* ── Expandable Lead Row ── */
 
-const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: string, status: string) => void }) => {
+const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch: Partial<Lead>) => void }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const waMessage = (text: string) =>
+    `${whatsAppLink(lead.parent_phone)}?text=${encodeURIComponent(text)}`;
+
+  const templates = [
+    {
+      label: "Intro",
+      text: `Hi ${lead.parent_name}, this is The Intellect Nest 👋 Thanks for your interest in chess classes for ${lead.child_name}. When would be a good time for a free demo class?`,
+    },
+    {
+      label: "Demo link",
+      text: `Hi ${lead.parent_name}, here is the link for ${lead.child_name}'s free demo class: https://www.tinchess.com/demo\nMeeting ID: 951 624 2285 · Passcode: 123456\nPlease join 5 minutes early.`,
+    },
+    {
+      label: "Reminder",
+      text: `Hi ${lead.parent_name}, gentle reminder for ${lead.child_name}'s free demo class today. Join here: https://www.tinchess.com/demo`,
+    },
+    {
+      label: "Follow-up",
+      text: `Hi ${lead.parent_name}, hope ${lead.child_name} enjoyed the demo class! Would you like me to share the batch options and pricing?`,
+    },
+  ];
+
+  const copy = (text: string, what: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${what} copied`);
+  };
+
+  const overdue =
+    lead.follow_up_at && lead.follow_up_at < new Date().toISOString().split("T")[0] && lead.status !== "converted";
 
   return (
     <>
       <tr
-        className="border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer"
+        className={`border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer ${lead.priority === "hot" ? "bg-red-50/40" : ""}`}
         onClick={() => setExpanded(!expanded)}
       >
         <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{formatDate(lead.created_at)}</td>
-        <td className="px-3 py-3 font-body text-navy font-medium">{lead.parent_name}</td>
+        <td className="px-3 py-3 font-body text-navy font-medium whitespace-nowrap">
+          {lead.priority === "hot" && <span className="mr-1">🔥</span>}
+          {lead.parent_name}
+        </td>
         <td className="px-3 py-3 font-body text-secondary">{lead.parent_email}</td>
         <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{lead.parent_phone}</td>
         <td className="px-3 py-3 font-body text-navy">{lead.child_name}</td>
         <td className="px-3 py-3 font-body text-secondary text-center">{lead.child_age}</td>
         <td className="px-3 py-3 font-body text-secondary">{lead.current_level}</td>
         <td className="px-3 py-3 font-body text-secondary">{lead.preferred_language}</td>
+        <td className="px-3 py-3"><DemoBadge demo={lead.demo_status} /></td>
+        <td className="px-3 py-3 font-body text-secondary text-xs whitespace-nowrap">
+          {lead.demo_scheduled_at ? formatDateTime(lead.demo_scheduled_at) : "—"}
+        </td>
+        <td className={`px-3 py-3 font-body text-xs whitespace-nowrap ${overdue ? "text-destructive font-semibold" : "text-secondary"}`}>
+          {lead.follow_up_at ? formatDate(lead.follow_up_at) : "—"}
+        </td>
         <td className="px-3 py-3"><StatusBadge status={lead.status} /></td>
         <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
-          <Select value={lead.status} onValueChange={v => onStatusChange(lead.id, v)}>
-            <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-1">
+            <Select value={lead.status} onValueChange={v => onUpdate(lead.id, { status: v })}>
+              <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={lead.demo_status} onValueChange={v => onUpdate(lead.id, { demo_status: v })}>
+              <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {DEMO_STATUS_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <a
+              href={waMessage(templates[0].text)}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="WhatsApp"
+              className="inline-flex items-center justify-center h-8 w-8 rounded-md bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
+            >
+              <Phone size={14} />
+            </a>
+          </div>
         </td>
         <td className="px-3 py-3 text-muted-foreground">
           {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -170,7 +273,7 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
       <AnimatePresence>
         {expanded && (
           <tr>
-            <td colSpan={11} className="px-3 py-0">
+            <td colSpan={14} className="px-3 py-0">
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
@@ -192,6 +295,45 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
                         </p>
                       )}
                     </div>
+
+                    <h4 className="font-body text-xs font-semibold text-navy pt-2">Demo Tracking</h4>
+                    <div className="space-y-2">
+                      <label className="block font-body text-[11px] text-muted-foreground">
+                        Demo date & time
+                        <Input
+                          type="datetime-local"
+                          value={toLocalInput(lead.demo_scheduled_at)}
+                          onChange={e =>
+                            onUpdate(lead.id, {
+                              demo_scheduled_at: e.target.value ? new Date(e.target.value).toISOString() : null,
+                              demo_status: lead.demo_status === "not_scheduled" && e.target.value ? "scheduled" : lead.demo_status,
+                            })
+                          }
+                          className="h-8 text-xs mt-1"
+                        />
+                      </label>
+                      <label className="block font-body text-[11px] text-muted-foreground">
+                        Next follow-up
+                        <Input
+                          type="date"
+                          value={lead.follow_up_at ?? ""}
+                          onChange={e => onUpdate(lead.id, { follow_up_at: e.target.value || null })}
+                          className="h-8 text-xs mt-1"
+                        />
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <span className="font-body text-[11px] text-muted-foreground">Priority</span>
+                        <Select value={lead.priority} onValueChange={v => onUpdate(lead.id, { priority: v })}>
+                          <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {PRIORITY_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-medium border ${priorityColors[lead.priority] || priorityColors.normal}`}>
+                          {lead.priority}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Quick Actions */}
@@ -199,12 +341,10 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
                     <h4 className="font-body text-xs font-semibold text-navy">Quick Actions</h4>
                     <div className="flex flex-wrap gap-2">
                       <a
-                        href={whatsAppLink(lead.parent_phone)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-green-50 text-green-700 text-xs font-medium hover:bg-green-100 transition-colors"
+                        href={`tel:${lead.parent_phone.replace(/[^0-9+]/g, "")}`}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-navy/5 text-navy text-xs font-medium hover:bg-navy/10 transition-colors"
                       >
-                        <Phone size={12} /> WhatsApp
+                        <Phone size={12} /> Call
                       </a>
                       <a
                         href={mailtoLink(lead.parent_email, lead.parent_name)}
@@ -212,6 +352,65 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
                       >
                         <Mail size={12} /> Email
                       </a>
+                      <button
+                        onClick={() => copy(lead.parent_phone, "Phone")}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-muted text-secondary text-xs font-medium hover:bg-muted/70 transition-colors"
+                      >
+                        <Copy size={12} /> Phone
+                      </button>
+                      <button
+                        onClick={() => copy(lead.parent_email, "Email")}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-muted text-secondary text-xs font-medium hover:bg-muted/70 transition-colors"
+                      >
+                        <Copy size={12} /> Email
+                      </button>
+                      <a
+                        href={`/harshit-enrollment?plan=&lead=${lead.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-gold/10 text-gold text-xs font-medium hover:bg-gold/20 transition-colors"
+                      >
+                        <ExternalLink size={12} /> Enroll
+                      </a>
+                    </div>
+
+                    <h4 className="font-body text-xs font-semibold text-navy pt-2">WhatsApp Templates</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {templates.map(t => (
+                        <a
+                          key={t.label}
+                          href={waMessage(t.text)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-green-50 text-green-700 text-xs font-medium hover:bg-green-100 transition-colors"
+                        >
+                          <MessageSquare size={12} /> {t.label}
+                        </a>
+                      ))}
+                    </div>
+
+                    <h4 className="font-body text-xs font-semibold text-navy pt-2">Mark</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm" variant="outline" className="h-7 text-xs"
+                        onClick={() => onUpdate(lead.id, { demo_status: "done", status: lead.status === "new" ? "contacted" : lead.status })}>
+                        Demo done
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs"
+                        onClick={() => onUpdate(lead.id, { demo_status: "no_show" })}>
+                        No show
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs"
+                        onClick={() => onUpdate(lead.id, { status: "converted" })}>
+                        Converted
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs"
+                        onClick={() => {
+                          const d = new Date();
+                          d.setDate(d.getDate() + 2);
+                          onUpdate(lead.id, { follow_up_at: d.toISOString().split("T")[0] });
+                        }}>
+                        Follow up +2d
+                      </Button>
                     </div>
                   </div>
 
@@ -228,6 +427,7 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
     </>
   );
 };
+
 
 /* ── Expandable Contact Row ── */
 
@@ -453,6 +653,9 @@ const Admin = () => {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [demoFilter, setDemoFilter] = useState<string>("all");
+  const [quickFilter, setQuickFilter] = useState<"none" | "hot" | "followup" | "today_demo" | "no_demo">("none");
+
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
@@ -514,12 +717,13 @@ const Admin = () => {
     setIsAdmin(false);
   };
 
-  const updateLeadStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from("leads").update({ status }).eq("id", id);
+  const updateLead = async (id: string, patch: Partial<Lead>) => {
+    const { error } = await supabase.from("leads").update(patch as never).eq("id", id);
     if (error) { toast.error("Failed to update"); return; }
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-    toast.success("Status updated");
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, ...patch } : l));
+    toast.success("Lead updated");
   };
+
 
   const updateContactStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("contacts").update({ status }).eq("id", id);
@@ -560,6 +764,12 @@ const Admin = () => {
 
   const stats = useMemo(() => {
     const converted = leads.filter(l => l.status === "converted").length;
+    const demoDone = leads.filter(l => l.demo_status === "done").length;
+    const demoScheduled = leads.filter(l => l.demo_status === "scheduled" || l.demo_status === "rescheduled").length;
+    const demoPending = leads.filter(l => l.demo_status === "not_scheduled").length;
+    const noShow = leads.filter(l => l.demo_status === "no_show").length;
+    const followUpDue = leads.filter(l => l.follow_up_at && l.follow_up_at <= todayStr && l.status !== "converted").length;
+    const hot = leads.filter(l => l.priority === "hot").length;
     return {
       total: leads.length,
       today: leads.filter(l => l.created_at.startsWith(todayStr)).length,
@@ -568,6 +778,13 @@ const Admin = () => {
       converted,
       conversionRate: leads.length > 0 ? Math.round((converted / leads.length) * 100) : 0,
       contactsTotal: contacts.length,
+      demoDone,
+      demoScheduled,
+      demoPending,
+      noShow,
+      followUpDue,
+      hot,
+      demoToEnroll: demoDone > 0 ? Math.round((converted / demoDone) * 100) : 0,
     };
   }, [leads, contacts, todayStr, weekAgo, monthAgo]);
 
@@ -579,12 +796,18 @@ const Admin = () => {
     let filtered = filterByStatus(leads).filter(l =>
       !searchQuery || Object.values(l).some(v => String(v).toLowerCase().includes(searchQuery.toLowerCase()))
     );
+    if (demoFilter !== "all") filtered = filtered.filter(l => l.demo_status === demoFilter);
+    if (quickFilter === "hot") filtered = filtered.filter(l => l.priority === "hot");
+    if (quickFilter === "followup") filtered = filtered.filter(l => l.follow_up_at && l.follow_up_at <= todayStr && l.status !== "converted");
+    if (quickFilter === "today_demo") filtered = filtered.filter(l => l.demo_scheduled_at?.slice(0, 10) === todayStr);
+    if (quickFilter === "no_demo") filtered = filtered.filter(l => l.demo_status === "not_scheduled");
     return filtered.sort((a, b) => {
       const aVal = String((a as Record<string, unknown>)[sortField] ?? "");
       const bVal = String((b as Record<string, unknown>)[sortField] ?? "");
       return sortDir === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
     });
-  }, [leads, searchQuery, sortField, sortDir, statusFilter]);
+  }, [leads, searchQuery, sortField, sortDir, statusFilter, demoFilter, quickFilter, todayStr]);
+
 
   const sortedContacts = useMemo(() => {
     let filtered = filterByStatus(contacts).filter(c =>
@@ -665,7 +888,7 @@ const Admin = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
           {[
             { label: "Total Leads", value: stats.total, icon: <Users size={20} /> },
             { label: "Today", value: stats.today, icon: <TrendingUp size={20} /> },
@@ -684,13 +907,34 @@ const Admin = () => {
           ))}
         </div>
 
+        {/* Demo pipeline stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+          {[
+            { label: "Demo Done", value: stats.demoDone, icon: <CalendarCheck size={20} /> },
+            { label: "Demo Scheduled", value: stats.demoScheduled, icon: <CalendarCheck size={20} /> },
+            { label: "Demo Pending", value: stats.demoPending, icon: <CalendarCheck size={20} /> },
+            { label: "No Shows", value: stats.noShow, icon: <CalendarCheck size={20} /> },
+            { label: "Follow-ups Due", value: stats.followUpDue, icon: <MessageSquare size={20} /> },
+            { label: "Demo → Enroll", value: `${stats.demoToEnroll}%`, icon: <TrendingUp size={20} /> },
+          ].map((s, i) => (
+            <div key={i} className="bg-card p-4 rounded-lg card-shadow border border-sky-border">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-gold">{s.icon}</span>
+                <span className="font-body text-xs text-secondary">{s.label}</span>
+              </div>
+              <p className="font-display text-2xl font-bold text-navy">{s.value}</p>
+            </div>
+          ))}
+        </div>
+
+
         {/* Tabs + Actions */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <div className="flex gap-1 bg-muted rounded-lg p-1">
             {(["leads", "contacts", "enrollments"] as const).map(t => (
               <button
                 key={t}
-                onClick={() => { setTab(t); setSearchQuery(""); setStatusFilter("all"); }}
+                onClick={() => { setTab(t); setSearchQuery(""); setStatusFilter("all"); setDemoFilter("all"); setQuickFilter("none"); }}
                 className={`px-4 py-2 rounded-md font-body text-sm font-medium transition-colors ${tab === t ? "bg-card text-navy card-shadow" : "text-secondary hover:text-navy"}`}
               >
                 {t === "leads" ? "Leads" : t === "contacts" ? "Contacts" : "Enrollments"} ({t === "leads" ? leads.length : t === "contacts" ? contacts.length : enrollments.length})
@@ -712,10 +956,45 @@ const Admin = () => {
                 : STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
             </SelectContent>
           </Select>
+          {tab === "leads" && (
+            <Select value={demoFilter} onValueChange={setDemoFilter}>
+              <SelectTrigger className="w-36 h-9 text-xs"><SelectValue placeholder="All demos" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Demos</SelectItem>
+                {DEMO_STATUS_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
           <Button variant="outline" size="sm" onClick={exportCSV}>
             <Download size={16} className="mr-1" /> Export CSV
           </Button>
         </div>
+
+        {/* Quick filters */}
+        {tab === "leads" && (
+          <div className="flex flex-wrap gap-2 mb-3">
+            {([
+              { key: "none", label: "All leads" },
+              { key: "hot", label: `🔥 Hot (${stats.hot})` },
+              { key: "followup", label: `Follow-ups due (${stats.followUpDue})` },
+              { key: "today_demo", label: "Demo today" },
+              { key: "no_demo", label: `Demo not scheduled (${stats.demoPending})` },
+            ] as const).map(f => (
+              <button
+                key={f.key}
+                onClick={() => setQuickFilter(f.key)}
+                className={`px-3 py-1.5 rounded-full font-body text-xs font-medium border transition-colors ${
+                  quickFilter === f.key
+                    ? "bg-navy text-white border-navy"
+                    : "bg-card text-secondary border-sky-border hover:text-navy"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
+
 
         {/* Results count */}
         <p className="font-body text-xs text-muted-foreground mb-2">
@@ -736,18 +1015,22 @@ const Admin = () => {
                   <SortHeader field="child_age" label="Age" />
                   <SortHeader field="current_level" label="Level" />
                   <SortHeader field="preferred_language" label="Language" />
+                  <SortHeader field="demo_status" label="Demo" />
+                  <SortHeader field="demo_scheduled_at" label="Demo On" />
+                  <SortHeader field="follow_up_at" label="Follow-up" />
                   <SortHeader field="status" label="Status" />
-                  <th className="px-3 py-3 text-left font-body font-semibold text-navy">Action</th>
+                  <th className="px-3 py-3 text-left font-body font-semibold text-navy">Actions</th>
                   <th className="px-3 py-3 w-8" />
                 </tr>
               </thead>
               <tbody>
                 {sortedLeads.map(lead => (
-                  <LeadRow key={lead.id} lead={lead} onStatusChange={updateLeadStatus} />
+                  <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} />
                 ))}
                 {sortedLeads.length === 0 && (
-                  <tr><td colSpan={11} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
+                  <tr><td colSpan={14} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
                 )}
+
               </tbody>
             </table>
           </div>
