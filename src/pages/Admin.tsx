@@ -888,7 +888,7 @@ const Admin = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
           {[
             { label: "Total Leads", value: stats.total, icon: <Users size={20} /> },
             { label: "Today", value: stats.today, icon: <TrendingUp size={20} /> },
@@ -906,6 +906,27 @@ const Admin = () => {
             </div>
           ))}
         </div>
+
+        {/* Demo pipeline stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+          {[
+            { label: "Demo Done", value: stats.demoDone, icon: <CalendarCheck size={20} /> },
+            { label: "Demo Scheduled", value: stats.demoScheduled, icon: <CalendarCheck size={20} /> },
+            { label: "Demo Pending", value: stats.demoPending, icon: <CalendarCheck size={20} /> },
+            { label: "No Shows", value: stats.noShow, icon: <CalendarCheck size={20} /> },
+            { label: "Follow-ups Due", value: stats.followUpDue, icon: <MessageSquare size={20} /> },
+            { label: "Demo → Enroll", value: `${stats.demoToEnroll}%`, icon: <TrendingUp size={20} /> },
+          ].map((s, i) => (
+            <div key={i} className="bg-card p-4 rounded-lg card-shadow border border-sky-border">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-gold">{s.icon}</span>
+                <span className="font-body text-xs text-secondary">{s.label}</span>
+              </div>
+              <p className="font-display text-2xl font-bold text-navy">{s.value}</p>
+            </div>
+          ))}
+        </div>
+
 
         {/* Tabs + Actions */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
