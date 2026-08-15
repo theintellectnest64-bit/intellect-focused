@@ -230,12 +230,17 @@ export type Database = {
           child_name: string
           created_at: string
           current_level: string
+          demo_scheduled_at: string | null
+          demo_status: string
+          follow_up_at: string | null
           id: string
           message: string | null
           parent_email: string
           parent_name: string
           parent_phone: string
           preferred_language: string
+          priority: string
+          source: string | null
           status: string
           updated_at: string
         }
@@ -244,12 +249,17 @@ export type Database = {
           child_name: string
           created_at?: string
           current_level: string
+          demo_scheduled_at?: string | null
+          demo_status?: string
+          follow_up_at?: string | null
           id?: string
           message?: string | null
           parent_email: string
           parent_name: string
           parent_phone: string
           preferred_language?: string
+          priority?: string
+          source?: string | null
           status?: string
           updated_at?: string
         }
@@ -258,12 +268,17 @@ export type Database = {
           child_name?: string
           created_at?: string
           current_level?: string
+          demo_scheduled_at?: string | null
+          demo_status?: string
+          follow_up_at?: string | null
           id?: string
           message?: string | null
           parent_email?: string
           parent_name?: string
           parent_phone?: string
           preferred_language?: string
+          priority?: string
+          source?: string | null
           status?: string
           updated_at?: string
         }
