@@ -48,6 +48,44 @@ const mailtoLink = (email: string, name: string) =>
 
 const STATUS_OPTIONS = ["new", "contacted", "converted", "closed"] as const;
 
+const DEMO_STATUS_OPTIONS = [
+  { value: "not_scheduled", label: "Not scheduled" },
+  { value: "scheduled", label: "Scheduled" },
+  { value: "done", label: "Demo done" },
+  { value: "no_show", label: "No show" },
+  { value: "rescheduled", label: "Rescheduled" },
+] as const;
+
+const PRIORITY_OPTIONS = [
+  { value: "hot", label: "🔥 Hot" },
+  { value: "normal", label: "Normal" },
+  { value: "cold", label: "Cold" },
+] as const;
+
+const demoColors: Record<string, string> = {
+  not_scheduled: "bg-muted text-muted-foreground border-border",
+  scheduled: "bg-sky/10 text-sky border-sky/30",
+  done: "bg-green-100 text-green-700 border-green-300",
+  no_show: "bg-red-100 text-red-700 border-red-300",
+  rescheduled: "bg-gold/10 text-gold border-gold/30",
+};
+
+const priorityColors: Record<string, string> = {
+  hot: "bg-red-100 text-red-700 border-red-300",
+  normal: "bg-muted text-muted-foreground border-border",
+  cold: "bg-sky/10 text-sky border-sky/30",
+};
+
+const demoLabel = (v: string) =>
+  DEMO_STATUS_OPTIONS.find(o => o.value === v)?.label ?? v;
+
+const toLocalInput = (iso: string | null) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
 const statusColors: Record<string, string> = {
   new: "bg-sky/10 text-sky border-sky/30",
   contacted: "bg-gold/10 text-gold border-gold/30",
@@ -63,6 +101,13 @@ const StatusBadge = ({ status }: { status: string }) => (
     {status}
   </span>
 );
+
+const DemoBadge = ({ demo }: { demo: string }) => (
+  <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium border whitespace-nowrap ${demoColors[demo] || demoColors.not_scheduled}`}>
+    {demoLabel(demo)}
+  </span>
+);
+
 
 /* ── Notes Component ── */
 
