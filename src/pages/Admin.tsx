@@ -653,6 +653,9 @@ const Admin = () => {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [demoFilter, setDemoFilter] = useState<string>("all");
+  const [quickFilter, setQuickFilter] = useState<"none" | "hot" | "followup" | "today_demo" | "no_demo">("none");
+
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
