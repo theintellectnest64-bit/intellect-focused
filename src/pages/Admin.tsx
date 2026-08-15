@@ -956,10 +956,45 @@ const Admin = () => {
                 : STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
             </SelectContent>
           </Select>
+          {tab === "leads" && (
+            <Select value={demoFilter} onValueChange={setDemoFilter}>
+              <SelectTrigger className="w-36 h-9 text-xs"><SelectValue placeholder="All demos" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Demos</SelectItem>
+                {DEMO_STATUS_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          )}
           <Button variant="outline" size="sm" onClick={exportCSV}>
             <Download size={16} className="mr-1" /> Export CSV
           </Button>
         </div>
+
+        {/* Quick filters */}
+        {tab === "leads" && (
+          <div className="flex flex-wrap gap-2 mb-3">
+            {([
+              { key: "none", label: "All leads" },
+              { key: "hot", label: `🔥 Hot (${stats.hot})` },
+              { key: "followup", label: `Follow-ups due (${stats.followUpDue})` },
+              { key: "today_demo", label: "Demo today" },
+              { key: "no_demo", label: `Demo not scheduled (${stats.demoPending})` },
+            ] as const).map(f => (
+              <button
+                key={f.key}
+                onClick={() => setQuickFilter(f.key)}
+                className={`px-3 py-1.5 rounded-full font-body text-xs font-medium border transition-colors ${
+                  quickFilter === f.key
+                    ? "bg-navy text-white border-navy"
+                    : "bg-card text-secondary border-sky-border hover:text-navy"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
+
 
         {/* Results count */}
         <p className="font-body text-xs text-muted-foreground mb-2">
