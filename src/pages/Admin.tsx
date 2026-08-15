@@ -713,12 +713,13 @@ const Admin = () => {
     setIsAdmin(false);
   };
 
-  const updateLeadStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from("leads").update({ status }).eq("id", id);
+  const updateLead = async (id: string, patch: Partial<Lead>) => {
+    const { error } = await supabase.from("leads").update(patch as never).eq("id", id);
     if (error) { toast.error("Failed to update"); return; }
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-    toast.success("Status updated");
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, ...patch } : l));
+    toast.success("Lead updated");
   };
+
 
   const updateContactStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("contacts").update({ status }).eq("id", id);
