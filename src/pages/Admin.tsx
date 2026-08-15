@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Mail, TrendingUp, Download, LogIn, LogOut, ArrowUpDown, Search,
   ChevronDown, ChevronUp, MessageSquare, Phone, Globe, Send, Trash2,
-  ExternalLink, RefreshCw, Copy, CalendarCheck, Flame,
+  ExternalLink, RefreshCw, Copy, CalendarCheck,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -934,7 +934,7 @@ const Admin = () => {
             {(["leads", "contacts", "enrollments"] as const).map(t => (
               <button
                 key={t}
-                onClick={() => { setTab(t); setSearchQuery(""); setStatusFilter("all"); }}
+                onClick={() => { setTab(t); setSearchQuery(""); setStatusFilter("all"); setDemoFilter("all"); setQuickFilter("none"); }}
                 className={`px-4 py-2 rounded-md font-body text-sm font-medium transition-colors ${tab === t ? "bg-card text-navy card-shadow" : "text-secondary hover:text-navy"}`}
               >
                 {t === "leads" ? "Leads" : t === "contacts" ? "Contacts" : "Enrollments"} ({t === "leads" ? leads.length : t === "contacts" ? contacts.length : enrollments.length})
