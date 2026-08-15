@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Mail, TrendingUp, Download, LogIn, LogOut, ArrowUpDown, Search,
   ChevronDown, ChevronUp, MessageSquare, Phone, Globe, Send, Trash2,
-  ExternalLink, RefreshCw,
+  ExternalLink, RefreshCw, Copy, CalendarCheck, Flame,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
