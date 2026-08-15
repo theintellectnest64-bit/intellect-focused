@@ -182,31 +182,88 @@ const NotesSection = ({ recordType, recordId }: { recordType: string; recordId: 
 
 /* ── Expandable Lead Row ── */
 
-const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: string, status: string) => void }) => {
+const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch: Partial<Lead>) => void }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const waMessage = (text: string) =>
+    `${whatsAppLink(lead.parent_phone)}?text=${encodeURIComponent(text)}`;
+
+  const templates = [
+    {
+      label: "Intro",
+      text: `Hi ${lead.parent_name}, this is The Intellect Nest 👋 Thanks for your interest in chess classes for ${lead.child_name}. When would be a good time for a free demo class?`,
+    },
+    {
+      label: "Demo link",
+      text: `Hi ${lead.parent_name}, here is the link for ${lead.child_name}'s free demo class: https://www.tinchess.com/demo\nMeeting ID: 951 624 2285 · Passcode: 123456\nPlease join 5 minutes early.`,
+    },
+    {
+      label: "Reminder",
+      text: `Hi ${lead.parent_name}, gentle reminder for ${lead.child_name}'s free demo class today. Join here: https://www.tinchess.com/demo`,
+    },
+    {
+      label: "Follow-up",
+      text: `Hi ${lead.parent_name}, hope ${lead.child_name} enjoyed the demo class! Would you like me to share the batch options and pricing?`,
+    },
+  ];
+
+  const copy = (text: string, what: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${what} copied`);
+  };
+
+  const overdue =
+    lead.follow_up_at && lead.follow_up_at < new Date().toISOString().split("T")[0] && lead.status !== "converted";
 
   return (
     <>
       <tr
-        className="border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer"
+        className={`border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer ${lead.priority === "hot" ? "bg-red-50/40" : ""}`}
         onClick={() => setExpanded(!expanded)}
       >
         <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{formatDate(lead.created_at)}</td>
-        <td className="px-3 py-3 font-body text-navy font-medium">{lead.parent_name}</td>
+        <td className="px-3 py-3 font-body text-navy font-medium whitespace-nowrap">
+          {lead.priority === "hot" && <span className="mr-1">🔥</span>}
+          {lead.parent_name}
+        </td>
         <td className="px-3 py-3 font-body text-secondary">{lead.parent_email}</td>
         <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{lead.parent_phone}</td>
         <td className="px-3 py-3 font-body text-navy">{lead.child_name}</td>
         <td className="px-3 py-3 font-body text-secondary text-center">{lead.child_age}</td>
         <td className="px-3 py-3 font-body text-secondary">{lead.current_level}</td>
         <td className="px-3 py-3 font-body text-secondary">{lead.preferred_language}</td>
+        <td className="px-3 py-3"><DemoBadge demo={lead.demo_status} /></td>
+        <td className="px-3 py-3 font-body text-secondary text-xs whitespace-nowrap">
+          {lead.demo_scheduled_at ? formatDateTime(lead.demo_scheduled_at) : "—"}
+        </td>
+        <td className={`px-3 py-3 font-body text-xs whitespace-nowrap ${overdue ? "text-destructive font-semibold" : "text-secondary"}`}>
+          {lead.follow_up_at ? formatDate(lead.follow_up_at) : "—"}
+        </td>
         <td className="px-3 py-3"><StatusBadge status={lead.status} /></td>
         <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
-          <Select value={lead.status} onValueChange={v => onStatusChange(lead.id, v)}>
-            <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-1">
+            <Select value={lead.status} onValueChange={v => onUpdate(lead.id, { status: v })}>
+              <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={lead.demo_status} onValueChange={v => onUpdate(lead.id, { demo_status: v })}>
+              <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {DEMO_STATUS_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <a
+              href={waMessage(templates[0].text)}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="WhatsApp"
+              className="inline-flex items-center justify-center h-8 w-8 rounded-md bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
+            >
+              <Phone size={14} />
+            </a>
+          </div>
         </td>
         <td className="px-3 py-3 text-muted-foreground">
           {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -215,7 +272,7 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
       <AnimatePresence>
         {expanded && (
           <tr>
-            <td colSpan={11} className="px-3 py-0">
+            <td colSpan={14} className="px-3 py-0">
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
@@ -237,6 +294,45 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
                         </p>
                       )}
                     </div>
+
+                    <h4 className="font-body text-xs font-semibold text-navy pt-2">Demo Tracking</h4>
+                    <div className="space-y-2">
+                      <label className="block font-body text-[11px] text-muted-foreground">
+                        Demo date & time
+                        <Input
+                          type="datetime-local"
+                          value={toLocalInput(lead.demo_scheduled_at)}
+                          onChange={e =>
+                            onUpdate(lead.id, {
+                              demo_scheduled_at: e.target.value ? new Date(e.target.value).toISOString() : null,
+                              demo_status: lead.demo_status === "not_scheduled" && e.target.value ? "scheduled" : lead.demo_status,
+                            })
+                          }
+                          className="h-8 text-xs mt-1"
+                        />
+                      </label>
+                      <label className="block font-body text-[11px] text-muted-foreground">
+                        Next follow-up
+                        <Input
+                          type="date"
+                          value={lead.follow_up_at ?? ""}
+                          onChange={e => onUpdate(lead.id, { follow_up_at: e.target.value || null })}
+                          className="h-8 text-xs mt-1"
+                        />
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <span className="font-body text-[11px] text-muted-foreground">Priority</span>
+                        <Select value={lead.priority} onValueChange={v => onUpdate(lead.id, { priority: v })}>
+                          <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {PRIORITY_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-medium border ${priorityColors[lead.priority] || priorityColors.normal}`}>
+                          {lead.priority}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Quick Actions */}
@@ -244,12 +340,10 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
                     <h4 className="font-body text-xs font-semibold text-navy">Quick Actions</h4>
                     <div className="flex flex-wrap gap-2">
                       <a
-                        href={whatsAppLink(lead.parent_phone)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-green-50 text-green-700 text-xs font-medium hover:bg-green-100 transition-colors"
+                        href={`tel:${lead.parent_phone.replace(/[^0-9+]/g, "")}`}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-navy/5 text-navy text-xs font-medium hover:bg-navy/10 transition-colors"
                       >
-                        <Phone size={12} /> WhatsApp
+                        <Phone size={12} /> Call
                       </a>
                       <a
                         href={mailtoLink(lead.parent_email, lead.parent_name)}
@@ -257,6 +351,65 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
                       >
                         <Mail size={12} /> Email
                       </a>
+                      <button
+                        onClick={() => copy(lead.parent_phone, "Phone")}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-muted text-secondary text-xs font-medium hover:bg-muted/70 transition-colors"
+                      >
+                        <Copy size={12} /> Phone
+                      </button>
+                      <button
+                        onClick={() => copy(lead.parent_email, "Email")}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-muted text-secondary text-xs font-medium hover:bg-muted/70 transition-colors"
+                      >
+                        <Copy size={12} /> Email
+                      </button>
+                      <a
+                        href={`/harshit-enrollment?plan=&lead=${lead.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-gold/10 text-gold text-xs font-medium hover:bg-gold/20 transition-colors"
+                      >
+                        <ExternalLink size={12} /> Enroll
+                      </a>
+                    </div>
+
+                    <h4 className="font-body text-xs font-semibold text-navy pt-2">WhatsApp Templates</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {templates.map(t => (
+                        <a
+                          key={t.label}
+                          href={waMessage(t.text)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-green-50 text-green-700 text-xs font-medium hover:bg-green-100 transition-colors"
+                        >
+                          <MessageSquare size={12} /> {t.label}
+                        </a>
+                      ))}
+                    </div>
+
+                    <h4 className="font-body text-xs font-semibold text-navy pt-2">Mark</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm" variant="outline" className="h-7 text-xs"
+                        onClick={() => onUpdate(lead.id, { demo_status: "done", status: lead.status === "new" ? "contacted" : lead.status })}>
+                        Demo done
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs"
+                        onClick={() => onUpdate(lead.id, { demo_status: "no_show" })}>
+                        No show
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs"
+                        onClick={() => onUpdate(lead.id, { status: "converted" })}>
+                        Converted
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs"
+                        onClick={() => {
+                          const d = new Date();
+                          d.setDate(d.getDate() + 2);
+                          onUpdate(lead.id, { follow_up_at: d.toISOString().split("T")[0] });
+                        }}>
+                        Follow up +2d
+                      </Button>
                     </div>
                   </div>
 
@@ -273,6 +426,7 @@ const LeadRow = ({ lead, onStatusChange }: { lead: Lead; onStatusChange: (id: st
     </>
   );
 };
+
 
 /* ── Expandable Contact Row ── */
 
