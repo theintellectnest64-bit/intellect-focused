@@ -761,6 +761,12 @@ const Admin = () => {
 
   const stats = useMemo(() => {
     const converted = leads.filter(l => l.status === "converted").length;
+    const demoDone = leads.filter(l => l.demo_status === "done").length;
+    const demoScheduled = leads.filter(l => l.demo_status === "scheduled" || l.demo_status === "rescheduled").length;
+    const demoPending = leads.filter(l => l.demo_status === "not_scheduled").length;
+    const noShow = leads.filter(l => l.demo_status === "no_show").length;
+    const followUpDue = leads.filter(l => l.follow_up_at && l.follow_up_at <= todayStr && l.status !== "converted").length;
+    const hot = leads.filter(l => l.priority === "hot").length;
     return {
       total: leads.length,
       today: leads.filter(l => l.created_at.startsWith(todayStr)).length,
@@ -769,6 +775,13 @@ const Admin = () => {
       converted,
       conversionRate: leads.length > 0 ? Math.round((converted / leads.length) * 100) : 0,
       contactsTotal: contacts.length,
+      demoDone,
+      demoScheduled,
+      demoPending,
+      noShow,
+      followUpDue,
+      hot,
+      demoToEnroll: demoDone > 0 ? Math.round((converted / demoDone) * 100) : 0,
     };
   }, [leads, contacts, todayStr, weekAgo, monthAgo]);
 
@@ -780,12 +793,18 @@ const Admin = () => {
     let filtered = filterByStatus(leads).filter(l =>
       !searchQuery || Object.values(l).some(v => String(v).toLowerCase().includes(searchQuery.toLowerCase()))
     );
+    if (demoFilter !== "all") filtered = filtered.filter(l => l.demo_status === demoFilter);
+    if (quickFilter === "hot") filtered = filtered.filter(l => l.priority === "hot");
+    if (quickFilter === "followup") filtered = filtered.filter(l => l.follow_up_at && l.follow_up_at <= todayStr && l.status !== "converted");
+    if (quickFilter === "today_demo") filtered = filtered.filter(l => l.demo_scheduled_at?.slice(0, 10) === todayStr);
+    if (quickFilter === "no_demo") filtered = filtered.filter(l => l.demo_status === "not_scheduled");
     return filtered.sort((a, b) => {
       const aVal = String((a as Record<string, unknown>)[sortField] ?? "");
       const bVal = String((b as Record<string, unknown>)[sortField] ?? "");
       return sortDir === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
     });
-  }, [leads, searchQuery, sortField, sortDir, statusFilter]);
+  }, [leads, searchQuery, sortField, sortDir, statusFilter, demoFilter, quickFilter, todayStr]);
+
 
   const sortedContacts = useMemo(() => {
     let filtered = filterByStatus(contacts).filter(c =>
