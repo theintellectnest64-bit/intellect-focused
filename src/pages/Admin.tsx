@@ -936,18 +936,22 @@ const Admin = () => {
                   <SortHeader field="child_age" label="Age" />
                   <SortHeader field="current_level" label="Level" />
                   <SortHeader field="preferred_language" label="Language" />
+                  <SortHeader field="demo_status" label="Demo" />
+                  <SortHeader field="demo_scheduled_at" label="Demo On" />
+                  <SortHeader field="follow_up_at" label="Follow-up" />
                   <SortHeader field="status" label="Status" />
-                  <th className="px-3 py-3 text-left font-body font-semibold text-navy">Action</th>
+                  <th className="px-3 py-3 text-left font-body font-semibold text-navy">Actions</th>
                   <th className="px-3 py-3 w-8" />
                 </tr>
               </thead>
               <tbody>
                 {sortedLeads.map(lead => (
-                  <LeadRow key={lead.id} lead={lead} onStatusChange={updateLeadStatus} />
+                  <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} />
                 ))}
                 {sortedLeads.length === 0 && (
-                  <tr><td colSpan={11} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
+                  <tr><td colSpan={14} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
                 )}
+
               </tbody>
             </table>
           </div>
