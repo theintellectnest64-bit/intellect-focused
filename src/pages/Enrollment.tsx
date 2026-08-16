@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import AgePicker from "@/components/AgePicker";
 import CountryCodePhone from "@/components/CountryCodePhone";
-import qrCodeAsset from "@/assets/payment-qr-code.jpeg.asset.json";
+import qrCodeImg from "@/assets/payment-qr-code.jpeg";
 
 const loadSupabase = () => import("@/integrations/supabase/client").then((m) => m.supabase);
 
@@ -120,6 +120,7 @@ const Enrollment = () => {
   const [studentWaCode, setStudentWaCode] = useState("+91|IN");
   const [quickAge, setQuickAge] = useState("");
   const [proofFile, setProofFile] = useState<File | null>(null);
+  const [qrOpen, setQrOpen] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState<{ reg: string; plan: string; coach: string; amount: string } | null>(null);
@@ -528,17 +529,20 @@ const Enrollment = () => {
                       Scan the QR code with any UPI app (Paytm, Google Pay, PhonePe, BHIM) to pay instantly.
                     </p>
                   </div>
-                  <div className="shrink-0 mx-auto md:mx-0">
-                    <div
-                      className="rounded-xl p-2 bg-white"
-                      style={{ border: `1px solid ${BORDER}` }}
+                  <div className="shrink-0 mx-auto md:mx-0 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setQrOpen(true)}
+                      className="rounded-xl p-2 bg-white block"
+                      style={{ border: `1px solid ${BORDER}`, boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}
                     >
                       <img
-                        src={qrCodeAsset.url}
+                        src={qrCodeImg}
                         alt="The Intellect Nest UPI QR code"
-                        className="w-40 h-40 md:w-44 md:h-44 object-contain"
+                        className="w-56 h-56 md:w-64 md:h-64 object-contain"
                       />
-                    </div>
+                    </button>
+                    <p className="font-body text-[11px] mt-2" style={{ color: ACCENT }}>Tap QR to enlarge</p>
                   </div>
                 </div>
               </div>
@@ -702,6 +706,42 @@ const Enrollment = () => {
           )}
         </div>
       </div>
+
+      {qrOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80"
+          onClick={() => setQrOpen(false)}
+        >
+          <div className="relative max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setQrOpen(false)}
+              className="absolute -top-10 right-0 text-white text-2xl font-bold"
+              aria-label="Close QR code"
+            >
+              ✕
+            </button>
+            <div className="rounded-2xl bg-white p-4">
+              <img
+                src={qrCodeImg}
+                alt="The Intellect Nest UPI QR code enlarged"
+                className="w-full max-h-[70vh] object-contain"
+              />
+              <p className="font-body text-sm text-center mt-3 font-semibold" style={{ color: NAVY }}>
+                THE INTELLECT NEST · theintellectnest@ptyes
+              </p>
+            </div>
+            <a
+              href={qrCodeImg}
+              download="tin-upi-qr.jpeg"
+              className="mt-4 block text-center rounded-lg px-4 py-2 font-body text-sm font-semibold"
+              style={{ background: "#FFFFFF", color: NAVY }}
+            >
+              Download QR
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
