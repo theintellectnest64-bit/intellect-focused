@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import AgePicker from "@/components/AgePicker";
 import CountryCodePhone from "@/components/CountryCodePhone";
-import qrCodeAsset from "@/assets/payment-qr-code.jpeg.asset.json";
+import qrCodeImg from "@/assets/payment-qr-code.jpeg";
 
 const loadSupabase = () => import("@/integrations/supabase/client").then((m) => m.supabase);
 
