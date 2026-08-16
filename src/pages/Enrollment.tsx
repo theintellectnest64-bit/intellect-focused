@@ -120,6 +120,7 @@ const Enrollment = () => {
   const [studentWaCode, setStudentWaCode] = useState("+91|IN");
   const [quickAge, setQuickAge] = useState("");
   const [proofFile, setProofFile] = useState<File | null>(null);
+  const [qrOpen, setQrOpen] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState<{ reg: string; plan: string; coach: string; amount: string } | null>(null);
