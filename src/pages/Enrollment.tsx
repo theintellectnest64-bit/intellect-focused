@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Check, ChevronLeft, ChevronRight, Upload } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Copy, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import AgePicker from "@/components/AgePicker";
 import CountryCodePhone from "@/components/CountryCodePhone";
+import qrCodeAsset from "@/assets/payment-qr-code.jpeg.asset.json";
 
 const loadSupabase = () => import("@/integrations/supabase/client").then((m) => m.supabase);
 
