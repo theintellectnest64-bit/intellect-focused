@@ -528,17 +528,20 @@ const Enrollment = () => {
                       Scan the QR code with any UPI app (Paytm, Google Pay, PhonePe, BHIM) to pay instantly.
                     </p>
                   </div>
-                  <div className="shrink-0 mx-auto md:mx-0">
-                    <div
-                      className="rounded-xl p-2 bg-white"
-                      style={{ border: `1px solid ${BORDER}` }}
+                  <div className="shrink-0 mx-auto md:mx-0 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setQrOpen(true)}
+                      className="rounded-xl p-2 bg-white block"
+                      style={{ border: `1px solid ${BORDER}`, boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}
                     >
                       <img
-                        src={qrCodeAsset.url}
+                        src={qrCodeImg}
                         alt="The Intellect Nest UPI QR code"
-                        className="w-40 h-40 md:w-44 md:h-44 object-contain"
+                        className="w-56 h-56 md:w-64 md:h-64 object-contain"
                       />
-                    </div>
+                    </button>
+                    <p className="font-body text-[11px] mt-2" style={{ color: ACCENT }}>Tap QR to enlarge</p>
                   </div>
                 </div>
               </div>
