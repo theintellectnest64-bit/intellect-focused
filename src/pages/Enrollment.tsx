@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Check, ChevronLeft, ChevronRight, Upload } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Copy, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import AgePicker from "@/components/AgePicker";
 import CountryCodePhone from "@/components/CountryCodePhone";
+import qrCodeAsset from "@/assets/payment-qr-code.jpeg.asset.json";
 
 const loadSupabase = () => import("@/integrations/supabase/client").then((m) => m.supabase);
 
@@ -498,8 +499,49 @@ const Enrollment = () => {
             <div className="space-y-5">
               <h2 className="font-display text-xl font-bold" style={{ color: NAVY }}>Payment</h2>
 
-
-
+              {/* Payment details card */}
+              <div className="rounded-2xl p-5 md:p-6" style={{ border: `1px solid ${BORDER}`, background: "#F0F6FF" }}>
+                <div className="flex flex-col md:flex-row gap-5 md:gap-6 items-start">
+                  <div className="flex-1 space-y-4">
+                    <div>
+                      <p className="font-body text-xs uppercase tracking-wide mb-1" style={{ color: "#4A5568" }}>Banking Name</p>
+                      <p className="font-display text-lg font-bold" style={{ color: NAVY }}>THE INTELLECT NEST</p>
+                    </div>
+                    <div>
+                      <p className="font-body text-xs uppercase tracking-wide mb-1" style={{ color: "#4A5568" }}>UPI ID</p>
+                      <div className="flex items-center gap-3">
+                        <p className="font-body text-base font-semibold" style={{ color: NAVY }}>theintellectnest@ptyes</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText("theintellectnest@ptyes");
+                            toast.success("UPI ID copied to clipboard");
+                          }}
+                          className="inline-flex items-center gap-1 rounded-md px-2 py-1 font-body text-xs font-medium"
+                          style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, color: ACCENT }}
+                        >
+                          <Copy size={12} /> Copy
+                        </button>
+                      </div>
+                    </div>
+                    <p className="font-body text-xs" style={{ color: "#4A5568" }}>
+                      Scan the QR code with any UPI app (Paytm, Google Pay, PhonePe, BHIM) to pay instantly.
+                    </p>
+                  </div>
+                  <div className="shrink-0 mx-auto md:mx-0">
+                    <div
+                      className="rounded-xl p-2 bg-white"
+                      style={{ border: `1px solid ${BORDER}` }}
+                    >
+                      <img
+                        src={qrCodeAsset.url}
+                        alt="The Intellect Nest UPI QR code"
+                        className="w-40 h-40 md:w-44 md:h-44 object-contain"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <Field label="Amount paid" required error={errors.payment_type}>
                 <div className="flex flex-wrap gap-3">
