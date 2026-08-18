@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.assign_receipt_number(uuid) FROM authenticated;
