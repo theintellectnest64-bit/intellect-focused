@@ -128,9 +128,16 @@ export type Database = {
       enrollments: {
         Row: {
           alternate_phone: string | null
+          amount_paid: number | null
+          assigned_coach: string | null
           balance_amount: string | null
           chess_id: string | null
           city: string
+          class_schedule: string | null
+          confirmation_email_attempts: number
+          confirmation_email_error: string | null
+          confirmation_email_sent_at: string | null
+          confirmation_email_status: string
           country: string
           created_at: string
           custom_plan_note: string | null
@@ -140,15 +147,20 @@ export type Database = {
           notes: string | null
           parent_name: string
           payment_date: string
+          payment_method: string | null
           payment_note: string | null
           payment_proof_url: string | null
+          payment_status: string
           payment_type: string
+          payment_verified_at: string | null
           phone: string
           plan: string
           preferred_coach: string
           preferred_timezone: string | null
+          receipt_number: string | null
           registration_number: string
           rubiks_addon: boolean
+          sessions_total: string | null
           state: string
           status: string
           student_counsellor: string
@@ -160,9 +172,16 @@ export type Database = {
         }
         Insert: {
           alternate_phone?: string | null
+          amount_paid?: number | null
+          assigned_coach?: string | null
           balance_amount?: string | null
           chess_id?: string | null
           city: string
+          class_schedule?: string | null
+          confirmation_email_attempts?: number
+          confirmation_email_error?: string | null
+          confirmation_email_sent_at?: string | null
+          confirmation_email_status?: string
           country: string
           created_at?: string
           custom_plan_note?: string | null
@@ -172,15 +191,20 @@ export type Database = {
           notes?: string | null
           parent_name: string
           payment_date: string
+          payment_method?: string | null
           payment_note?: string | null
           payment_proof_url?: string | null
+          payment_status?: string
           payment_type: string
+          payment_verified_at?: string | null
           phone: string
           plan: string
           preferred_coach?: string
           preferred_timezone?: string | null
+          receipt_number?: string | null
           registration_number: string
           rubiks_addon?: boolean
+          sessions_total?: string | null
           state: string
           status?: string
           student_counsellor?: string
@@ -192,9 +216,16 @@ export type Database = {
         }
         Update: {
           alternate_phone?: string | null
+          amount_paid?: number | null
+          assigned_coach?: string | null
           balance_amount?: string | null
           chess_id?: string | null
           city?: string
+          class_schedule?: string | null
+          confirmation_email_attempts?: number
+          confirmation_email_error?: string | null
+          confirmation_email_sent_at?: string | null
+          confirmation_email_status?: string
           country?: string
           created_at?: string
           custom_plan_note?: string | null
@@ -204,15 +235,20 @@ export type Database = {
           notes?: string | null
           parent_name?: string
           payment_date?: string
+          payment_method?: string | null
           payment_note?: string | null
           payment_proof_url?: string | null
+          payment_status?: string
           payment_type?: string
+          payment_verified_at?: string | null
           phone?: string
           plan?: string
           preferred_coach?: string
           preferred_timezone?: string | null
+          receipt_number?: string | null
           registration_number?: string
           rubiks_addon?: boolean
+          sessions_total?: string | null
           state?: string
           status?: string
           student_counsellor?: string
@@ -289,6 +325,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_receipt_number: {
+        Args: { _enrollment_id: string }
+        Returns: string
+      }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
