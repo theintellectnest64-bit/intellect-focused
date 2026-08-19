@@ -743,6 +743,10 @@ const Admin = () => {
     toast.success("Status updated");
   };
 
+  const patchEnrollment = (id: string, patch: Partial<Enrollment>) => {
+    setEnrollments(prev => prev.map(e => e.id === id ? { ...e, ...patch } : e));
+  };
+
   const exportCSV = () => {
     const data: Record<string, unknown>[] = tab === "leads" ? leads : tab === "contacts" ? contacts : enrollments;
     if (!data.length) return;
@@ -1087,7 +1091,7 @@ const Admin = () => {
               </thead>
               <tbody>
                 {sortedEnrollments.map(enr => (
-                  <EnrollmentRow key={enr.id} enrollment={enr} onStatusChange={updateEnrollmentStatus} />
+                  <EnrollmentRow key={enr.id} enrollment={enr} onStatusChange={updateEnrollmentStatus} onPatch={patchEnrollment} />
                 ))}
                 {sortedEnrollments.length === 0 && (
                   <tr><td colSpan={9} className="px-3 py-8 text-center font-body text-secondary">No enrollments found</td></tr>
