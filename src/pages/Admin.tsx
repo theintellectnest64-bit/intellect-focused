@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import EnrollmentPaymentPanel from "@/components/admin/EnrollmentPaymentPanel";
 
 type Lead = Tables<"leads">;
 type Contact = Tables<"contacts">;
@@ -515,7 +516,7 @@ const ContactRow = ({ contact, onStatusChange }: { contact: Contact; onStatusCha
 
 const ENROLLMENT_STATUS_OPTIONS = ["Pending Review", "Verified", "Active"] as const;
 
-const EnrollmentRow = ({ enrollment: e, onStatusChange }: { enrollment: Enrollment; onStatusChange: (id: string, status: string) => void }) => {
+const EnrollmentRow = ({ enrollment: e, onStatusChange, onPatch }: { enrollment: Enrollment; onStatusChange: (id: string, status: string) => void; onPatch: (id: string, patch: Partial<Enrollment>) => void }) => {
   const [expanded, setExpanded] = useState(false);
   const [proofLoading, setProofLoading] = useState(false);
 
@@ -631,6 +632,9 @@ const EnrollmentRow = ({ enrollment: e, onStatusChange }: { enrollment: Enrollme
                     <NotesSection recordType="enrollment" recordId={e.id} />
                   </div>
                 </div>
+                <div className="pb-4 px-2">
+                  <EnrollmentPaymentPanel enrollment={e} onUpdated={patch => onPatch(e.id, patch)} />
+                </div>
               </motion.div>
             </td>
           </tr>
@@ -737,6 +741,10 @@ const Admin = () => {
     if (error) { toast.error("Failed to update"); return; }
     setEnrollments(prev => prev.map(e => e.id === id ? { ...e, status } : e));
     toast.success("Status updated");
+  };
+
+  const patchEnrollment = (id: string, patch: Partial<Enrollment>) => {
+    setEnrollments(prev => prev.map(e => e.id === id ? { ...e, ...patch } : e));
   };
 
   const exportCSV = () => {
@@ -1083,7 +1091,7 @@ const Admin = () => {
               </thead>
               <tbody>
                 {sortedEnrollments.map(enr => (
-                  <EnrollmentRow key={enr.id} enrollment={enr} onStatusChange={updateEnrollmentStatus} />
+                  <EnrollmentRow key={enr.id} enrollment={enr} onStatusChange={updateEnrollmentStatus} onPatch={patchEnrollment} />
                 ))}
                 {sortedEnrollments.length === 0 && (
                   <tr><td colSpan={9} className="px-3 py-8 text-center font-body text-secondary">No enrollments found</td></tr>

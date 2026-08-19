@@ -29,6 +29,9 @@ const LINE = rgb(0.87, 0.9, 0.94);
 const clean = (v: string) =>
   String(v ?? "")
     .replace(/₹/g, "Rs. ")
+    .replace(/[\u2010-\u2015]/g, "-")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
     .replace(/[^\x20-\x7E]/g, "")
     .trim();
 
@@ -143,6 +146,20 @@ export async function buildReceiptPdf(d: ReceiptData): Promise<Uint8Array> {
     x: width - M - stW - 21, y: y - 31, size: 10, font: bold, color: rgb(0.09, 0.45, 0.24),
   });
   y -= boxH + 34;
+
+  const noteH = 62;
+  page.drawRectangle({
+    x: M, y: y - noteH + 14, width: innerW, height: noteH,
+    color: rgb(0.988, 0.992, 1), borderColor: LINE, borderWidth: 1,
+  });
+  page.drawText("NOTE", { x: M + 18, y: y - 6, size: 9, font: bold, color: SKY });
+  page.drawText("Thank you for choosing The Intellect Nest. Please retain this receipt as proof of payment.", {
+    x: M + 18, y: y - 24, size: 9.5, font: reg, color: NAVY,
+  });
+  page.drawText("For any billing query, write to theintellectnest64@gmail.com quoting the receipt number above.", {
+    x: M + 18, y: y - 40, size: 9.5, font: reg, color: GREY,
+  });
+  y -= noteH + 18;
 
   page.drawText("This is a computer-generated receipt and does not require a signature.", {
     x: M, y, size: 8.5, font: oblique, color: GREY,

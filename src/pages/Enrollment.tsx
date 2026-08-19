@@ -239,6 +239,12 @@ const Enrollment = () => {
         transaction_id: form.transaction_id.trim(),
         payment_proof_url: proofPath,
         payment_note: form.payment_note.trim() || null,
+        payment_method: "UPI",
+        payment_status: "Pending Verification",
+        amount_paid:
+          form.payment_type === "Full Payment" && selectedPlan?.price?.startsWith("₹")
+            ? Number(selectedPlan.price.replace(/[^\d.]/g, "")) || null
+            : null,
       });
       if (error) throw error;
 
