@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import EnrollmentPaymentPanel from "@/components/admin/EnrollmentPaymentPanel";
 
 type Lead = Tables<"leads">;
 type Contact = Tables<"contacts">;
@@ -515,7 +516,7 @@ const ContactRow = ({ contact, onStatusChange }: { contact: Contact; onStatusCha
 
 const ENROLLMENT_STATUS_OPTIONS = ["Pending Review", "Verified", "Active"] as const;
 
-const EnrollmentRow = ({ enrollment: e, onStatusChange }: { enrollment: Enrollment; onStatusChange: (id: string, status: string) => void }) => {
+const EnrollmentRow = ({ enrollment: e, onStatusChange, onPatch }: { enrollment: Enrollment; onStatusChange: (id: string, status: string) => void; onPatch: (id: string, patch: Partial<Enrollment>) => void }) => {
   const [expanded, setExpanded] = useState(false);
   const [proofLoading, setProofLoading] = useState(false);
 
@@ -630,6 +631,9 @@ const EnrollmentRow = ({ enrollment: e, onStatusChange }: { enrollment: Enrollme
                   <div>
                     <NotesSection recordType="enrollment" recordId={e.id} />
                   </div>
+                </div>
+                <div className="pb-4 px-2">
+                  <EnrollmentPaymentPanel enrollment={e} onUpdated={patch => onPatch(e.id, patch)} />
                 </div>
               </motion.div>
             </td>
