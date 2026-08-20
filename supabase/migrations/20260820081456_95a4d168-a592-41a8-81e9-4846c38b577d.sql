@@ -1,0 +1,1 @@
+DELETE FROM public.enrollments WHERE registration_number IN ('TIN-TEST-0001','TIN-TEST-0002');
