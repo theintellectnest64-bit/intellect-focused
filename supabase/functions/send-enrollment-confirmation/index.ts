@@ -139,7 +139,7 @@ serve(async (req) => {
     });
 
     // ---- Send ----
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "The Intellect Nest <onboarding@resend.dev>";
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "The Intellect Nest <admissions@tinchess.com>";
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
