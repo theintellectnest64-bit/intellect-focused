@@ -53,14 +53,26 @@ export async function buildReceiptPdf(d: ReceiptData): Promise<Uint8Array> {
   page.drawRectangle({ x: 0, y: height - 132, width, height: 132, color: NAVY });
   page.drawRectangle({ x: 0, y: height - 138, width, height: 6, color: GOLD });
 
+  // Official logo (embedded PNG, transparent background)
+  let textX = M;
+  try {
+    const logo = await pdf.embedPng(decodeBase64(LOGO_PNG_BASE64));
+    const logoH = 58;
+    const logoW = (logo.width / logo.height) * logoH;
+    page.drawImage(logo, { x: M, y: height - 46 - logoH, width: logoW, height: logoH });
+    textX = M + logoW + 14;
+  } catch (e) {
+    console.error("Logo embed failed:", e);
+  }
+
   page.drawText("THE INTELLECT NEST", {
-    x: M, y: height - 62, size: 22, font: bold, color: rgb(1, 1, 1),
+    x: textX, y: height - 62, size: 22, font: bold, color: rgb(1, 1, 1),
   });
   page.drawText("Where Knowledge Takes Flight", {
-    x: M, y: height - 82, size: 10.5, font: oblique, color: GOLD,
+    x: textX, y: height - 82, size: 10.5, font: oblique, color: GOLD,
   });
   page.drawText("tinchess.com  |  theintellectnest64@gmail.com", {
-    x: M, y: height - 104, size: 9, font: reg, color: rgb(0.78, 0.85, 0.94),
+    x: textX, y: height - 104, size: 9, font: reg, color: rgb(0.78, 0.85, 0.94),
   });
 
   const rightText = (text: string, y: number, size: number, font = reg, color = rgb(1, 1, 1)) => {
