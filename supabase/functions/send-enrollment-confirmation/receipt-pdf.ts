@@ -156,7 +156,7 @@ export async function buildReceiptPdf(d: ReceiptData): Promise<Uint8Array> {
   page.drawText("Thank you for choosing The Intellect Nest. Please retain this receipt as proof of payment.", {
     x: M + 18, y: y - 24, size: 9.5, font: reg, color: NAVY,
   });
-  page.drawText("For any billing query, write to theintellectnest64@gmail.com quoting the receipt number above.", {
+  page.drawText("For any billing query, write to theintellectnest64@gmail.com quoting the receipt reference above.", {
     x: M + 18, y: y - 40, size: 9.5, font: reg, color: GREY,
   });
   y -= noteH + 18;
@@ -170,7 +170,7 @@ export async function buildReceiptPdf(d: ReceiptData): Promise<Uint8Array> {
   page.drawText("THE INTELLECT NEST", { x: M, y: 72, size: 10, font: bold, color: NAVY });
   page.drawText("Where Knowledge Takes Flight", { x: M, y: 58, size: 9, font: oblique, color: GREY });
   page.drawText("tinchess.com", { x: M, y: 42, size: 9, font: reg, color: SKY });
-  const rn = clean(`Receipt No. ${d.receiptNumber}`);
+  const rn = clean(`Receipt Reference: ${d.receiptNumber}`);
   page.drawText(rn, {
     x: width - M - bold.widthOfTextAtSize(rn, 9), y: 58, size: 9, font: bold, color: NAVY,
   });

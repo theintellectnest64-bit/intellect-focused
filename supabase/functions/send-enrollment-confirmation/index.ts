@@ -151,7 +151,7 @@ serve(async (req) => {
         to: [enr.email],
         cc: [CC_EMAIL],
         reply_to: CC_EMAIL,
-        subject: `Enrollment Confirmed — ${enr.student_name} | Receipt ${receiptNumber}`,
+        subject: `Enrollment Confirmed — ${enr.student_name} | The Intellect Nest`,
         html,
         attachments: [
           {

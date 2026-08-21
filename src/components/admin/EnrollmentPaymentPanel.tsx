@@ -101,9 +101,12 @@ const EnrollmentPaymentPanel = ({ enrollment: e, onUpdated }: Props) => {
       <div className="flex flex-wrap items-center gap-2 mb-3">
         <Receipt size={14} className="text-gold" />
         <h4 className="font-body text-xs font-semibold text-navy">Payment verification &amp; receipt</h4>
+        <span className="ml-1 rounded-md bg-navy/5 px-2 py-0.5 font-body text-[11px] font-semibold text-navy">
+          Internal ID: {e.registration_number}
+        </span>
         {e.receipt_number && (
-          <span className="ml-1 rounded-md bg-navy/5 px-2 py-0.5 font-body text-[11px] font-semibold text-navy">
-            {e.receipt_number}
+          <span className="rounded-md bg-gold/15 px-2 py-0.5 font-body text-[11px] font-semibold text-navy">
+            Public Receipt Reference: {e.receipt_number}
           </span>
         )}
         {emailStatus === "sent" && (

@@ -47,7 +47,7 @@ export function buildEmailHtml(d: EmailData): string {
 <title>Enrollment Confirmed — The Intellect Nest</title>
 </head>
 <body style="margin:0;padding:0;background:#ffffff;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Enrollment confirmed for ${esc(d.studentName)} — receipt ${esc(d.receiptNumber)} attached.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Enrollment confirmed for ${esc(d.studentName)} — receipt reference ${esc(d.receiptNumber)} attached.</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;padding:24px 12px;">
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;border:1px solid ${BORDER};border-radius:14px;overflow:hidden;">
@@ -103,7 +103,7 @@ export function buildEmailHtml(d: EmailData): string {
       </td></tr>
       <tr><td style="padding:0 22px 4px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-          ${row("Receipt No.", d.receiptNumber)}
+          ${row("Receipt Reference", d.receiptNumber)}
           ${row("Payment Date", d.paymentDate)}
           ${row("Payment Method", d.paymentMethod)}
           ${row("Payment Reference", d.paymentReference)}
