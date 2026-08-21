@@ -1,4 +1,12 @@
 import { PDFDocument, StandardFonts, rgb } from "https://esm.sh/pdf-lib@1.17.1";
+import { LOGO_PNG_BASE64 } from "./logo-base64.ts";
+
+const decodeBase64 = (b64: string): Uint8Array => {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+};
 
 export interface ReceiptData {
   receiptNumber: string;
