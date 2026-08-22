@@ -1055,24 +1055,26 @@ const Admin = () => {
 
         {/* Leads Table */}
         {tab === "leads" && (
-          <div className="bg-card rounded-xl card-shadow border border-sky-border overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="bg-card rounded-xl card-shadow border border-sky-border">
+            <table className="w-full text-sm table-fixed">
+              <colgroup>
+                <col className="w-[19%]" />
+                <col className="w-[15%]" />
+                <col className="w-[11%]" />
+                <col className="w-[12%]" />
+                <col className="w-[9%]" />
+                <col className="w-[9%]" />
+                <col className="w-[25%]" />
+              </colgroup>
               <thead>
                 <tr className="border-b border-sky-border bg-muted/50">
-                  <SortHeader field="created_at" label="Date" />
-                  <SortHeader field="parent_name" label="Parent" />
-                  <SortHeader field="parent_email" label="Email" />
-                  <SortHeader field="parent_phone" label="Phone" />
+                  <SortHeader field="parent_name" label="Parent / Lead" />
                   <SortHeader field="child_name" label="Child" />
-                  <SortHeader field="child_age" label="Age" />
-                  <SortHeader field="current_level" label="Level" />
-                  <SortHeader field="preferred_language" label="Language" />
                   <SortHeader field="demo_status" label="Demo" />
                   <SortHeader field="demo_scheduled_at" label="Demo On" />
                   <SortHeader field="follow_up_at" label="Follow-up" />
                   <SortHeader field="status" label="Status" />
-                  <th className="px-3 py-3 text-left font-body font-semibold text-navy">Actions</th>
-                  <th className="px-3 py-3 w-8" />
+                  <th className="px-2 py-3 text-right font-body font-semibold text-navy">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1080,8 +1082,9 @@ const Admin = () => {
                   <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} />
                 ))}
                 {sortedLeads.length === 0 && (
-                  <tr><td colSpan={14} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
+                  <tr><td colSpan={7} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
                 )}
+
 
               </tbody>
             </table>
