@@ -307,7 +307,7 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
       <AnimatePresence>
         {expanded && (
           <tr>
-            <td colSpan={14} className="px-3 py-0">
+            <td colSpan={7} className="px-3 py-0">
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
@@ -318,8 +318,18 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
                 <div className="py-4 px-2 grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-sky-border">
                   {/* Details */}
                   <div className="space-y-2">
-                    <h4 className="font-body text-xs font-semibold text-navy">Details</h4>
+                    <h4 className="font-body text-xs font-semibold text-navy">Lead Details</h4>
                     <div className="space-y-1">
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Parent:</span> {lead.parent_name}</p>
+                      <p className="font-body text-xs text-secondary break-all"><span className="text-muted-foreground">Email:</span> {lead.parent_email}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Phone:</span> {lead.parent_phone}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Child:</span> {lead.child_name}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Age:</span> {lead.child_age}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Level:</span> {lead.current_level}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Language:</span> {lead.preferred_language}</p>
+                      {lead.source && (
+                        <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Source:</span> {lead.source}</p>
+                      )}
                       <p className="font-body text-xs text-secondary">
                         <span className="text-muted-foreground">Submitted:</span> {formatDateTime(lead.created_at)}
                       </p>
@@ -329,6 +339,7 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
                         </p>
                       )}
                     </div>
+
 
                     <h4 className="font-body text-xs font-semibold text-navy pt-2">Demo Tracking</h4>
                     <div className="space-y-2">
