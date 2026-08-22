@@ -104,8 +104,17 @@ const StatusBadge = ({ status }: { status: string }) => (
   </span>
 );
 
+const demoDot: Record<string, string> = {
+  not_scheduled: "bg-muted-foreground/50",
+  scheduled: "bg-sky",
+  done: "bg-green-500",
+  no_show: "bg-red-500",
+  rescheduled: "bg-gold",
+};
+
 const DemoBadge = ({ demo }: { demo: string }) => (
-  <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium border whitespace-nowrap ${demoColors[demo] || demoColors.not_scheduled}`}>
+  <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-semibold border whitespace-nowrap ${demoColors[demo] || demoColors.not_scheduled}`}>
+    <span className={`h-2 w-2 rounded-full ${demoDot[demo] || demoDot.not_scheduled}`} />
     {demoLabel(demo)}
   </span>
 );
@@ -260,7 +269,7 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
         <td className="px-2 py-2.5" onClick={e => e.stopPropagation()}>
           <div className="flex items-center gap-1 justify-end">
             <Select value={lead.demo_status} onValueChange={v => onUpdate(lead.id, { demo_status: v })}>
-              <SelectTrigger className="h-8 w-[120px] text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-8 w-[138px] text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {DEMO_STATUS_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
               </SelectContent>
@@ -1037,13 +1046,13 @@ const Admin = () => {
           <div className="bg-card rounded-xl card-shadow border border-sky-border">
             <table className="w-full text-sm table-fixed">
               <colgroup>
-                <col className="w-[19%]" />
+                <col className="w-[17%]" />
                 <col className="w-[15%]" />
                 <col className="w-[11%]" />
                 <col className="w-[12%]" />
                 <col className="w-[9%]" />
                 <col className="w-[9%]" />
-                <col className="w-[25%]" />
+                <col className="w-[27%]" />
               </colgroup>
               <thead>
                 <tr className="border-b border-sky-border bg-muted/50">
