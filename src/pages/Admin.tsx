@@ -939,45 +939,24 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
+        {/* Compact stats */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 mb-5">
           {[
-            { label: "Total Leads", value: stats.total, icon: <Users size={20} /> },
-            { label: "Today", value: stats.today, icon: <TrendingUp size={20} /> },
-            { label: "This Week", value: stats.week, icon: <TrendingUp size={20} /> },
-            { label: "This Month", value: stats.month, icon: <Mail size={20} /> },
-            { label: "Converted", value: stats.converted, icon: <TrendingUp size={20} /> },
-            { label: "Conversion", value: `${stats.conversionRate}%`, icon: <TrendingUp size={20} /> },
+            { label: "Total Leads", value: stats.total },
+            { label: "Demo Done", value: stats.demoDone },
+            { label: "Scheduled", value: stats.demoScheduled },
+            { label: "Not Scheduled", value: stats.demoPending },
+            { label: "No Shows", value: stats.noShow },
+            { label: "Follow-ups Due", value: stats.followUpDue },
+            { label: "Demo → Enroll", value: `${stats.demoToEnroll}%` },
           ].map((s, i) => (
-            <div key={i} className="bg-card p-4 rounded-lg card-shadow border border-sky-border">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-sky">{s.icon}</span>
-                <span className="font-body text-xs text-secondary">{s.label}</span>
-              </div>
-              <p className="font-display text-2xl font-bold text-navy">{s.value}</p>
+            <div key={i} className="bg-card px-3 py-2 rounded-lg border border-sky-border">
+              <p className="font-body text-[11px] text-secondary leading-tight truncate">{s.label}</p>
+              <p className="font-display text-xl font-bold text-navy leading-tight">{s.value}</p>
             </div>
           ))}
         </div>
 
-        {/* Demo pipeline stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-          {[
-            { label: "Demo Done", value: stats.demoDone, icon: <CalendarCheck size={20} /> },
-            { label: "Demo Scheduled", value: stats.demoScheduled, icon: <CalendarCheck size={20} /> },
-            { label: "Demo Pending", value: stats.demoPending, icon: <CalendarCheck size={20} /> },
-            { label: "No Shows", value: stats.noShow, icon: <CalendarCheck size={20} /> },
-            { label: "Follow-ups Due", value: stats.followUpDue, icon: <MessageSquare size={20} /> },
-            { label: "Demo → Enroll", value: `${stats.demoToEnroll}%`, icon: <TrendingUp size={20} /> },
-          ].map((s, i) => (
-            <div key={i} className="bg-card p-4 rounded-lg card-shadow border border-sky-border">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-gold">{s.icon}</span>
-                <span className="font-body text-xs text-secondary">{s.label}</span>
-              </div>
-              <p className="font-display text-2xl font-bold text-navy">{s.value}</p>
-            </div>
-          ))}
-        </div>
 
 
         {/* Tabs + Actions */}
