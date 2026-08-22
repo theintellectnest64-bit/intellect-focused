@@ -104,8 +104,17 @@ const StatusBadge = ({ status }: { status: string }) => (
   </span>
 );
 
+const demoDot: Record<string, string> = {
+  not_scheduled: "bg-muted-foreground/50",
+  scheduled: "bg-sky",
+  done: "bg-green-500",
+  no_show: "bg-red-500",
+  rescheduled: "bg-gold",
+};
+
 const DemoBadge = ({ demo }: { demo: string }) => (
-  <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium border whitespace-nowrap ${demoColors[demo] || demoColors.not_scheduled}`}>
+  <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-semibold border whitespace-nowrap ${demoColors[demo] || demoColors.not_scheduled}`}>
+    <span className={`h-2 w-2 rounded-full ${demoDot[demo] || demoDot.not_scheduled}`} />
     {demoLabel(demo)}
   </span>
 );
@@ -220,40 +229,55 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
   return (
     <>
       <tr
-        className={`border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer ${lead.priority === "hot" ? "bg-red-50/40" : ""}`}
+        className={`border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer ${lead.priority === "hot" ? "bg-red-50/40" : ""} ${overdue ? "border-l-2 border-l-destructive" : ""}`}
         onClick={() => setExpanded(!expanded)}
       >
-        <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{formatDate(lead.created_at)}</td>
-        <td className="px-3 py-3 font-body text-navy font-medium whitespace-nowrap">
-          {lead.priority === "hot" && <span className="mr-1">🔥</span>}
-          {lead.parent_name}
+        {/* Parent / Lead */}
+        <td className="px-3 py-2.5">
+          <div className="font-body text-navy font-medium leading-tight truncate max-w-[190px]">
+            {lead.priority === "hot" && <span className="mr-1">🔥</span>}
+            {lead.parent_name}
+          </div>
+          <div className="font-body text-[11px] text-muted-foreground leading-tight">{formatDate(lead.created_at)}</div>
         </td>
-        <td className="px-3 py-3 font-body text-secondary">{lead.parent_email}</td>
-        <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{lead.parent_phone}</td>
-        <td className="px-3 py-3 font-body text-navy">{lead.child_name}</td>
-        <td className="px-3 py-3 font-body text-secondary text-center">{lead.child_age}</td>
-        <td className="px-3 py-3 font-body text-secondary">{lead.current_level}</td>
-        <td className="px-3 py-3 font-body text-secondary">{lead.preferred_language}</td>
-        <td className="px-3 py-3"><DemoBadge demo={lead.demo_status} /></td>
-        <td className="px-3 py-3 font-body text-secondary text-xs whitespace-nowrap">
+
+        {/* Child */}
+        <td className="px-3 py-2.5">
+          <div className="font-body text-navy leading-tight truncate max-w-[150px]">{lead.child_name}</div>
+          <div className="font-body text-[11px] text-muted-foreground leading-tight">
+            {lead.child_age} yrs · {lead.current_level}
+          </div>
+        </td>
+
+        {/* Demo Status — most important */}
+        <td className="px-2 py-2.5"><DemoBadge demo={lead.demo_status} /></td>
+
+        {/* Demo date/time */}
+        <td className="px-2 py-2.5 font-body text-xs text-secondary whitespace-nowrap">
           {lead.demo_scheduled_at ? formatDateTime(lead.demo_scheduled_at) : "—"}
         </td>
-        <td className={`px-3 py-3 font-body text-xs whitespace-nowrap ${overdue ? "text-destructive font-semibold" : "text-secondary"}`}>
+
+        {/* Follow-up */}
+        <td className={`px-2 py-2.5 font-body text-xs whitespace-nowrap ${overdue ? "text-destructive font-semibold" : "text-secondary"}`}>
           {lead.follow_up_at ? formatDate(lead.follow_up_at) : "—"}
         </td>
-        <td className="px-3 py-3"><StatusBadge status={lead.status} /></td>
-        <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
-          <div className="flex items-center gap-1">
-            <Select value={lead.status} onValueChange={v => onUpdate(lead.id, { status: v })}>
-              <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
-              </SelectContent>
-            </Select>
+
+        {/* Status */}
+        <td className="px-2 py-2.5"><StatusBadge status={lead.status} /></td>
+
+        {/* Actions */}
+        <td className="px-2 py-2.5" onClick={e => e.stopPropagation()}>
+          <div className="flex items-center gap-1 justify-end">
             <Select value={lead.demo_status} onValueChange={v => onUpdate(lead.id, { demo_status: v })}>
-              <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-8 w-[138px] text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {DEMO_STATUS_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={lead.status} onValueChange={v => onUpdate(lead.id, { status: v })}>
+              <SelectTrigger className="h-8 w-[104px] text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
               </SelectContent>
             </Select>
             <a
@@ -261,20 +285,38 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
               target="_blank"
               rel="noopener noreferrer"
               title="WhatsApp"
-              className="inline-flex items-center justify-center h-8 w-8 rounded-md bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
+              className="inline-flex items-center justify-center h-8 w-8 shrink-0 rounded-md bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
             >
               <Phone size={14} />
             </a>
+            <button
+              type="button"
+              title="Set follow-up in 2 days"
+              onClick={() => {
+                const d = new Date();
+                d.setDate(d.getDate() + 2);
+                onUpdate(lead.id, { follow_up_at: d.toISOString().split("T")[0] });
+              }}
+              className="inline-flex items-center justify-center h-8 w-8 shrink-0 rounded-md bg-gold/10 text-gold hover:bg-gold/20 transition-colors"
+            >
+              <CalendarCheck size={14} />
+            </button>
+            <button
+              type="button"
+              title={expanded ? "Collapse" : "Expand details"}
+              onClick={() => setExpanded(!expanded)}
+              className="inline-flex items-center justify-center h-8 w-7 shrink-0 rounded-md text-muted-foreground hover:text-navy transition-colors"
+            >
+              {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
           </div>
         </td>
-        <td className="px-3 py-3 text-muted-foreground">
-          {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </td>
       </tr>
+
       <AnimatePresence>
         {expanded && (
           <tr>
-            <td colSpan={14} className="px-3 py-0">
+            <td colSpan={7} className="px-3 py-0">
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
@@ -285,8 +327,18 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
                 <div className="py-4 px-2 grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-sky-border">
                   {/* Details */}
                   <div className="space-y-2">
-                    <h4 className="font-body text-xs font-semibold text-navy">Details</h4>
+                    <h4 className="font-body text-xs font-semibold text-navy">Lead Details</h4>
                     <div className="space-y-1">
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Parent:</span> {lead.parent_name}</p>
+                      <p className="font-body text-xs text-secondary break-all"><span className="text-muted-foreground">Email:</span> {lead.parent_email}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Phone:</span> {lead.parent_phone}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Child:</span> {lead.child_name}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Age:</span> {lead.child_age}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Level:</span> {lead.current_level}</p>
+                      <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Language:</span> {lead.preferred_language}</p>
+                      {lead.source && (
+                        <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Source:</span> {lead.source}</p>
+                      )}
                       <p className="font-body text-xs text-secondary">
                         <span className="text-muted-foreground">Submitted:</span> {formatDateTime(lead.created_at)}
                       </p>
@@ -296,6 +348,7 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
                         </p>
                       )}
                     </div>
+
 
                     <h4 className="font-body text-xs font-semibold text-navy pt-2">Demo Tracking</h4>
                     <div className="space-y-2">
@@ -895,45 +948,24 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
+        {/* Compact stats */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 mb-5">
           {[
-            { label: "Total Leads", value: stats.total, icon: <Users size={20} /> },
-            { label: "Today", value: stats.today, icon: <TrendingUp size={20} /> },
-            { label: "This Week", value: stats.week, icon: <TrendingUp size={20} /> },
-            { label: "This Month", value: stats.month, icon: <Mail size={20} /> },
-            { label: "Converted", value: stats.converted, icon: <TrendingUp size={20} /> },
-            { label: "Conversion", value: `${stats.conversionRate}%`, icon: <TrendingUp size={20} /> },
+            { label: "Total Leads", value: stats.total },
+            { label: "Demo Done", value: stats.demoDone },
+            { label: "Scheduled", value: stats.demoScheduled },
+            { label: "Not Scheduled", value: stats.demoPending },
+            { label: "No Shows", value: stats.noShow },
+            { label: "Follow-ups Due", value: stats.followUpDue },
+            { label: "Demo → Enroll", value: `${stats.demoToEnroll}%` },
           ].map((s, i) => (
-            <div key={i} className="bg-card p-4 rounded-lg card-shadow border border-sky-border">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-sky">{s.icon}</span>
-                <span className="font-body text-xs text-secondary">{s.label}</span>
-              </div>
-              <p className="font-display text-2xl font-bold text-navy">{s.value}</p>
+            <div key={i} className="bg-card px-3 py-2 rounded-lg border border-sky-border">
+              <p className="font-body text-[11px] text-secondary leading-tight truncate">{s.label}</p>
+              <p className="font-display text-xl font-bold text-navy leading-tight">{s.value}</p>
             </div>
           ))}
         </div>
 
-        {/* Demo pipeline stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-          {[
-            { label: "Demo Done", value: stats.demoDone, icon: <CalendarCheck size={20} /> },
-            { label: "Demo Scheduled", value: stats.demoScheduled, icon: <CalendarCheck size={20} /> },
-            { label: "Demo Pending", value: stats.demoPending, icon: <CalendarCheck size={20} /> },
-            { label: "No Shows", value: stats.noShow, icon: <CalendarCheck size={20} /> },
-            { label: "Follow-ups Due", value: stats.followUpDue, icon: <MessageSquare size={20} /> },
-            { label: "Demo → Enroll", value: `${stats.demoToEnroll}%`, icon: <TrendingUp size={20} /> },
-          ].map((s, i) => (
-            <div key={i} className="bg-card p-4 rounded-lg card-shadow border border-sky-border">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-gold">{s.icon}</span>
-                <span className="font-body text-xs text-secondary">{s.label}</span>
-              </div>
-              <p className="font-display text-2xl font-bold text-navy">{s.value}</p>
-            </div>
-          ))}
-        </div>
 
 
         {/* Tabs + Actions */}
@@ -1011,24 +1043,26 @@ const Admin = () => {
 
         {/* Leads Table */}
         {tab === "leads" && (
-          <div className="bg-card rounded-xl card-shadow border border-sky-border overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="bg-card rounded-xl card-shadow border border-sky-border">
+            <table className="w-full text-sm table-fixed">
+              <colgroup>
+                <col className="w-[17%]" />
+                <col className="w-[15%]" />
+                <col className="w-[11%]" />
+                <col className="w-[12%]" />
+                <col className="w-[9%]" />
+                <col className="w-[9%]" />
+                <col className="w-[27%]" />
+              </colgroup>
               <thead>
                 <tr className="border-b border-sky-border bg-muted/50">
-                  <SortHeader field="created_at" label="Date" />
-                  <SortHeader field="parent_name" label="Parent" />
-                  <SortHeader field="parent_email" label="Email" />
-                  <SortHeader field="parent_phone" label="Phone" />
+                  <SortHeader field="parent_name" label="Parent / Lead" />
                   <SortHeader field="child_name" label="Child" />
-                  <SortHeader field="child_age" label="Age" />
-                  <SortHeader field="current_level" label="Level" />
-                  <SortHeader field="preferred_language" label="Language" />
                   <SortHeader field="demo_status" label="Demo" />
                   <SortHeader field="demo_scheduled_at" label="Demo On" />
                   <SortHeader field="follow_up_at" label="Follow-up" />
                   <SortHeader field="status" label="Status" />
-                  <th className="px-3 py-3 text-left font-body font-semibold text-navy">Actions</th>
-                  <th className="px-3 py-3 w-8" />
+                  <th className="px-2 py-3 text-right font-body font-semibold text-navy">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1036,8 +1070,9 @@ const Admin = () => {
                   <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} />
                 ))}
                 {sortedLeads.length === 0 && (
-                  <tr><td colSpan={14} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
+                  <tr><td colSpan={7} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
                 )}
+
 
               </tbody>
             </table>
