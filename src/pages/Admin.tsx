@@ -220,40 +220,55 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
   return (
     <>
       <tr
-        className={`border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer ${lead.priority === "hot" ? "bg-red-50/40" : ""}`}
+        className={`border-b border-sky-border/50 hover:bg-muted/30 transition-colors cursor-pointer ${lead.priority === "hot" ? "bg-red-50/40" : ""} ${overdue ? "border-l-2 border-l-destructive" : ""}`}
         onClick={() => setExpanded(!expanded)}
       >
-        <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{formatDate(lead.created_at)}</td>
-        <td className="px-3 py-3 font-body text-navy font-medium whitespace-nowrap">
-          {lead.priority === "hot" && <span className="mr-1">🔥</span>}
-          {lead.parent_name}
+        {/* Parent / Lead */}
+        <td className="px-3 py-2.5">
+          <div className="font-body text-navy font-medium leading-tight truncate max-w-[190px]">
+            {lead.priority === "hot" && <span className="mr-1">🔥</span>}
+            {lead.parent_name}
+          </div>
+          <div className="font-body text-[11px] text-muted-foreground leading-tight">{formatDate(lead.created_at)}</div>
         </td>
-        <td className="px-3 py-3 font-body text-secondary">{lead.parent_email}</td>
-        <td className="px-3 py-3 font-body text-secondary whitespace-nowrap">{lead.parent_phone}</td>
-        <td className="px-3 py-3 font-body text-navy">{lead.child_name}</td>
-        <td className="px-3 py-3 font-body text-secondary text-center">{lead.child_age}</td>
-        <td className="px-3 py-3 font-body text-secondary">{lead.current_level}</td>
-        <td className="px-3 py-3 font-body text-secondary">{lead.preferred_language}</td>
-        <td className="px-3 py-3"><DemoBadge demo={lead.demo_status} /></td>
-        <td className="px-3 py-3 font-body text-secondary text-xs whitespace-nowrap">
+
+        {/* Child */}
+        <td className="px-3 py-2.5">
+          <div className="font-body text-navy leading-tight truncate max-w-[150px]">{lead.child_name}</div>
+          <div className="font-body text-[11px] text-muted-foreground leading-tight">
+            {lead.child_age} yrs · {lead.current_level}
+          </div>
+        </td>
+
+        {/* Demo Status — most important */}
+        <td className="px-2 py-2.5"><DemoBadge demo={lead.demo_status} /></td>
+
+        {/* Demo date/time */}
+        <td className="px-2 py-2.5 font-body text-xs text-secondary whitespace-nowrap">
           {lead.demo_scheduled_at ? formatDateTime(lead.demo_scheduled_at) : "—"}
         </td>
-        <td className={`px-3 py-3 font-body text-xs whitespace-nowrap ${overdue ? "text-destructive font-semibold" : "text-secondary"}`}>
+
+        {/* Follow-up */}
+        <td className={`px-2 py-2.5 font-body text-xs whitespace-nowrap ${overdue ? "text-destructive font-semibold" : "text-secondary"}`}>
           {lead.follow_up_at ? formatDate(lead.follow_up_at) : "—"}
         </td>
-        <td className="px-3 py-3"><StatusBadge status={lead.status} /></td>
-        <td className="px-3 py-3" onClick={e => e.stopPropagation()}>
-          <div className="flex items-center gap-1">
-            <Select value={lead.status} onValueChange={v => onUpdate(lead.id, { status: v })}>
-              <SelectTrigger className="h-8 w-28 text-xs"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
-              </SelectContent>
-            </Select>
+
+        {/* Status */}
+        <td className="px-2 py-2.5"><StatusBadge status={lead.status} /></td>
+
+        {/* Actions */}
+        <td className="px-2 py-2.5" onClick={e => e.stopPropagation()}>
+          <div className="flex items-center gap-1 justify-end">
             <Select value={lead.demo_status} onValueChange={v => onUpdate(lead.id, { demo_status: v })}>
-              <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-8 w-[120px] text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {DEMO_STATUS_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={lead.status} onValueChange={v => onUpdate(lead.id, { status: v })}>
+              <SelectTrigger className="h-8 w-[104px] text-xs"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}
               </SelectContent>
             </Select>
             <a
@@ -261,16 +276,34 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
               target="_blank"
               rel="noopener noreferrer"
               title="WhatsApp"
-              className="inline-flex items-center justify-center h-8 w-8 rounded-md bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
+              className="inline-flex items-center justify-center h-8 w-8 shrink-0 rounded-md bg-green-50 text-green-700 hover:bg-green-100 transition-colors"
             >
               <Phone size={14} />
             </a>
+            <button
+              type="button"
+              title="Set follow-up in 2 days"
+              onClick={() => {
+                const d = new Date();
+                d.setDate(d.getDate() + 2);
+                onUpdate(lead.id, { follow_up_at: d.toISOString().split("T")[0] });
+              }}
+              className="inline-flex items-center justify-center h-8 w-8 shrink-0 rounded-md bg-gold/10 text-gold hover:bg-gold/20 transition-colors"
+            >
+              <CalendarCheck size={14} />
+            </button>
+            <button
+              type="button"
+              title={expanded ? "Collapse" : "Expand details"}
+              onClick={() => setExpanded(!expanded)}
+              className="inline-flex items-center justify-center h-8 w-7 shrink-0 rounded-md text-muted-foreground hover:text-navy transition-colors"
+            >
+              {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
           </div>
         </td>
-        <td className="px-3 py-3 text-muted-foreground">
-          {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </td>
       </tr>
+
       <AnimatePresence>
         {expanded && (
           <tr>
