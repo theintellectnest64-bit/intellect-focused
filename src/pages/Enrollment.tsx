@@ -19,7 +19,7 @@ const WHATSAPP_URL =
 const PLANS = [
   { id: "india-group", name: "India Group", price: "₹2,999/month", desc: "8 classes + weekly tournament, 4–6 students" },
   { id: "india-1on1", name: "India 1-on-1", price: "₹4,999/month", desc: "8 private sessions, fully personalised" },
-  { id: "international-group", name: "International Group", price: "$49/month", desc: "8 classes + weekly tournament, 4–6 students" },
+  { id: "international-group", name: "International Group", price: "$59/month", desc: "8 classes + weekly tournament, 4–6 students" },
   { id: "international-1on1", name: "International 1-on-1", price: "$99/month", desc: "8 private sessions, fully personalised" },
   { id: "other", name: "Other / Customised Plan", price: "Let's talk", desc: "Tell us the arrangement you're looking for" },
 ];

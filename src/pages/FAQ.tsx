@@ -44,7 +44,7 @@ const faqGroups = [
       { q: "How do you match a coach to my child?", a: "We match based on level, learning style, language preference, and coach specialization during the demo assessment process." },
       { q: "How soon will we see improvement?", a: "Many parents notice better focus and puzzle-solving ability within 6 to 8 weeks. Measurable game improvements depend on practice consistency outside of class." },
       { q: "Is there a trial or demo class?", a: "Yes — we offer a completely free demo class so families can experience a live session and meet a coach before making any commitment." },
-      { q: "What are your fees?", a: "India: Rs 2,999 per month for group classes and Rs 4,999 per month for 1-on-1 sessions. International: $49 per month for group and $99 per month for 1-on-1. Full details on the Pricing page." },
+      { q: "What are your fees?", a: "India: Rs 2,999 per month for group classes and Rs 4,999 per month for 1-on-1 sessions. International: $59 per month for group and $99 per month for 1-on-1. Full details on the Pricing page." },
     ],
   },
   {
