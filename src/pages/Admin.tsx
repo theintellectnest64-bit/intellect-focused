@@ -13,7 +13,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import { countries, flagOf } from "@/data/countries";
 import EnrollmentPaymentPanel from "@/components/admin/EnrollmentPaymentPanel";
+
+/** Leads store the full country name; map it back to a flag for compact display. */
+const isoFlag = (countryName: string) => {
+  const match = countries.find(c => c.name.toLowerCase() === countryName.trim().toLowerCase());
+  return match ? flagOf(match.iso2) : "";
+};
 
 type Lead = Tables<"leads">;
 type Contact = Tables<"contacts">;
