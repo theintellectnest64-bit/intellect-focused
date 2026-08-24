@@ -19,6 +19,8 @@ import { breadcrumbSchema } from "@/components/seo/schemas";
 import { Helmet } from "react-helmet-async";
 import AgePicker from "@/components/AgePicker";
 import CountryCodePhone from "@/components/CountryCodePhone";
+import CountrySelect from "@/components/CountrySelect";
+import { countryByIso } from "@/data/countries";
 import SupportHours from "@/components/SupportHours";
 
 const WHATSAPP_URL = "https://wa.me/919893189566?text=Knock%20knock!%20Can%20I%20step%20into%20the%20nest%20for%20a%20free%20chess%20demo%3F%20%F0%9F%95%8A%E2%99%9F";
@@ -33,12 +35,14 @@ const bookDemoSchema = z.object({
   parent_name: z.string().trim().min(2, "Name is required").max(100),
   parent_email: z.string().trim().email("Valid email is required").max(255),
   parent_phone: z.string().trim().min(10, "Valid phone number required").max(15),
+  country: z.string().min(2, "Please select your country."),
   child_name: z.string().trim().min(2, "Child's name is required").max(100),
   child_age: z.string().min(1, "Please select age"),
   current_level: z.string().min(1, "Please select current level"),
   preferred_language: z.string().optional(),
   message: z.string().max(500).optional(),
 });
+
 
 type BookDemoForm = z.infer<typeof bookDemoSchema>;
 
@@ -61,6 +65,7 @@ const BookDemo = () => {
       parent_name: "",
       parent_email: "",
       parent_phone: "",
+      country: "",
       child_name: "",
       child_age: "",
       current_level: "",
@@ -83,6 +88,8 @@ const BookDemo = () => {
         parent_name: data.parent_name,
         parent_email: data.parent_email,
         parent_phone: fullPhone,
+        country: countryByIso(data.country)?.name ?? data.country,
+        phone_country: countryCode.split("|")[1] || null,
         child_name: data.child_name,
         child_age: data.child_age,
         current_level: data.current_level,
@@ -221,6 +228,16 @@ const BookDemo = () => {
                           countryCode={countryCode}
                           onCountryCodeChange={setCountryCode}
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
+                  <FormField control={form.control} name="country" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-body text-sm text-navy">Country (where you live) *</FormLabel>
+                      <FormControl>
+                        <CountrySelect value={field.value} onChange={field.onChange} placeholder="Search and select your country" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

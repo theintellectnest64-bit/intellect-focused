@@ -13,7 +13,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import { countries, flagOf } from "@/data/countries";
 import EnrollmentPaymentPanel from "@/components/admin/EnrollmentPaymentPanel";
+
+/** Leads store the full country name; map it back to a flag for compact display. */
+const isoFlag = (countryName: string) => {
+  const match = countries.find(c => c.name.toLowerCase() === countryName.trim().toLowerCase());
+  return match ? flagOf(match.iso2) : "";
+};
 
 type Lead = Tables<"leads">;
 type Contact = Tables<"contacts">;
@@ -238,7 +245,10 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
             {lead.priority === "hot" && <span className="mr-1">🔥</span>}
             {lead.parent_name}
           </div>
-          <div className="font-body text-[11px] text-muted-foreground leading-tight">{formatDate(lead.created_at)}</div>
+          <div className="font-body text-[11px] text-muted-foreground leading-tight">
+            {lead.country && <span className="mr-1 text-navy">{isoFlag(lead.country)}</span>}
+            {formatDate(lead.created_at)}
+          </div>
         </td>
 
         {/* Child */}
@@ -335,6 +345,15 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
                       <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Child:</span> {lead.child_name}</p>
                       <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Age:</span> {lead.child_age}</p>
                       <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Level:</span> {lead.current_level}</p>
+                      <p className="font-body text-xs text-secondary">
+                        <span className="text-muted-foreground">Country (residence):</span>{" "}
+                        {lead.country ? `${isoFlag(lead.country)} ${lead.country}` : "—"}
+                      </p>
+                      {lead.phone_country && (
+                        <p className="font-body text-xs text-secondary">
+                          <span className="text-muted-foreground">Phone country:</span> {flagOf(lead.phone_country)} {lead.phone_country}
+                        </p>
+                      )}
                       <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Language:</span> {lead.preferred_language}</p>
                       {lead.source && (
                         <p className="font-body text-xs text-secondary"><span className="text-muted-foreground">Source:</span> {lead.source}</p>
