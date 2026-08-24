@@ -264,6 +264,7 @@ export type Database = {
         Row: {
           child_age: string
           child_name: string
+          country: string | null
           created_at: string
           current_level: string
           demo_scheduled_at: string | null
@@ -274,6 +275,7 @@ export type Database = {
           parent_email: string
           parent_name: string
           parent_phone: string
+          phone_country: string | null
           preferred_language: string
           priority: string
           source: string | null
@@ -283,6 +285,7 @@ export type Database = {
         Insert: {
           child_age: string
           child_name: string
+          country?: string | null
           created_at?: string
           current_level: string
           demo_scheduled_at?: string | null
@@ -293,6 +296,7 @@ export type Database = {
           parent_email: string
           parent_name: string
           parent_phone: string
+          phone_country?: string | null
           preferred_language?: string
           priority?: string
           source?: string | null
@@ -302,6 +306,7 @@ export type Database = {
         Update: {
           child_age?: string
           child_name?: string
+          country?: string | null
           created_at?: string
           current_level?: string
           demo_scheduled_at?: string | null
@@ -312,6 +317,7 @@ export type Database = {
           parent_email?: string
           parent_name?: string
           parent_phone?: string
+          phone_country?: string | null
           preferred_language?: string
           priority?: string
           source?: string | null
