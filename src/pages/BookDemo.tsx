@@ -33,12 +33,14 @@ const bookDemoSchema = z.object({
   parent_name: z.string().trim().min(2, "Name is required").max(100),
   parent_email: z.string().trim().email("Valid email is required").max(255),
   parent_phone: z.string().trim().min(10, "Valid phone number required").max(15),
+  country: z.string().min(2, "Please select your country."),
   child_name: z.string().trim().min(2, "Child's name is required").max(100),
   child_age: z.string().min(1, "Please select age"),
   current_level: z.string().min(1, "Please select current level"),
   preferred_language: z.string().optional(),
   message: z.string().max(500).optional(),
 });
+
 
 type BookDemoForm = z.infer<typeof bookDemoSchema>;
 
