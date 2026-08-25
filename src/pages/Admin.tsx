@@ -209,8 +209,16 @@ const NotesSection = ({ recordType, recordId }: { recordType: string; recordId: 
 
 /* ── Expandable Lead Row ── */
 
-const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch: Partial<Lead>) => void }) => {
+const LeadRow = ({ lead, onUpdate, onDelete, hasEnrollment }: {
+  lead: Lead;
+  onUpdate: (id: string, patch: Partial<Lead>) => void;
+  onDelete: (lead: Lead) => Promise<void>;
+  hasEnrollment: boolean;
+}) => {
   const [expanded, setExpanded] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
 
   const waMessage = (text: string) =>
     `${whatsAppLink(lead.parent_phone)}?text=${encodeURIComponent(text)}`;
