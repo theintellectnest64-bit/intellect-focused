@@ -578,7 +578,17 @@ const LeadRow = ({ lead, onUpdate, onDelete, hasEnrollment }: {
                         Follow up +2d
                       </Button>
                     </div>
+
+                    <h4 className="font-body text-xs font-semibold text-destructive pt-3">Danger Zone</h4>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDelete(true)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-destructive/30 bg-destructive/5 text-destructive text-xs font-medium hover:bg-destructive/10 transition-colors"
+                    >
+                      <Trash2 size={12} /> Delete Lead
+                    </button>
                   </div>
+
 
                   {/* Notes */}
                   <div>
