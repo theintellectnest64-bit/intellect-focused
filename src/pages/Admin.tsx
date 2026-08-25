@@ -328,6 +328,36 @@ const LeadRow = ({ lead, onUpdate, onDelete, hasEnrollment }: {
             >
               <CalendarCheck size={14} />
             </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  title="More actions"
+                  className="inline-flex items-center justify-center h-8 w-7 shrink-0 rounded-md text-muted-foreground hover:text-navy hover:bg-muted transition-colors"
+                >
+                  <MoreVertical size={14} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuLabel className="text-xs">Actions</DropdownMenuLabel>
+                <DropdownMenuItem className="text-xs" onClick={() => setExpanded(true)}>
+                  <ExternalLink size={12} className="mr-2" /> View details
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-xs" onClick={() => copy(lead.parent_phone, "Phone")}>
+                  <Copy size={12} className="mr-2" /> Copy phone
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-xs" onClick={() => copy(lead.parent_email, "Email")}>
+                  <Copy size={12} className="mr-2" /> Copy email
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-xs text-destructive focus:text-destructive"
+                  onClick={() => setConfirmDelete(true)}
+                >
+                  <Trash2 size={12} className="mr-2" /> Delete Lead
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <button
               type="button"
               title={expanded ? "Collapse" : "Expand details"}
@@ -337,8 +367,54 @@ const LeadRow = ({ lead, onUpdate, onDelete, hasEnrollment }: {
               {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
           </div>
+
+          <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="font-heading text-navy">
+                  {hasEnrollment ? "Cannot delete this lead" : "Delete this lead?"}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="font-body">
+                  {hasEnrollment ? (
+                    <span className="flex items-start gap-2 text-left">
+                      <ShieldAlert size={16} className="mt-0.5 shrink-0 text-destructive" />
+                      <span>
+                        <strong>{lead.parent_name}</strong> has an associated enrollment / payment record
+                        ({lead.parent_email}). To protect financial records and receipts, this lead cannot be
+                        deleted. Mark it as converted or closed instead.
+                      </span>
+                    </span>
+                  ) : (
+                    <>
+                      This will permanently remove <strong>{lead.parent_name}</strong> and their lead
+                      information from the CRM. This action cannot be undone.
+                    </>
+                  )}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="font-body">{hasEnrollment ? "Close" : "Cancel"}</AlertDialogCancel>
+                {!hasEnrollment && (
+                  <AlertDialogAction
+                    disabled={deleting}
+                    className="font-body bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      setDeleting(true);
+                      await onDelete(lead);
+                      setDeleting(false);
+                      setConfirmDelete(false);
+                    }}
+                  >
+                    {deleting ? "Deleting…" : "Delete Lead"}
+                  </AlertDialogAction>
+                )}
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </td>
       </tr>
+
 
       <AnimatePresence>
         {expanded && (
