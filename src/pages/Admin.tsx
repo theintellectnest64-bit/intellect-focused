@@ -4,17 +4,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Mail, TrendingUp, Download, LogIn, LogOut, ArrowUpDown, Search,
   ChevronDown, ChevronUp, MessageSquare, Phone, Globe, Send, Trash2,
-  ExternalLink, RefreshCw, Copy, CalendarCheck,
+  ExternalLink, RefreshCw, Copy, CalendarCheck, MoreVertical, ShieldAlert,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import { countries, flagOf } from "@/data/countries";
 import EnrollmentPaymentPanel from "@/components/admin/EnrollmentPaymentPanel";
+
 
 /** Leads store the full country name; map it back to a flag for compact display. */
 const isoFlag = (countryName: string) => {
