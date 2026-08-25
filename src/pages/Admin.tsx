@@ -4,17 +4,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, Mail, TrendingUp, Download, LogIn, LogOut, ArrowUpDown, Search,
   ChevronDown, ChevronUp, MessageSquare, Phone, Globe, Send, Trash2,
-  ExternalLink, RefreshCw, Copy, CalendarCheck,
+  ExternalLink, RefreshCw, Copy, CalendarCheck, MoreVertical, ShieldAlert,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import { countries, flagOf } from "@/data/countries";
 import EnrollmentPaymentPanel from "@/components/admin/EnrollmentPaymentPanel";
+
 
 /** Leads store the full country name; map it back to a flag for compact display. */
 const isoFlag = (countryName: string) => {
@@ -200,8 +209,16 @@ const NotesSection = ({ recordType, recordId }: { recordType: string; recordId: 
 
 /* ── Expandable Lead Row ── */
 
-const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch: Partial<Lead>) => void }) => {
+const LeadRow = ({ lead, onUpdate, onDelete, hasEnrollment }: {
+  lead: Lead;
+  onUpdate: (id: string, patch: Partial<Lead>) => void;
+  onDelete: (lead: Lead) => Promise<void>;
+  hasEnrollment: boolean;
+}) => {
   const [expanded, setExpanded] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
 
   const waMessage = (text: string) =>
     `${whatsAppLink(lead.parent_phone)}?text=${encodeURIComponent(text)}`;
@@ -311,6 +328,36 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
             >
               <CalendarCheck size={14} />
             </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  title="More actions"
+                  className="inline-flex items-center justify-center h-8 w-7 shrink-0 rounded-md text-muted-foreground hover:text-navy hover:bg-muted transition-colors"
+                >
+                  <MoreVertical size={14} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuLabel className="text-xs">Actions</DropdownMenuLabel>
+                <DropdownMenuItem className="text-xs" onClick={() => setExpanded(true)}>
+                  <ExternalLink size={12} className="mr-2" /> View details
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-xs" onClick={() => copy(lead.parent_phone, "Phone")}>
+                  <Copy size={12} className="mr-2" /> Copy phone
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-xs" onClick={() => copy(lead.parent_email, "Email")}>
+                  <Copy size={12} className="mr-2" /> Copy email
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-xs text-destructive focus:text-destructive"
+                  onClick={() => setConfirmDelete(true)}
+                >
+                  <Trash2 size={12} className="mr-2" /> Delete Lead
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <button
               type="button"
               title={expanded ? "Collapse" : "Expand details"}
@@ -320,8 +367,54 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
               {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
           </div>
+
+          <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="font-heading text-navy">
+                  {hasEnrollment ? "Cannot delete this lead" : "Delete this lead?"}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="font-body">
+                  {hasEnrollment ? (
+                    <span className="flex items-start gap-2 text-left">
+                      <ShieldAlert size={16} className="mt-0.5 shrink-0 text-destructive" />
+                      <span>
+                        <strong>{lead.parent_name}</strong> has an associated enrollment / payment record
+                        ({lead.parent_email}). To protect financial records and receipts, this lead cannot be
+                        deleted. Mark it as converted or closed instead.
+                      </span>
+                    </span>
+                  ) : (
+                    <>
+                      This will permanently remove <strong>{lead.parent_name}</strong> and their lead
+                      information from the CRM. This action cannot be undone.
+                    </>
+                  )}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="font-body">{hasEnrollment ? "Close" : "Cancel"}</AlertDialogCancel>
+                {!hasEnrollment && (
+                  <AlertDialogAction
+                    disabled={deleting}
+                    className="font-body bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      setDeleting(true);
+                      await onDelete(lead);
+                      setDeleting(false);
+                      setConfirmDelete(false);
+                    }}
+                  >
+                    {deleting ? "Deleting…" : "Delete Lead"}
+                  </AlertDialogAction>
+                )}
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </td>
       </tr>
+
 
       <AnimatePresence>
         {expanded && (
@@ -485,7 +578,17 @@ const LeadRow = ({ lead, onUpdate }: { lead: Lead; onUpdate: (id: string, patch:
                         Follow up +2d
                       </Button>
                     </div>
+
+                    <h4 className="font-body text-xs font-semibold text-destructive pt-3">Danger Zone</h4>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDelete(true)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-destructive/30 bg-destructive/5 text-destructive text-xs font-medium hover:bg-destructive/10 transition-colors"
+                    >
+                      <Trash2 size={12} /> Delete Lead
+                    </button>
                   </div>
+
 
                   {/* Notes */}
                   <div>
