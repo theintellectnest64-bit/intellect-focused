@@ -1220,7 +1220,14 @@ const Admin = () => {
               </thead>
               <tbody>
                 {sortedLeads.map(lead => (
-                  <LeadRow key={lead.id} lead={lead} onUpdate={updateLead} />
+                  <LeadRow
+                    key={lead.id}
+                    lead={lead}
+                    onUpdate={updateLead}
+                    onDelete={deleteLead}
+                    hasEnrollment={leadHasEnrollment(lead)}
+                  />
+
                 ))}
                 {sortedLeads.length === 0 && (
                   <tr><td colSpan={7} className="px-3 py-8 text-center font-body text-secondary">No leads found</td></tr>
