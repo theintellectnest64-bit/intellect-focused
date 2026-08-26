@@ -903,6 +903,37 @@ const Admin = () => {
     toast.success("Lead updated");
   };
 
+  /** A lead is protected when an enrollment (payment/receipt) exists for the same parent email/phone. */
+  const enrollmentKeys = useMemo(() => {
+    const set = new Set<string>();
+    enrollments.forEach(e => {
+      if (e.email) set.add(e.email.trim().toLowerCase());
+      if (e.phone) set.add(e.phone.replace(/[^0-9]/g, "").slice(-10));
+      if (e.guardian_whatsapp) set.add(e.guardian_whatsapp.replace(/[^0-9]/g, "").slice(-10));
+    });
+    return set;
+  }, [enrollments]);
+
+  const leadHasEnrollment = useCallback((lead: Lead) => {
+    const email = lead.parent_email?.trim().toLowerCase();
+    const phone = lead.parent_phone?.replace(/[^0-9]/g, "").slice(-10);
+    return (!!email && enrollmentKeys.has(email)) || (!!phone && phone.length === 10 && enrollmentKeys.has(phone));
+  }, [enrollmentKeys]);
+
+  const deleteLead = async (lead: Lead) => {
+    if (leadHasEnrollment(lead)) {
+      toast.error("This lead has an enrollment/payment record and cannot be deleted.");
+      return;
+    }
+    // Remove lead-only internal notes first, then the lead itself (both admin-only via RLS).
+    await supabase.from("admin_notes").delete().eq("record_type", "lead").eq("record_id", lead.id);
+    const { error } = await supabase.from("leads").delete().eq("id", lead.id);
+    if (error) { toast.error("Failed to delete lead"); return; }
+    setLeads(prev => prev.filter(l => l.id !== lead.id));
+    toast.success("Lead deleted successfully.");
+  };
+
+
 
   const updateContactStatus = async (id: string, status: string) => {
     const { error } = await supabase.from("contacts").update({ status }).eq("id", id);
