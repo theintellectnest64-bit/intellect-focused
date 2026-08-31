@@ -24,7 +24,7 @@ const PLANS = [
   { id: "other", name: "Other / Customised Plan", price: "Let's talk", desc: "Tell us the arrangement you're looking for" },
 ];
 
-const COACHES = ["Not sure — assign for me", "Sanyam Sir", "Prince Sir", "Parina Mam", "Adarsh Sir"];
+const COACHES = ["Not sure — assign for me", "Sanyam Sir", "Parina Mam", "Jishnu Sir", "Shubham Sir"];
 
 const TIMEZONES = [
   "IST — India",
