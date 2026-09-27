@@ -35,6 +35,7 @@ const Zoom = lazy(() => import("./pages/Zoom"));
 const Demo = lazy(() => import("./pages/Demo"));
 const Careers = lazy(() => import("./pages/Careers"));
 const Enrollment = lazy(() => import("./pages/Enrollment"));
+const Payment = lazy(() => import("./pages/Payment"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -90,6 +91,7 @@ const AppShell = () => {
             <Route path="/demo" element={<Demo />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/harshit-enrollment" element={<Enrollment />} />
+            <Route path="/payment" element={<Payment />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
