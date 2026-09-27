@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import AgePicker from "@/components/AgePicker";
 import CountryCodePhone from "@/components/CountryCodePhone";
 import qrCodeImg from "@/assets/payment-qr-code.jpeg";
+import RazorpayButton from "@/components/RazorpayButton";
 
 const loadSupabase = () => import("@/integrations/supabase/client").then((m) => m.supabase);
 
@@ -505,6 +506,25 @@ const Enrollment = () => {
           {step === 2 && (
             <div className="space-y-5">
               <h2 className="font-display text-xl font-bold" style={{ color: NAVY }}>Payment</h2>
+
+              {(form.plan === "india-group" || form.plan === "india-1on1") && (
+                <div className="rounded-2xl p-5 md:p-6 space-y-3" style={{ border: `1px solid ${BORDER}`, background: "#FFFFFF" }}>
+                  <p className="font-body text-sm font-semibold" style={{ color: NAVY }}>
+                    Pay instantly online — {PLANS.find((p) => p.id === form.plan)?.price}
+                  </p>
+                  <RazorpayButton
+                    plan={form.plan}
+                    prefill={{ name: form.parent_name, email: form.email, contact: form.phone }}
+                    onSuccess={(paymentId) => {
+                      set("payment_type", "Full Payment");
+                      set("transaction_id", paymentId);
+                      set("payment_date", new Date().toISOString().slice(0, 10));
+                      set("payment_note", "Paid online via Razorpay (verified)");
+                    }}
+                  />
+                  <p className="font-body text-xs" style={{ color: "#4A5568" }}>Or pay manually using the UPI details below.</p>
+                </div>
+              )}
 
               {/* Payment details card */}
               <div className="rounded-2xl p-5 md:p-6" style={{ border: `1px solid ${BORDER}`, background: "#F0F6FF" }}>
