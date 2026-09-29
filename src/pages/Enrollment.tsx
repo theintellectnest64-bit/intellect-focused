@@ -17,11 +17,8 @@ const WHATSAPP_URL =
   "https://wa.me/919893189566?text=Hi!%20I%20have%20just%20completed%20my%20enrollment%20with%20The%20Intellect%20Nest%20%F0%9F%95%8A%E2%99%9F";
 
 const PLANS = [
-  { id: "india-group", name: "India Group", price: "₹2,999/month", desc: "8 classes + weekly tournament, 4–6 students" },
-  { id: "india-1on1", name: "India 1-on-1", price: "₹4,999/month", desc: "8 private sessions, fully personalised" },
-  { id: "international-group", name: "International Group", price: "$59/month", desc: "8 classes + weekly tournament, 4–6 students" },
-  { id: "international-1on1", name: "International 1-on-1", price: "$99/month", desc: "8 private sessions, fully personalised" },
-  { id: "other", name: "Other / Customised Plan", price: "Let's talk", desc: "Tell us the arrangement you're looking for" },
+  { id: "group", name: "Group Coaching", price: "", desc: "Interactive group sessions with personalised guidance, practice and tournaments." },
+  { id: "1on1", name: "1-on-1 Coaching", price: "", desc: "Private, fully personalised coaching tailored to the student's level and goals." },
 ];
 
 const COACHES = ["Not sure — assign for me", "Sanyam Sir", "Parina Mam", "Jishnu Sir", "Shubham Sir"];
@@ -209,7 +206,7 @@ const Enrollment = () => {
         proofPath = path;
       }
 
-      const planLabel = selectedPlan ? `${selectedPlan.name} — ${selectedPlan.price}` : form.plan;
+      const planLabel = selectedPlan ? selectedPlan.name : form.plan;
 
       const { error } = await supabase.from("enrollments").insert({
         id: recordId,
@@ -367,7 +364,7 @@ const Enrollment = () => {
           {/* STEP 1 */}
           {step === 0 && (
             <div className="space-y-4">
-              <h2 className="font-display text-xl font-bold" style={{ color: NAVY }}>Choose your plan</h2>
+              <h2 className="font-display text-xl font-bold" style={{ color: NAVY }}>Choose your coaching program</h2>
               <div className="space-y-3">
                 {PLANS.map((p) => {
                   const active = form.plan === p.id;
@@ -387,13 +384,16 @@ const Enrollment = () => {
                           <p className="font-body font-semibold text-sm" style={{ color: NAVY }}>{p.name}</p>
                           <p className="font-body text-xs mt-1" style={{ color: "#4A5568" }}>{p.desc}</p>
                         </div>
-                        <span className="font-display font-bold text-sm whitespace-nowrap" style={{ color: ACCENT }}>{p.price}</span>
                       </div>
                     </button>
                   );
                 })}
               </div>
               {errors.plan && <p className="font-body text-xs text-destructive">{errors.plan}</p>}
+
+              <p className="font-body text-xs leading-relaxed" style={{ color: "#4A5568" }}>
+                Fees vary based on location, program and coaching requirements. Our counsellor will guide you through the available options and applicable fees before enrollment.
+              </p>
 
               {form.plan === "other" && (
                 <Field label="Tell us what you're looking for" required error={errors.custom_plan_note}>
@@ -621,7 +621,7 @@ const Enrollment = () => {
                 {
                   title: "Plan", stepIdx: 0, rows: (
                     <>
-                      <Row label="Plan" value={selectedPlan ? `${selectedPlan.name} — ${selectedPlan.price}` : ""} />
+                      <Row label="Plan" value={selectedPlan ? selectedPlan.name : ""} />
                       <Row label="Custom request" value={form.plan === "other" ? form.custom_plan_note : ""} />
                       <Row label="Rubik's Cube add-on" value={form.rubiks_addon ? "Yes" : "No"} />
                     </>
