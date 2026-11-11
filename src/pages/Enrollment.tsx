@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Check, ChevronLeft, ChevronRight, Copy, Upload } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Copy, Info, Upload } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -572,6 +572,35 @@ const Enrollment = () => {
                   ))}
                 </div>
               </Field>
+
+              {/* Partial payment policy note */}
+              <div
+                className="rounded-xl p-4 md:p-5"
+                style={{ background: "#F0F6FF", border: `1px solid ${BORDER}` }}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className="shrink-0 rounded-full p-1.5 mt-0.5 bg-white"
+                    style={{ border: `1px solid ${BORDER}` }}
+                  >
+                    <Info size={14} style={{ color: ACCENT }} />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="font-display text-sm font-bold" style={{ color: NAVY }}>
+                      Partial Payment Policy
+                    </p>
+                    <p className="font-body text-sm leading-relaxed" style={{ color: "#4A5568" }}>
+                      Partial payment facilities are available only for selected long-term coaching
+                      plans and are subject to prior discussion and approval by our counsellor. If
+                      you wish to opt for a partial payment arrangement, please contact our
+                      counsellor before proceeding.
+                    </p>
+                    <p className="font-body text-sm leading-relaxed font-medium" style={{ color: "#4A5568" }}>
+                      Partial payments are not available for regular monthly plans.
+                    </p>
+                  </div>
+                </div>
+              </div>
 
               {form.payment_type === "Partial Payment" && (
                 <Field label="Balance to be paid" required error={errors.balance_amount}>
